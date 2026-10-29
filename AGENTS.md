@@ -57,19 +57,20 @@ Claude 전용 메모는 `CLAUDE.md`에 있지만, 규칙은 여기만 고친다.
 
 ## 6. 명령어
 
-단계 1(T01) 완료 전에는 코드가 없다. T01에서 아래 명령을 확정하고 이 절을 갱신한다.
+Node.js 24.19.0 (`.nvmrc`), pnpm 11.25.0 (`package.json#packageManager`)을 사용한다.
 
 ```bash
-# (T01에서 확정 예정)
-# 패키지 매니저: pnpm (T01에서 확정)
-pnpm install
+pnpm install --frozen-lockfile
 pnpm dev        # 개발 서버
 pnpm lint       # ESLint
 pnpm format     # Prettier
+pnpm format:check # 포맷 검사
 pnpm check      # astro check (타입 체크)
 pnpm build      # 정적 빌드
-pnpm test       # 테스트 (단계 7부터 E2E)
+pnpm preview    # 빌드 결과 확인
 ```
+
+`test` 명령은 아직 없다. E2E 테스트는 단계 7에서 추가한다. CI는 설치 → 포맷 → lint → 타입 체크 → 빌드 순서로 실행한다.
 
 ## 7. 코드·콘텐츠 원칙
 

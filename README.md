@@ -31,4 +31,25 @@
 
 ## 개발 방법
 
-T01(프로젝트 초기화) 완료 후 작성합니다.
+Node.js **24.19.0**과 pnpm **11.25.0**을 사용합니다. 위 소개의 단계 0 안내는 초기 기록이며, 최신 상태는 `docs/PLAN.md`가 기준입니다.
+
+```bash
+npm install --global pnpm@11.25.0
+pnpm install --frozen-lockfile
+pnpm dev
+```
+
+개발 서버의 `/ja/`는 일본어, `/en/`은 영어 준비 페이지입니다. `/`는 `/ja/`로 이동합니다.
+
+```bash
+pnpm format:check
+pnpm lint
+pnpm check
+pnpm build
+pnpm preview
+```
+
+- `pnpm format`은 소스와 설정 파일을 정리합니다. 기존 계획 문서와 lockfile은 포맷 대상에서 제외합니다.
+- React integration은 설치되어 있지만 React 컴포넌트와 브라우저 hydration은 아직 없습니다.
+- `test` 명령과 E2E는 단계 7에서 추가합니다. 현재 CI는 PR 및 main push에서 포맷·lint·타입·빌드를 검사합니다.
+- `dist/`는 정적 산출물입니다. 루트 이동은 정적 HTML의 meta refresh로 처리됩니다. Cloudflare Workers에는 단계 8에서 정적 자산으로 배포하며, 현재 배포 설정은 없습니다.
