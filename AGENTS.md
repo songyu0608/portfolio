@@ -17,7 +17,7 @@ Claude 전용 메모는 `CLAUDE.md`에 있지만, 규칙은 여기만 고친다.
 1. `AGENTS.md` (이 파일): 규칙
 2. `docs/PLAN.md`: 전체 단계, **현재 진행 상태**, 확정·미결 사항
 3. 맡은 작업 지시서 `docs/tasks/Txx-*.md`
-4. 작업에 따라: `docs/ARCHITECTURE.md`(구조·기술 결정), `docs/DESIGN.md`(디자인·인터랙션), `docs/CONTENT.md`(콘텐츠)
+4. 작업에 따라: `docs/ARCHITECTURE.md`(구조·기술 결정), `docs/DESIGN.md`(디자인·인터랙션), `docs/CONTENT.md`(콘텐츠), `docs/REVIEW.md`(PR 구현·리뷰 절차)
 
 계획·결정·진행 상태의 원본은 `docs/PLAN.md`다. 대화 기록이나 다른 도구의 메모보다 저장소 문서가 우선한다.
 문서와 코드가 다르면 임의로 판단하지 말고 PR 설명에 차이를 적고 사용자에게 묻는다.
@@ -38,7 +38,7 @@ Claude 전용 메모는 `CLAUDE.md`에 있지만, 규칙은 여기만 고친다.
 
 1. **작업 지시서 1개 = 브랜치 1개 = PR 1개.**
 2. 어느 AI가 만든 코드든 CI(lint, 타입 체크, 빌드, 테스트)를 통과해야 merge한다.
-3. **교차 리뷰**: 한쪽이 구현하면 다른 쪽이 PR을 리뷰한다. 최종 merge는 사용자(choi)가 결정한다.
+3. **교차 리뷰**: 한쪽이 구현하면 다른 쪽이 PR을 리뷰한다. 최종 merge는 사용자(choi)가 결정한다. 절차·확인 항목·결과 작성 기준은 `docs/REVIEW.md`를 따른다.
 4. 같은 파일을 두 AI가 동시에 수정하지 않는다. `in-progress` 지시서의 수정 가능한 파일은 다른 작업에서 건드리지 않는다.
 5. 작업 지시서는 담당 AI와 무관하게, 어느 쪽에도 맡길 수 있게 쓴다 (템플릿: `docs/tasks/_TEMPLATE.md`).
 6. 기본 분담 예: Claude = 설계 문서·디자인 시스템·리뷰, ChatGPT(Codex) = 지시서 기반 페이지 구현. 고정이 아니다.
