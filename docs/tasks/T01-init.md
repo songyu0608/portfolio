@@ -5,7 +5,7 @@
 | 단계 | 1 |
 | 선행 작업 | T00 (저장소 뼈대) |
 | 담당 | codex |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `codex/T01-init` |
 
 ## 목표
@@ -51,12 +51,12 @@ Astro + TypeScript 프로젝트를 만들고, lint·format·타입 체크·빌�
 
 ## 완료 조건
 
-- [ ] 깨끗한 clone에서 `pnpm install && pnpm build`가 성공한다
-- [ ] `pnpm lint`, `pnpm check`, `pnpm format:check`가 오류 없이 통과한다
-- [ ] `pnpm dev` 실행 시 `/ja/`, `/en/`이 열리고 `/`가 `/ja/`로 이동한다
-- [ ] GitHub Actions CI가 이 PR에서 실행되고 통과한다
-- [ ] `AGENTS.md` §6, `docs/ARCHITECTURE.md` §2, `docs/PLAN.md` 진행 상태가 갱신되어 있다
-- [ ] 비밀 값이 커밋되지 않았다
+- [x] 깨끗한 clone에서 `pnpm install && pnpm build`가 성공한다
+- [x] `pnpm lint`, `pnpm check`, `pnpm format:check`가 오류 없이 통과한다
+- [x] `pnpm dev` 실행 시 `/ja/`, `/en/`이 열리고 `/`가 `/ja/`로 이동한다
+- [x] GitHub Actions CI가 이 PR에서 실행되고 통과한다
+- [x] `AGENTS.md` §6, `docs/ARCHITECTURE.md` §2, `docs/PLAN.md` 진행 상태가 갱신되어 있다
+- [x] 비밀 값이 커밋되지 않았다
 
 ## 확인 방법
 

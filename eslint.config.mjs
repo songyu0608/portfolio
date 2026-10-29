@@ -26,6 +26,16 @@ export default defineConfig(
     languageOptions: { globals: globals.browser },
     rules: {
       ...hooks.configs.recommended.rules,
+      // Keep the official Hooks checks without reporting the same issue twice.
+      '@eslint-react/rules-of-hooks': 'off',
+      '@eslint-react/exhaustive-deps': 'off',
+      '@eslint-react/error-boundaries': 'off',
+      '@eslint-react/purity': 'off',
+      '@eslint-react/set-state-in-effect': 'off',
+      '@eslint-react/set-state-in-render': 'off',
+      '@eslint-react/static-components': 'off',
+      '@eslint-react/unsupported-syntax': 'off',
+      '@eslint-react/use-memo': 'off',
     },
   },
 );
