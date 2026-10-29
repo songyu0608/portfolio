@@ -26,6 +26,9 @@ export default defineConfig(
     languageOptions: { globals: globals.browser },
     rules: {
       ...hooks.configs.recommended.rules,
+      // Keep the official Hooks checks without reporting the same issue twice.
+      '@eslint-react/rules-of-hooks': 'off',
+      '@eslint-react/exhaustive-deps': 'off',
     },
   },
 );
