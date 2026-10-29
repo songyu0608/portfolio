@@ -21,7 +21,7 @@ PR #4 교차 리뷰의 개선 제안을 반영하고, T02 착수 전 검사 설�
 포함:
 - T01 완료 상태와 PR #4를 계획·기존 지시서에 반영
 - A7에 pnpm 11.25.0 선택 이유 기록
-- React Hooks의 중복 `rules-of-hooks`, `exhaustive-deps`만 해제하고 공식 `react-hooks` 검사 유지
+- 두 권장 설정에서 이름이 겹치는 React Hooks 규칙 9개는 `react-hooks`로 통일하고, 대응하는 `@eslint-react` 규칙만 해제. 기타 React 검사 유지
 - 직접 의존성의 정확한 버전 표기 통일. 설치되는 버전은 변경하지 않음
 - 단계 8 HTTP 301 처리와 다음 의존성 갱신 시 release-age 예외 삭제 검증을 PLAN에 기록
 
@@ -37,16 +37,16 @@ PR #4 교차 리뷰의 개선 제안을 반영하고, T02 착수 전 검사 설�
 
 ## 완료 조건
 
-- [x] 잘못된 Hook 호출과 누락된 effect 의존성이 각각 한 규칙에서 보고되고 정상 예제는 통과
+- [x] 잘못된 Hook 호출, 누락된 effect 의존성, effect 내부의 동기 setState가 각각 한 규칙에서 보고되고 정상 예제는 통과
 - [x] 기타 React 및 Hooks 권장 규칙이 유지됨
 - [x] 직접 의존성 버전 표기 통일, lockfile의 실제 패키지 버전 변화 없음
-- [ ] frozen-lockfile 설치, 포맷·lint·타입·빌드 및 CI 통과
+- [x] frozen-lockfile 설치, 포맷·lint·타입·빌드 및 CI 통과 (최신 커밋 결과는 PR 본문에 기록)
 - [x] T01 완료 기록 및 후속 항목·T02 준비 순서 반영
 
 ## 확인 방법
 
 `pnpm install --frozen-lockfile`, `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`를 실행한다.
-ESLint의 `lintText`로 TSX 예제를 메모리에서 검사한다. 조건부 Hook 호출 및 effect 의존성 누락은 `react-hooks/*`에서 각각 한 번 보고되어야 한다. 정상 Hook 예제는 통과해야 한다.
+ESLint의 `lintText`로 TSX 예제를 메모리에서 검사한다. 조건부 Hook 호출, effect 의존성 누락, effect 내부의 동기 setState는 `react-hooks/*`에서 각각 한 번 보고되어야 한다. 정상 Hook 예제는 통과해야 한다. 최종 설정에서 두 플러그인의 활성 동명 규칙 교집합이 비어 있고 다른 권장 규칙이 유지되는지도 확인한다.
 lockfile diff는 직접 의존성 3개의 specifier에서 `^` 제거만 포함해야 한다.
 
 ## 메모
