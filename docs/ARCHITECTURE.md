@@ -18,29 +18,32 @@ Cloudflare Workers (정적 자산)
 - 기본은 완전 정적. 서버 실행이 필요한 경로만 Workers 함수로 처리한다.
 - 단계 7까지는 Workers 함수가 없어도 사이트가 완성되어야 한다.
 
-## 2. 디렉터리 구조 (예정)
+## 2. 디렉터리 구조 (T01)
 
-T01에서 실제 구조를 만들고 이 절을 갱신한다. 아래는 기본안이다.
-
-```
+```text
 .
 ├─ AGENTS.md / CLAUDE.md / README.md
-├─ docs/                    ← 계획·설계 문서, 작업 지시서
-├─ public/                  ← 정적 파일 (favicon, OG 이미지, 이력서 PDF)
+├─ docs/                       ← 계획·설계 문서, 작업 지시서
 ├─ src/
-│  ├─ components/           ← Astro 컴포넌트
-│  │  └─ interactive/       ← React island (터미널, 명령 팔레트, 카드 틸트 등)
-│  ├─ content/              ← 콘텐츠 컬렉션 (프로젝트, 경력) — ja/en
-│  ├─ i18n/                 ← UI 문구 번역, 언어 유틸
-│  ├─ layouts/
-│  ├─ pages/
-│  │  ├─ ja/ …
-│  │  └─ en/ …
-│  └─ styles/               ← 디자인 토큰(CSS 변수), 전역 스타일
-├─ worker/                  ← 단계 8: Workers 함수 (API)
-├─ tests/                   ← 단계 7: Playwright
-└─ .github/workflows/       ← CI
+│  ├─ i18n/ui.ts                ← 일본어·영어 준비 페이지 문구
+│  └─ pages/
+│     ├─ index.astro            ← /ja/로 이동
+│     ├─ ja/index.astro
+│     └─ en/index.astro
+├─ astro.config.mjs            ← 정적 출력, React, i18n
+├─ tsconfig.json               ← Astro strict + React JSX
+├─ eslint.config.mjs            ← JS, TypeScript, Astro, React, Hooks
+├─ .prettierrc.json / .prettierignore / .editorconfig
+├─ package.json / pnpm-lock.yaml / pnpm-workspace.yaml
+├─ .nvmrc / .npmrc              ← Node 버전 및 엔진 검사
+└─ .github/workflows/ci.yml      ← 포맷 → lint → 타입 → 빌드
 ```
+
+컴포넌트·레이아웃·스타일은 T02/T03부터, `public/`은 정적 자산이 필요할 때, `tests/`는 단계 7, Workers 함수는 단계 8에 추가한다.
+
+T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는 검사 도구의 지원 범위에 맞춰 6.0.3을 사용한다. 직접 의존성과 lockfile로 설치 버전을 기록한다. pnpm이 생성한 `pnpm-workspace.yaml`에는 이번 Astro 설치에 필요한 특정 버전의 release-age 예외만 기록한다.
+
+`output: 'static'` 빌드는 `dist/ja/index.html`, `dist/en/index.html`, 루트 redirect HTML을 생성한다. React hydration은 없으며 서버 어댑터도 필요하지 않다. `dist/`를 Workers 정적 자산 디렉터리로 지정할 수 있음을 [공식 문서](https://developers.cloudflare.com/workers/static-assets/binding/)와 출력 구조로 확인한다. 실제 배포·HTTP redirect 정책은 단계 8에서 검증한다.
 
 ## 3. 기술 결정 기록 (ADR 요약)
 
@@ -54,7 +57,7 @@ T01에서 실제 구조를 만들고 이 절을 갱신한다. 아래는 기본�
 | A4 | i18n: `/ja`(기본), `/en` 경로 분리 | SEO(hreflang), 공유 링크가 언어를 유지 | 쿼리/쿠키 기반 전환 | accepted |
 | A5 | 회사별 비공개 페이지는 토큰 URL + KV | 채용 담당자에게 로그인 단계가 없음 | Cloudflare Access(이메일 OTP) | accepted (단계 8에 재검토) |
 | A6 | 저장소 Public, 비밀 값은 Cloudflare Secrets / `.dev.vars` | 포트폴리오로서 코드 공개 가치 | Private 저장소 | accepted |
-| A7 | 패키지 매니저 pnpm (기본안) | 빠른 설치, lockfile 일관성 | npm | proposed (T01에서 확정) |
+| A7 | 패키지 매니저 pnpm 11.25.0 | 빠른 설치, lockfile 일관성 | npm | accepted (T01) |
 
 ## 4. 비밀 값 관리
 
