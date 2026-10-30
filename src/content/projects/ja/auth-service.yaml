@@ -11,3 +11,25 @@ highlights:
   - 認証関連の障害を月 〇 件 → 〇 件（仮）
 tech: [Go（仮）, Redis（仮）, Kubernetes（仮）]
 featuredOrder: 3
+phases: [requirements, design, operation]
+team: 〇 名（仮）
+challenge:
+  body: モノリスに組み込まれた認証機能が変更や障害の影響を広げていた状況を、利用規模とあわせて説明します。（仮）
+  points:
+    - 月間 〇〇 万リクエスト、連携サービス 〇 個（仮）
+design:
+  body: 認証サービスを切り出す構成と、サービスを止めずに移すための移行計画を書きます。（仮）
+  points:
+    - 新旧の認証を並行稼働させ、トラフィックを段階的に切り替え（仮）
+    - 切り戻し手順を事前に用意し、各段階で確認（仮）
+result:
+  metrics:
+    - label: 移行時の停止時間（仮）
+      value: 〇 分
+    - label: 認証関連の障害（仮）
+      value: 月 〇 件 → 〇 件
+techDetails:
+  - label: 言語
+    value: Go（仮）
+  - label: データ・基盤
+    value: Redis（仮） / Kubernetes（仮）

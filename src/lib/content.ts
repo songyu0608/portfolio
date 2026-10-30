@@ -2,12 +2,15 @@
 // 규칙을 어기면 어긴 규칙을 모두 적은 오류를 던져 빌드를 멈춘다(docs/ARCHITECTURE.md §2 "콘텐츠 구조").
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { publicDir } from 'astro:config/server';
+import { PHASES } from '../content.config';
 import { locales, type Locale } from '../i18n/ui';
 
 export type Profile = CollectionEntry<'profile'>['data'];
 export type Skill =
   CollectionEntry<'skills'>['data']['categories'][number]['items'][number];
 export type Project = CollectionEntry<'projects'>['data'] & { slug: string };
+/** 担当工程 id. */
+export type Phase = (typeof PHASES)[number];
 /** 이름을 한 언어로 정한 기술. */
 export type LocalizedSkill = Omit<Skill, 'name'> & { name: string };
 export type CareerEntry = CollectionEntry<'career'>['data'] & { slug: string };
@@ -33,6 +36,24 @@ export interface HomeContent {
   skills: LocalizedSkill[];
   /** Home 대표 프로젝트. featuredOrder 순서. */
   projects: Project[];
+}
+
+export interface ProjectsContent {
+  /** 대표 프로젝트. featuredOrder 순서. */
+  featured: Project[];
+  /** 대표가 아닌 프로젝트. order 순서. */
+  others: Project[];
+}
+
+/** 상세 페이지 하단 이전·다음 링크에 쓰는 프로젝트 요약. */
+export type ProjectLink = Pick<Project, 'slug' | 'title'>;
+
+/** 프로젝트 상세 페이지 하나. 이전·다음은 목록 표시 순서를 따르고 끝과 처음이 이어진다. */
+export interface ProjectPage {
+  project: Project;
+  /** 전체가 2건이면 이전과 다음이 같으므로 이전을 두지 않는다. */
+  prev?: ProjectLink;
+  next: ProjectLink;
 }
 
 export interface AboutContent {
@@ -157,7 +178,9 @@ async function loadContent() {
       );
       continue;
     }
-    projects[locale].push({ ...entry.data, slug });
+    // 担当工程은 콘텐츠 파일의 순서와 무관하게 고정 순서로 돌려준다.
+    const phases = PHASES.filter((phase) => entry.data.phases.includes(phase));
+    projects[locale].push({ ...entry.data, phases, slug });
   }
   const slugs = new Set(locales.flatMap((l) => projects[l].map((p) => p.slug)));
   for (const slug of slugs) {
@@ -169,10 +192,19 @@ async function loadContent() {
       );
       continue;
     }
-    const orders = found.map((p) => p?.featuredOrder);
-    if (new Set(orders).size > 1) {
+    for (const key of ['featuredOrder', 'order'] as const) {
+      const values = found.map((p) => p?.[key]);
+      if (new Set(values).size > 1) {
+        errors.push(
+          `프로젝트: ${slug} — ${key}가 언어마다 다르다 (${locales.map((l, i) => `${l}: ${values[i] ?? '없음'}`).join(', ')})`,
+        );
+      }
+    }
+    // phases는 조회 시 고정 순서로 정렬했으므로 이어 붙인 문자열로 집합을 비교할 수 있다.
+    const phaseSets = found.map((p) => p?.phases.join(', '));
+    if (new Set(phaseSets).size > 1) {
       errors.push(
-        `프로젝트: ${slug} — featuredOrder가 언어마다 다르다 (${locales.map((l, i) => `${l}: ${orders[i] ?? '없음'}`).join(', ')})`,
+        `프로젝트: ${slug} — phases(担当工程)가 언어마다 다르다 (${locales.map((l, i) => `${l}: ${phaseSets[i]}`).join(' / ')})`,
       );
     }
   }
@@ -189,6 +221,26 @@ async function loadContent() {
     if (dup.length > 0)
       errors.push(
         `대표 프로젝트: ${locale}에서 featuredOrder ${dup.join(', ')}이 겹친다`,
+      );
+    // 목록 순서: 대표 프로젝트는 featuredOrder, 그 밖의 프로젝트는 order를 쓴다.
+    for (const project of projects[locale]) {
+      if (project.featuredOrder !== undefined && project.order !== undefined) {
+        errors.push(
+          `프로젝트: ${locale}/${project.slug}.yaml — 대표 프로젝트(featuredOrder 있음)에는 order를 쓰지 않는다`,
+        );
+      }
+      if (project.featuredOrder === undefined && project.order === undefined) {
+        errors.push(
+          `프로젝트: ${locale}/${project.slug}.yaml — 대표가 아닌 프로젝트(featuredOrder 없음)에는 order가 필요하다`,
+        );
+      }
+    }
+    const dupOrder = duplicates(
+      projects[locale].flatMap((p) => (p.order === undefined ? [] : [p.order])),
+    );
+    if (dupOrder.length > 0)
+      errors.push(
+        `프로젝트: ${locale}에서 order ${dupOrder.join(', ')}이 겹친다`,
       );
   }
 
@@ -351,6 +403,18 @@ function getProfile(profiles: Map<Locale, Profile>, locale: Locale): Profile {
   return profile;
 }
 
+/** 목록 표시 순서로 나눈 프로젝트: 대표(featuredOrder 순) → 그 밖(order 순). */
+function sortProjects(projects: Project[]): ProjectsContent {
+  return {
+    featured: projects
+      .filter((p) => p.featuredOrder !== undefined)
+      .toSorted((a, b) => (a.featuredOrder ?? 0) - (b.featuredOrder ?? 0)),
+    others: projects
+      .filter((p) => p.featuredOrder === undefined)
+      .toSorted((a, b) => (a.order ?? 0) - (b.order ?? 0)),
+  };
+}
+
 export async function getHomeContent(locale: Locale): Promise<HomeContent> {
   const content = await loadContent();
   return {
@@ -358,10 +422,32 @@ export async function getHomeContent(locale: Locale): Promise<HomeContent> {
     skills: content.homeSkills
       .toSorted((a, b) => (a.homeOrder ?? 0) - (b.homeOrder ?? 0))
       .map((skill) => ({ ...skill, name: localize(skill.name, locale) })),
-    projects: content.projects[locale]
-      .filter((p) => p.featuredOrder !== undefined)
-      .toSorted((a, b) => (a.featuredOrder ?? 0) - (b.featuredOrder ?? 0)),
+    projects: sortProjects(content.projects[locale]).featured,
   };
+}
+
+export async function getProjectsContent(
+  locale: Locale,
+): Promise<ProjectsContent> {
+  const content = await loadContent();
+  return sortProjects(content.projects[locale]);
+}
+
+export async function getProjectPages(locale: Locale): Promise<ProjectPage[]> {
+  const content = await loadContent();
+  const { featured, others } = sortProjects(content.projects[locale]);
+  const ordered = [...featured, ...others];
+  const link = ({ slug, title }: Project): ProjectLink => ({ slug, title });
+  // 대표 프로젝트가 2개 이상이므로(loadContent 검사) ordered는 2건 이상이다.
+  return ordered.map((project, index) => {
+    const prev = ordered[(index - 1 + ordered.length) % ordered.length];
+    const next = ordered[(index + 1) % ordered.length];
+    return {
+      project,
+      prev: prev === next ? undefined : link(prev),
+      next: link(next),
+    };
+  });
 }
 
 export async function getAboutContent(locale: Locale): Promise<AboutContent> {

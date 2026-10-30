@@ -1,0 +1,19 @@
+---
+// 프로젝트 상세. 프로젝트마다 /ja/projects/<slug>/ 페이지를 만든다.
+import ProjectDetailPage from '../../../components/pages/ProjectDetailPage.astro';
+import { getProjectPages, type ProjectPage } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const pages = await getProjectPages('ja');
+  return pages.map((page) => ({
+    params: { slug: page.project.slug },
+    props: page,
+  }));
+}
+
+type Props = ProjectPage;
+
+const page = Astro.props;
+---
+
+<ProjectDetailPage locale="ja" {...page} />

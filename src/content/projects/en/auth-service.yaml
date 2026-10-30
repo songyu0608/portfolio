@@ -8,3 +8,25 @@ highlights:
   - Auth-related incidents per month X → X (placeholder)
 tech: [Go (placeholder), Redis (placeholder), Kubernetes (placeholder)]
 featuredOrder: 3
+phases: [requirements, design, operation]
+team: X people (placeholder)
+challenge:
+  body: Describes how authentication built into the monolith widened the impact of changes and incidents, along with its usage scale. (placeholder)
+  points:
+    - XX M requests per month, X connected services (placeholder)
+design:
+  body: Describes the structure of the extracted auth service and the migration plan that kept the service running. (placeholder)
+  points:
+    - Ran old and new authentication side by side and shifted traffic in stages (placeholder)
+    - Prepared rollback steps in advance and checked each stage (placeholder)
+result:
+  metrics:
+    - label: Downtime during migration (placeholder)
+      value: X min
+    - label: Auth-related incidents (placeholder)
+      value: X → X per month
+techDetails:
+  - label: Language
+    value: Go (placeholder)
+  - label: Data / platform
+    value: Redis (placeholder) / Kubernetes (placeholder)

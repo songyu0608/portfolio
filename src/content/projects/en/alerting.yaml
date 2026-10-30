@@ -1,0 +1,24 @@
+# Placeholder copy (docs/CONTENT.md). Non-featured projects set their list position with order.
+placeholder: true
+title: Reworking monitoring and alert settings (placeholder)
+summary: A one-sentence summary of reworking Company B's alert settings, which produced many false alarms. (placeholder)
+period: 20XX.XX – 20XX.XX
+role: Operations improvement (placeholder)
+highlights:
+  - False alerts per month XX → X (placeholder)
+tech: [Datadog (placeholder), AWS (placeholder)]
+order: 2
+phases: [design, operation]
+challenge:
+  body: Describes how frequent false alerts led to real incidents being missed. (placeholder)
+design:
+  body: Describes the new alert thresholds and routing policy, and the scope I owned. (placeholder)
+  points:
+    - Set a severity per service and split notification targets (placeholder)
+result:
+  metrics:
+    - label: False alerts (placeholder)
+      value: XX → X per month
+techDetails:
+  - label: Monitoring / platform
+    value: Datadog (placeholder) / AWS (placeholder)

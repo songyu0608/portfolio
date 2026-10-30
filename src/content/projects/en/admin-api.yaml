@@ -1,0 +1,20 @@
+# Placeholder copy (docs/CONTENT.md). Non-featured projects set their list position with order.
+placeholder: true
+title: API cleanup for the internal admin console (placeholder)
+summary: A one-sentence summary of organizing the APIs behind Company A's admin console and unifying their response format. (placeholder)
+period: 20XX.XX – 20XX.XX
+role: API development (placeholder)
+highlights:
+  - Unified the response format of XX admin APIs (placeholder)
+tech: [Java (placeholder), MySQL (placeholder)]
+order: 1
+phases: [development, testing]
+challenge:
+  body: Describes how each screen used a different response format, so every new or changed screen needed one-off work. (placeholder)
+design:
+  body: Describes the shared response and error formats and how existing APIs were replaced one by one. (placeholder)
+result:
+  body: Notes on how the effort to add screens and the number of support requests changed. (placeholder)
+techDetails:
+  - label: Language / DB
+    value: Java (placeholder) / MySQL (placeholder)

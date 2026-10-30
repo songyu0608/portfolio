@@ -1,0 +1,22 @@
+# 임시 문구(docs/CONTENT.md "임시 문구 규칙"). 대표가 아닌 프로젝트는 order로 목록 순서를 정한다.
+placeholder: true
+title:
+  - 社内向け管理画面の
+  - API 整備（仮）
+summary: A社の管理画面が使う API を整理し、応答形式をそろえた取り組みを一文で要約します。（仮）
+period: 20XX.XX – 20XX.XX
+role: API 開発（仮）
+highlights:
+  - 管理画面の API 〇〇 本の応答形式を統一（仮）
+tech: [Java（仮）, MySQL（仮）]
+order: 1
+phases: [development, testing]
+challenge:
+  body: 画面ごとに応答形式が異なり、画面の追加や修正のたびに個別対応が必要だった状況を説明します。（仮）
+design:
+  body: 共通の応答形式とエラー形式を決め、既存 API を順に置き換えた方法を書きます。（仮）
+result:
+  body: 画面追加にかかる工数や、問い合わせの変化を補足します。（仮）
+techDetails:
+  - label: 言語・DB
+    value: Java（仮） / MySQL（仮）

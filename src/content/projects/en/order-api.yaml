@@ -15,3 +15,29 @@ tech:
     Kafka (placeholder),
   ]
 featuredOrder: 1
+phases: [requirements, design, development, testing]
+team: X people (placeholder)
+challenge:
+  body: Describes how the order processing API slowed down at peak and caused failed orders through timeouts, along with the scale (request volume, data size). (placeholder)
+  points:
+    - XX req/s at peak, p99 latency XX ms (placeholder)
+    - Chained synchronous calls passed external service delays straight through (placeholder)
+design:
+  body: Describes the chosen architecture and why, the alternatives considered, and the scope I owned. (placeholder)
+  points:
+    - Kept order confirmation synchronous and moved inventory and notifications to an asynchronous message queue (placeholder)
+    - 'Alternative: caching only — rejected because the write load would remain (placeholder)'
+result:
+  metrics:
+    - label: p99 latency (placeholder)
+      value: XX ms → XX ms
+    - label: Peak error rate (placeholder)
+      value: XX% lower
+  body: Notes on how the numbers were measured and what changed in operations. (placeholder)
+techDetails:
+  - label: Language / framework
+    value: Java (placeholder) / Spring Boot (placeholder)
+  - label: Data
+    value: PostgreSQL (placeholder) / Kafka (placeholder)
+  - label: Why these
+    value: Chosen for the team's existing experience and easy event reprocessing (placeholder)
