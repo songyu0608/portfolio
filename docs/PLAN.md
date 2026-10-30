@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-30 (T06 Projects 지시서 작성)
+마지막 갱신: 2026-10-30 (T06 Projects 구현)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
 | 현재 단계 | 단계 4 — 페이지 구현 |
-| 진행 중인 작업 | T06 Projects 지시서 PR (`docs/tasks/T06-projects.md`) |
-| 다음 작업 | 지시서 merge 후 T06 구현 (담당 미정, 사용자가 정함) |
+| 진행 중인 작업 | T06 Projects 구현 PR (교차 리뷰 대기) |
+| 다음 작업 | T06 merge 후 T07 Contact(정적 부분) 지시서 |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -101,7 +101,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | claude | done | `docs/tasks/T03-common-layout.md` — 지시서 [PR #10](https://github.com/songyu0608/portfolio/pull/10), 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) |
 | T04 | Home (한 줄 소개·핵심 기술·대표 프로젝트, 임시 문구) | 4 | T03 | claude | done | `docs/tasks/T04-home.md` — 지시서 [PR #12](https://github.com/songyu0608/portfolio/pull/12), 구현 [PR #13](https://github.com/songyu0608/portfolio/pull/13) |
 | T05 | About/경력 (경력 타임라인·기술 스택·자격증·이력서 PDF, 임시 문구) | 4 | T04 | claude | done | `docs/tasks/T05-about.md` — 지시서 [PR #15](https://github.com/songyu0608/portfolio/pull/15), 구현 [PR #16](https://github.com/songyu0608/portfolio/pull/16) |
-| T06 | Projects (목록·상세·担当工程, 임시 문구) | 4 | T05 | - | todo | `docs/tasks/T06-projects.md` |
+| T06 | Projects (목록·상세·担当工程, 임시 문구) | 4 | T05 | claude | review | `docs/tasks/T06-projects.md` — 지시서 [PR #18](https://github.com/songyu0608/portfolio/pull/18), 구현 PR(이 PR) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T07 Contact(정적 부분), 원고 반영(기술 로고 포함).
 
@@ -169,3 +169,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-30 | T05 지시서 PR #15 merge. T05 구현: 주력 기술 범례 UI 문구 키를 `home.skills.legend`에서 `skill.legend`로 옮겨 Home·About이 공유. About 섹션 제목·학습 중 문형·기술 스택 영어 분류 이름은 지시서 기본안으로 구현(사용자 확인 대기) | T05 구현 (`docs/DESIGN.md` §6, `docs/ARCHITECTURE.md` §2) |
 | 2026-10-30 | T05 PR #16 merge 완료 반영(Codex 교차 리뷰 수정 필요·개선 제안 없음). About 섹션 제목·학습 중 문형·About 설명·기술 스택 영어 분류 이름은 지시서 기본안으로 merge했고 사용자 확인 전이다. 바꿀 때는 `src/i18n/ui.ts`, `src/content/skills.yaml`만 고친다 | 지시서 없음 (문서만 변경) |
 | 2026-10-30 | T06 Projects 지시서 작성. 担当工程은 카드와 상세 모두에 표시(다섯 공정 고정 순서, 맡은 공정은 채움·체크). 목록은 代表プロジェクト + その他のプロジェクト, 카드 전체가 상세 링크(애니메이션은 단계 5). 상세에 「チーム」 칸·「代表プロジェクト」 표시·이전·다음 링크 추가 | 사용자 결정(시안 확인), T06 지시서 |
+| 2026-10-30 | T06 구현: 担当工程 id·순서의 원본을 `src/content.config.ts`의 `PHASES`로, 카드 전체 링크는 제목 링크 `::after` 확장 방식, 카드 그리드(`.project-grid`)를 `global.css`로 이동, 「代表プロジェクト」 UI 문구 키를 `project.featured`로 공용화. UI 문구는 지시서 기본안(사용자 확인 전) | T06 구현 (`docs/DESIGN.md` §7, `docs/ARCHITECTURE.md` §2) |
