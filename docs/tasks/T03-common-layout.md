@@ -97,7 +97,7 @@
 - [x] `auto-phrase` 확인 결과(브라우저별 지원 여부, 320px·1280px 표시, 확인 못한 환경)가 PR과 `docs/DESIGN.md`에 있다.
 - [x] PR 본문에 최신 커밋 기준 캡처가 있다: ja 라이트 320px, ja 다크 1280px, en 라이트 1280px, en 다크 320px 이상.
 - [x] `docs/DESIGN.md`(레이아웃·전환 규칙), `docs/ARCHITECTURE.md` §2(디렉터리, 페이지 파일 방식, 문구 위치 규칙)가 갱신되어 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
 - [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
