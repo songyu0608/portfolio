@@ -108,7 +108,7 @@
 
 ### 내비게이션
 
-- 항목: 経歴 / プロジェクト / 連絡先 (영어 About / Projects / Contact). Home은 사이트 이름 링크다. 문구는 `src/i18n/ui.ts`의 `pages.*.name`이며 페이지 제목(h1, `<title>`)과 같은 값을 쓴다.
+- 항목: 経歴 / プロジェクト / 連絡先 (영어 About / Projects / Contact, 2026-10-30 사용자 확인). Home은 사이트 이름 링크다. 문구는 `src/i18n/ui.ts`의 `pages.*.name`이며 페이지 제목(h1, `<title>`)과 같은 값을 쓴다.
 - 기본 링크는 `text-muted` 색, 밑줄 없음. 마우스를 올리면 `text` 색과 1px 밑줄.
 - 현재 위치는 색 외에 굵기(700)와 2px `accent` 밑줄로 구분한다. 그 페이지 자체면 `aria-current="page"`, 하위 경로(예: 단계 4의 프로젝트 상세 `/ja/projects/<slug>/`)면 `aria-current="true"`를 붙이고 겉모습은 같다. 판정은 경로 접두어 비교다.
 
