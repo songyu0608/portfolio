@@ -1,0 +1,26 @@
+# 임시 문구(docs/CONTENT.md "임시 문구 규칙"). 대표가 아닌 프로젝트는 order로 목록 순서를 정한다.
+placeholder: true
+title:
+  - 監視・アラート設定の
+  - 見直し（仮）
+summary: B社で誤検知の多かったアラート設定を見直した取り組みを一文で要約します。（仮）
+period: 20XX.XX – 20XX.XX
+role: 運用改善（仮）
+highlights:
+  - 誤検知アラートを月 〇〇 件 → 〇 件（仮）
+tech: [Datadog（仮）, AWS（仮）]
+order: 2
+phases: [design, operation]
+challenge:
+  body: 誤検知の多いアラートが本当の障害の見落としにつながっていた状況を説明します。（仮）
+design:
+  body: アラートの基準と通知先を見直した方針と、自分が担った範囲を書きます。（仮）
+  points:
+    - サービスごとに重要度を決め、通知先を分ける（仮）
+result:
+  metrics:
+    - label: 誤検知アラート（仮）
+      value: 月 〇〇 件 → 〇 件
+techDetails:
+  - label: 監視・基盤
+    value: Datadog（仮） / AWS（仮）

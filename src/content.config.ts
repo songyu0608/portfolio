@@ -76,6 +76,30 @@ const skills = defineCollection({
   }),
 });
 
+/**
+ * 担当工程 id. 화면 이름은 UI 문구(src/i18n/ui.ts의 project.phase.*)이고,
+ * 표시 순서는 콘텐츠 파일의 순서와 무관하게 이 배열 순서로 고정한다(docs/tasks/T06-projects.md).
+ */
+export const PHASES = [
+  'requirements',
+  'design',
+  'development',
+  'testing',
+  'operation',
+] as const;
+
+/** 상세의 課題·設計 절: 본문 문단 + 요점 목록(선택). */
+const detailText = z.strictObject({
+  body: z.string().min(1),
+  points: z.array(z.string().min(1)).min(1).max(4).optional(),
+});
+
+/** 라벨과 값 한 쌍. 상세의 結果 지표, 技術 항목에 쓴다. */
+const labeledValue = z.strictObject({
+  label: z.string().min(1),
+  value: z.string().min(1),
+});
+
 // 언어별: src/content/projects/<ja|en>/<slug>.yaml. 같은 slug가 두 언어에 모두 있어야 한다.
 const projects = defineCollection({
   loader: glob({ pattern: '*/*.yaml', base: './src/content/projects' }),
@@ -88,8 +112,35 @@ const projects = defineCollection({
     role: z.string().min(1),
     highlights: z.array(z.string().min(1)).min(1).max(2),
     tech: z.array(z.string().min(1)).min(1),
-    /** 있으면 Home 대표 프로젝트에 이 순서로 표시한다. */
+    /** 있으면 Home 대표 프로젝트에 이 순서로 표시한다. Projects 목록에서도 먼저 나온다. */
     featuredOrder: z.number().int().positive().optional(),
+    /** 대표가 아닌 프로젝트의 목록 순서. featuredOrder가 없는 항목에만 쓴다(src/lib/content.ts 검사). */
+    order: z.number().int().positive().optional(),
+    /** 担当工程. 같은 값은 한 번만 쓴다. */
+    phases: z
+      .array(z.enum(PHASES))
+      .min(1)
+      .max(PHASES.length)
+      .refine((phases) => new Set(phases).size === phases.length, {
+        message: 'phases(担当工程)에 같은 값이 두 번 이상 나온다',
+      }),
+    /** 상세 개요의 「チーム」 값. 없으면 그 칸을 출력하지 않는다. */
+    team: z.string().min(1).optional(),
+    /** 상세 課題: 어떤 시스템의 어떤 문제였나, 규모 */
+    challenge: detailText,
+    /** 상세 設計: 선택한 구조와 이유, 대안, 본인 역할 범위 */
+    design: detailText,
+    /** 상세 結果: 지표(측정 조건 포함)와 보충 문단. 둘 중 하나 이상 */
+    result: z
+      .strictObject({
+        metrics: z.array(labeledValue).min(1).max(4).optional(),
+        body: z.string().min(1).optional(),
+      })
+      .refine((result) => result.metrics || result.body, {
+        message: 'result에는 metrics와 body 중 하나 이상이 필요하다',
+      }),
+    /** 상세 技術: 분류별 기술과 선정 이유 */
+    techDetails: z.array(labeledValue).min(1).max(5),
   }),
 });
 

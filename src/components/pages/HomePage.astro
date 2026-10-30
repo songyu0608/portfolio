@@ -57,7 +57,7 @@ const contactHref = localizePath(locale, 'contact');
     </section>
 
     <section class="home-section" aria-labelledby="home-projects-title">
-      <h2 id="home-projects-title">{text.projects.title}</h2>
+      <h2 id="home-projects-title">{ui[locale].project.featured}</h2>
       <ul class="project-grid home-section__body" data-count={projects.length}>
         {projects.map((project) => (
           <li>
@@ -114,19 +114,6 @@ const contactHref = localizePath(locale, 'contact');
     margin-top: var(--space-6);
   }
 
-  .project-grid {
-    display: grid;
-    gap: var(--space-6);
-    margin-bottom: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  /* 카드 높이를 같은 줄에서 맞춘다. */
-  .project-grid > li {
-    display: grid;
-  }
-
   .home-section__more {
     display: inline-flex;
     min-height: 44px;
@@ -139,16 +126,6 @@ const contactHref = localizePath(locale, 'contact');
   @media (min-width: 40rem) {
     .hero {
       padding-top: var(--space-16);
-    }
-
-    .project-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 64rem) {
-    .project-grid[data-count='3'] {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 </style>

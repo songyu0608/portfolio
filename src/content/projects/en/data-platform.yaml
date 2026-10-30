@@ -7,3 +7,22 @@ highlights:
   - Daily batch time reduced by XX% (placeholder)
 tech: [Python (placeholder), AWS (placeholder), Terraform (placeholder)]
 featuredOrder: 2
+phases: [design, development, testing, operation]
+challenge:
+  body: Describes how per-team data integrations had multiplied and made incidents and changes slow, along with the number of integrations and data volume. (placeholder)
+  points:
+    - XX integration jobs, XX GB of data per day (placeholder)
+design:
+  body: Describes the shared platform's structure, how existing integrations were moved over in stages, and the scope I owned. (placeholder)
+  points:
+    - Unified integrations under shared job definitions and monitoring (placeholder)
+result:
+  metrics:
+    - label: Daily batch time (placeholder)
+      value: XX% shorter
+  body: Notes on what changed in operations, such as incident handling and support requests. (placeholder)
+techDetails:
+  - label: Language
+    value: Python (placeholder)
+  - label: Infrastructure
+    value: AWS (placeholder) / Terraform (placeholder)

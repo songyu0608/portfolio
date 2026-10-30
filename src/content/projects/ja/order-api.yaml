@@ -11,3 +11,29 @@ highlights:
   - ピーク時のエラー率を 〇〇% 削減（仮）
 tech: [Java（仮）, Spring Boot（仮）, PostgreSQL（仮）, Kafka（仮）]
 featuredOrder: 1
+phases: [requirements, design, development, testing]
+team: 〇 名（仮）
+challenge:
+  body: ピーク時に注文処理 API の応答が遅れ、タイムアウトによる注文失敗が起きていた状況を、規模（リクエスト数・データ量）とあわせて説明します。（仮）
+  points:
+    - ピーク時 〇〇 req/s、p99 レイテンシ XX ms（仮）
+    - 同期呼び出しの連鎖で、外部サービスの遅延がそのまま波及（仮）
+design:
+  body: 選んだ構成とその理由、検討した代替案、自分が担った範囲を書きます。（仮）
+  points:
+    - 注文確定を同期、在庫・通知をメッセージキュー経由の非同期に分離（仮）
+    - 代替案：キャッシュ追加のみ → 書き込み負荷が残るため見送り（仮）
+result:
+  metrics:
+    - label: p99 レイテンシ（仮）
+      value: XX ms → XX ms
+    - label: ピーク時エラー率（仮）
+      value: 〇〇% 削減
+  body: 数値の測定条件や、運用面で変わったことを補足します。（仮）
+techDetails:
+  - label: 言語・FW
+    value: Java（仮） / Spring Boot（仮）
+  - label: データ
+    value: PostgreSQL（仮） / Kafka（仮）
+  - label: 選定理由
+    value: 既存チームの習熟度と、イベント再処理のしやすさを重視（仮）

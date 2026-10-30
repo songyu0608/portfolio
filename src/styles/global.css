@@ -138,6 +138,32 @@ a {
   box-shadow: var(--shadow-card);
 }
 
+/* 프로젝트 카드 목록(Home 대표 프로젝트, Projects 목록). 640px 이상 2열, 1024px 이상은 카드가 3개일 때만 3열. */
+.project-grid {
+  display: grid;
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 카드 높이를 같은 줄에서 맞춘다. */
+.project-grid > li {
+  display: grid;
+}
+
+@media (min-width: 40rem) {
+  .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .project-grid[data-count='3'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

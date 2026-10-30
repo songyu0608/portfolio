@@ -10,3 +10,22 @@ highlights:
   - 日次バッチの処理時間を 〇〇% 短縮（仮）
 tech: [Python（仮）, AWS（仮）, Terraform（仮）]
 featuredOrder: 2
+phases: [design, development, testing, operation]
+challenge:
+  body: 部署ごとに個別に作られたデータ連携が増え、障害対応や変更に時間がかかっていた状況を、連携数やデータ量とあわせて説明します。（仮）
+  points:
+    - 連携ジョブ 〇〇 本、日次データ 〇〇 GB（仮）
+design:
+  body: 共通基盤の構成と、既存の連携を段階的に移した手順、自分が担った範囲を書きます。（仮）
+  points:
+    - 連携処理を共通のジョブ定義と監視にそろえる（仮）
+result:
+  metrics:
+    - label: 日次バッチの処理時間（仮）
+      value: 〇〇% 短縮
+  body: 運用で変わったこと（障害対応の手順、問い合わせ件数など）を補足します。（仮）
+techDetails:
+  - label: 言語
+    value: Python（仮）
+  - label: インフラ
+    value: AWS（仮） / Terraform（仮）

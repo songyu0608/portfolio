@@ -26,7 +26,8 @@ const ja = {
     },
     projects: {
       name: 'プロジェクト',
-      description: '担当したプロジェクトを紹介するページです。現在準備中です。',
+      description:
+        '担当したプロジェクトの課題・設計・結果と、担当工程をまとめています。',
     },
     contact: {
       name: '連絡先',
@@ -43,9 +44,13 @@ const ja = {
       title: '主な技術',
     },
     projects: {
-      title: '代表プロジェクト',
       all: 'すべてのプロジェクト',
     },
+  },
+  projects: {
+    intro:
+      '課題・設計・結果を、担当した工程とあわせてまとめています。カードを選ぶと詳細を表示します。',
+    others: 'その他のプロジェクト',
   },
   about: {
     career: {
@@ -68,10 +73,40 @@ const ja = {
     legend: '塗りつぶしたタグは主軸の技術です。',
   },
   project: {
+    // 대표 프로젝트. Home·Projects의 섹션 제목과 상세의 표시가 함께 쓴다.
+    featured: '代表プロジェクト',
     period: '期間',
     role: '役割',
     highlights: '成果',
     tech: '技術',
+    phases: '担当工程',
+    team: 'チーム',
+    // 카드 아래 끝의 시각적 안내. 제목 링크와 같은 곳이므로 스크린 리더에는 읽히지 않는다.
+    more: '詳細を見る',
+    // 担当工程 이름. 표시 순서는 src/content.config.ts의 PHASES.
+    phase: {
+      requirements: '要件定義',
+      design: '設計',
+      development: '開発',
+      testing: 'テスト',
+      operation: '運用',
+    },
+    // 担当工程 칸마다 붙는 시각적으로 숨긴 상태 텍스트. 색·모양만으로 의미를 전하지 않기 위함.
+    phaseState: {
+      on: '（担当）',
+      off: '（担当外）',
+    },
+    detail: {
+      back: 'プロジェクト一覧',
+      // 상세 본문 4절 제목. 「設計」는 担当工程 이름과 같은 낱말이지만 따로 바꿀 수 있게 다른 키로 둔다.
+      challenge: '課題',
+      design: '設計',
+      result: '結果',
+      tech: '技術',
+      pager: 'ほかのプロジェクト',
+      prev: '前のプロジェクト',
+      next: '次のプロジェクト',
+    },
   },
 };
 
@@ -98,7 +133,8 @@ const en: UiText = {
     },
     projects: {
       name: 'Projects',
-      description: 'Projects I have worked on. Coming soon.',
+      description:
+        'Projects I have worked on: the challenge, design, results, and the phases I handled.',
     },
     contact: {
       name: 'Contact',
@@ -115,9 +151,13 @@ const en: UiText = {
       title: 'Core skills',
     },
     projects: {
-      title: 'Featured projects',
       all: 'All projects',
     },
+  },
+  projects: {
+    intro:
+      'Each project covers the challenge, design, and results, along with the phases I handled. Select a card for details.',
+    others: 'Other projects',
   },
   about: {
     career: {
@@ -137,10 +177,35 @@ const en: UiText = {
     legend: 'Filled tags mark core technologies.',
   },
   project: {
+    featured: 'Featured projects',
     period: 'Period',
     role: 'Role',
     highlights: 'Results',
     tech: 'Tech',
+    phases: 'Phases',
+    team: 'Team',
+    more: 'View details',
+    phase: {
+      requirements: 'Requirements',
+      design: 'Design',
+      development: 'Development',
+      testing: 'Testing',
+      operation: 'Operations',
+    },
+    phaseState: {
+      on: ' (handled)',
+      off: ' (not handled)',
+    },
+    detail: {
+      back: 'All projects',
+      challenge: 'Challenge',
+      design: 'Design',
+      result: 'Results',
+      tech: 'Tech',
+      pager: 'More projects',
+      prev: 'Previous project',
+      next: 'Next project',
+    },
   },
 };
 

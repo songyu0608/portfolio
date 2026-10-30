@@ -1,0 +1,431 @@
+---
+// 프로젝트 상세: 목록으로 돌아가는 링크 → 머리 → 개요 상자 → 課題・設計・結果・技術 → 이전·다음 프로젝트.
+// 배치 규칙은 docs/DESIGN.md §7. 콘텐츠 값은 src/content/(src/lib/content.ts의 getProjectPages),
+// UI 문구는 src/i18n/ui.ts에서 가져온다.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { localizePath, localizeProjectPath } from '../../i18n/paths';
+import { ui, type Locale } from '../../i18n/ui';
+import type { ProjectPage } from '../../lib/content';
+import PhaseList from '../PhaseList.astro';
+import Phrases from '../Phrases.astro';
+import SkillTag from '../SkillTag.astro';
+
+type Props = ProjectPage & { locale: Locale };
+
+const { locale, project, prev, next } = Astro.props;
+const text = ui[locale].project;
+const detail = text.detail;
+// <title>은 문절 배열이면 이어 붙인 문자열을 쓴다.
+const title =
+  typeof project.title === 'string' ? project.title : project.title.join('');
+
+const sections = [
+  { id: 'challenge', title: detail.challenge },
+  { id: 'design', title: detail.design },
+  { id: 'result', title: detail.result },
+  { id: 'tech', title: detail.tech },
+] as const;
+const pager = [
+  { kind: 'prev', label: detail.prev, project: prev },
+  { kind: 'next', label: detail.next, project: next },
+] as const;
+---
+
+<BaseLayout locale={locale} title={title} description={project.summary}>
+  <div class="project-detail container">
+    <a class="project-detail__back" href={localizePath(locale, 'projects')}>
+      <span aria-hidden="true">←</span>
+      {detail.back}
+    </a>
+
+    <header class="project-detail__head">
+      {project.featuredOrder !== undefined && (
+        <p class="project-detail__badge">{text.featured}</p>
+      )}
+      <h1>
+        <Phrases text={project.title} />
+      </h1>
+      <p class="project-detail__summary">{project.summary}</p>
+    </header>
+
+    <dl class="project-detail__facts">
+      <div>
+        <dt>{text.period}</dt>
+        <dd class="project-detail__period">{project.period}</dd>
+      </div>
+      <div>
+        <dt>{text.role}</dt>
+        <dd>{project.role}</dd>
+      </div>
+      {project.team && (
+        <div>
+          <dt>{text.team}</dt>
+          <dd>{project.team}</dd>
+        </div>
+      )}
+      <div class="project-detail__fact--wide">
+        <dt>{text.phases}</dt>
+        <dd>
+          <PhaseList locale={locale} phases={project.phases} size="detail" />
+        </dd>
+      </div>
+      <div class="project-detail__fact--wide">
+        <dt>{text.tech}</dt>
+        <dd>
+          <ul class="tag-list">
+            {project.tech.map((name) => (
+              <li>
+                <SkillTag locale={locale} name={name} />
+              </li>
+            ))}
+          </ul>
+        </dd>
+      </div>
+    </dl>
+
+    <div class="project-detail__body">
+      {sections.map((section, index) => (
+        <section
+          class="detail-section"
+          aria-labelledby={`project-${section.id}-title`}
+        >
+          <span class="detail-section__number" aria-hidden="true">
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <div class="detail-section__content">
+            <h2 id={`project-${section.id}-title`}>{section.title}</h2>
+            {(section.id === 'challenge' || section.id === 'design') && (
+              <>
+                <p>{project[section.id].body}</p>
+                {project[section.id].points && (
+                  <ul class="detail-section__points">
+                    {project[section.id].points?.map((point) => (
+                      <li>{point}</li>
+                    ))}
+                  </ul>
+                )}
+              </>
+            )}
+            {section.id === 'result' && (
+              <>
+                {project.result.metrics && (
+                  <ul class="metric-list">
+                    {project.result.metrics.map((metric) => (
+                      <li class="metric">
+                        <span class="metric__label">{metric.label}</span>
+                        <span class="metric__value">{metric.value}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {project.result.body && <p>{project.result.body}</p>}
+              </>
+            )}
+            {section.id === 'tech' && (
+              <dl class="tech-details">
+                {project.techDetails.map((item) => (
+                  <div>
+                    <dt>{item.label}</dt>
+                    <dd>{item.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <nav class="project-pager" aria-label={detail.pager}>
+      {pager.map(
+        (item) =>
+          item.project && (
+            <a
+              class:list={[
+                'project-pager__link',
+                `project-pager__link--${item.kind}`,
+              ]}
+              href={localizeProjectPath(locale, item.project.slug)}
+            >
+              <span class="project-pager__label">
+                {item.kind === 'prev' && <span aria-hidden="true">← </span>}
+                {item.label}
+                {item.kind === 'next' && <span aria-hidden="true"> →</span>}
+              </span>
+              <span class="project-pager__title">
+                <Phrases text={item.project.title} />
+              </span>
+            </a>
+          ),
+      )}
+    </nav>
+  </div>
+</BaseLayout>
+
+<style>
+  .project-detail {
+    padding-top: var(--space-6);
+  }
+
+  .project-detail__back {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-small);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .project-detail__back:hover {
+    text-decoration: underline;
+  }
+
+  .project-detail__head {
+    display: flex;
+    max-width: 46em;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  .project-detail__badge {
+    align-self: flex-start;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-pill);
+    color: var(--color-accent);
+    font-size: var(--font-size-label);
+    font-weight: 700;
+    line-height: 1.8;
+  }
+
+  .project-detail__summary {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+  }
+
+  .project-detail__facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: var(--space-8) 0 0;
+    padding: var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    font-size: var(--font-size-small);
+  }
+
+  /* 640px 미만: 期間은 한 줄 전체, 役割·チーム은 2칸. */
+  .project-detail__facts > div:first-child,
+  .project-detail__fact--wide {
+    grid-column: 1 / -1;
+  }
+
+  .project-detail__facts dt {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-label);
+    font-weight: 700;
+  }
+
+  .project-detail__facts dd {
+    margin: var(--space-1) 0 0;
+  }
+
+  .project-detail__fact--wide dd {
+    margin-top: var(--space-2);
+  }
+
+  .project-detail__period {
+    font-family: var(--font-mono);
+  }
+
+  .project-detail__body {
+    display: flex;
+    max-width: 46em;
+    flex-direction: column;
+    gap: var(--space-12);
+    margin-top: var(--space-12);
+  }
+
+  /* IBM Plex Mono는 400만 불러오므로(글꼴 CSS를 늘리지 않음) 굵게 하지 않는다. */
+  .detail-section__number {
+    display: block;
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-small);
+  }
+
+  .detail-section__content h2 {
+    margin-bottom: var(--space-4);
+  }
+
+  .detail-section__points {
+    margin: var(--space-4) 0 0;
+    padding-left: 1.25em;
+  }
+
+  .metric-list {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .metric-list + p {
+    margin-top: var(--space-4);
+  }
+
+  .metric {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+
+  .metric__label {
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  /* 값은 본문 글꼴 700. 모노스페이스는 400만 있어 굵은 숫자가 합성 글꼴이 되므로 쓰지 않고, 숫자 폭만 맞춘다. */
+  .metric__value {
+    font-size: 1.375rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+  }
+
+  .tech-details {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+  }
+
+  .tech-details dt {
+    color: var(--color-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  .tech-details dd {
+    margin: 0;
+  }
+
+  .project-pager {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-16);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .project-pager__link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-4) var(--space-6);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: border-color var(--duration-base) var(--ease-standard);
+  }
+
+  .project-pager__link:hover {
+    border-color: var(--color-accent);
+  }
+
+  .project-pager__link--next {
+    text-align: right;
+  }
+
+  .project-pager__label {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-label);
+    font-weight: 700;
+  }
+
+  .project-pager__title {
+    font-weight: 700;
+  }
+
+  @media (min-width: 40rem) {
+    .project-detail {
+      padding-top: var(--space-8);
+    }
+
+    .project-detail__summary {
+      font-size: var(--font-size-h3);
+    }
+
+    .project-detail__facts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: var(--space-8);
+    }
+
+    .project-detail__facts > div:first-child {
+      grid-column: auto;
+    }
+
+    .project-detail__fact--wide {
+      grid-column: 1 / -1;
+    }
+
+    .detail-section {
+      display: grid;
+      grid-template-columns: 4.5rem minmax(0, 1fr);
+      column-gap: var(--space-4);
+    }
+
+    .detail-section__number {
+      /* h2 첫 줄과 높이를 맞춘다. */
+      padding-top: 0.5rem;
+    }
+
+    .metric-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+
+    .metric {
+      padding: var(--space-6);
+    }
+
+    .metric__value {
+      font-size: 1.625rem;
+    }
+
+    .tech-details > div {
+      display: grid;
+      grid-template-columns: 9rem minmax(0, 1fr);
+      column-gap: var(--space-4);
+    }
+
+    .tech-details dt {
+      padding-top: 0.125rem;
+    }
+
+    .project-pager {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-6);
+    }
+
+    .project-pager__link--next {
+      grid-column: 2;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-pager__link {
+      transition: none;
+    }
+  }
+</style>

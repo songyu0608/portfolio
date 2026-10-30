@@ -16,6 +16,11 @@ export function localizePath(locale: Locale, page: PageKey): string {
   return getRelativeLocaleUrl(locale, pagePaths[page]);
 }
 
+/** 프로젝트 상세의 언어별 URL. 예: ('en', 'order-api') → '/en/projects/order-api/' */
+export function localizeProjectPath(locale: Locale, slug: string): string {
+  return getRelativeLocaleUrl(locale, `${pagePaths.projects}/${slug}`);
+}
+
 /**
  * 현재 경로를 다른 언어의 같은 페이지 경로로 바꾼다. 언어 전환 링크는 이 함수만 쓴다.
  * 예: ('/ja/about/', 'en') → '/en/about/'. 언어 접두어가 없는 경로는 그 언어의 Home으로 보낸다.
