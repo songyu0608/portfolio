@@ -2,16 +2,16 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-30 (T03 공통 레이아웃 구현 PR, 교차 리뷰 대기)
+마지막 갱신: 2026-10-30 (T03 완료 반영, T04 Home 지시서 작성)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 3 — 공통 레이아웃 (리뷰 중) |
-| 진행 중인 작업 | T03 공통 레이아웃 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) (claude 구현, ChatGPT 교차 리뷰·사용자 확인 대기) |
-| 다음 작업 | T03 merge 후 단계 4 페이지 지시서(T04 Home~) 작성 |
-| 블로커 | 없음. 단계 4 전에 `docs/CONTENT.md`의 콘텐츠 원고가 필요 |
+| 현재 단계 | 단계 4 — 페이지 구현 |
+| 진행 중인 작업 | T04 Home 지시서 작성 (구현 담당 미배정) |
+| 다음 작업 | T04 Home 구현 (임시 문구). 이어서 T05 About~ 지시서 |
+| 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
 
@@ -78,8 +78,8 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 0 | 요구사항·콘텐츠 정리, 저장소 뼈대(AGENTS.md, CLAUDE.md, docs/, 작업 지시서 템플릿) | done |
 | 1 | 프로젝트 초기화: Astro, TypeScript, lint/format, CI | done |
 | 2 | 디자인 시스템: 색, 타이포그래피, 간격, 다크 모드, 인터랙션 세부 확정 | done |
-| 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | in-progress |
-| 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | todo |
+| 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | done |
+| 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | in-progress |
 | 5 | 인터랙션 구현: 컨셉 1~5 | todo |
 | 6 | 품질: SEO, 접근성, 성능 최적화 | todo |
 | 7 | 테스트: E2E(Playwright), Lighthouse CI | todo |
@@ -97,14 +97,15 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T01 | 프로젝트 초기화 | 1 | T00 | codex | done | `docs/tasks/T01-init.md` — [PR #4](https://github.com/songyu0608/portfolio/pull/4) |
 | T01-followup | 교차 리뷰 후속 정리 | 1 | T01 | codex | done | `docs/tasks/T01-followup.md` — [PR #5](https://github.com/songyu0608/portfolio/pull/5) |
 | T02 | 디자인 시스템 | 2 | T01-followup | codex | done | `docs/tasks/T02-design-system.md` — [PR #9](https://github.com/songyu0608/portfolio/pull/9) |
-| T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | claude | review | `docs/tasks/T03-common-layout.md` — 지시서 [PR #10](https://github.com/songyu0608/portfolio/pull/10), 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) |
+| T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | claude | done | `docs/tasks/T03-common-layout.md` — 지시서 [PR #10](https://github.com/songyu0608/portfolio/pull/10), 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) |
+| T04 | Home (한 줄 소개·핵심 기술·대표 프로젝트, 임시 문구) | 4 | T03 | - | todo | `docs/tasks/T04-home.md` |
 
-단계 4 이후 지시서는 앞 단계가 끝날 때 작성한다. 예정: T04~ 페이지별 구현.
+이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T05 About/경력, T06 Projects(목록·상세), T07 Contact(정적 부분).
 
 ## 7. 미결 사항
 
 - [ ] 커스텀 도메인 구입 여부와 도메인 이름 (단계 8 전, 메일 발송 설정에 필요할 가능성 높음)
-- [ ] 콘텐츠 원고 (`docs/CONTENT.md` 체크리스트, 단계 4 전)
+- [ ] 콘텐츠 원고 (`docs/CONTENT.md` 체크리스트). 단계 4는 임시 문구로 진행하고, 단계 8 배포 전에 교체한다
 - [x] 패키지 매니저 확정: pnpm 11.25.0 (T01)
 
 ## 8. 구현 시 공식 문서로 재확인할 항목
@@ -133,6 +134,10 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 - [ ] 단계 7 또는 Firefox·WebKit을 쓸 수 있는 환경: `auto-phrase` 미지원 브라우저의 실제 줄바꿈과 T03 헤더 배치(320px·1280px)를 확인한다.
 - [x] `@astrojs/react` 통합 때문에 어느 페이지도 참조하지 않는 React 클라이언트 번들(`dist/_astro/client.*.js`, 220,749B)이 T01부터 빌드 결과에 생성된다. 페이지가 받는 JS에는 영향이 없다. → 2026-10-30 사용자 결정: 단계 5 인터랙션(A2)에서 React를 쓰므로 통합을 그대로 둔다. 단계 6 성능 점검 때 번들이 페이지에서 참조되지 않는지만 다시 확인한다.
 
+### T04 지시서 작성 시 추가한 항목
+
+- [ ] 단계 8 배포 전: 임시 문구(`placeholder: true`)가 0건인지 빌드 로그로 확인한다. 규칙은 `docs/CONTENT.md` "임시 문구 규칙".
+
 ## 9. 결정 변경 기록
 
 | 날짜 | 변경 | 비고 |
@@ -148,3 +153,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-30 | 언어별 페이지 파일 + 공유 화면 컴포넌트 방식, UI 문구 위치(`src/i18n/ui.ts`, 일본어 기준 타입), 테마 저장 키 `theme` 확정 | T03 (`docs/ARCHITECTURE.md` §2, A8) |
 | 2026-10-30 | `@astrojs/react` 통합 유지(단계 5에서 사용). T03 완료 조건의 "빌드 결과에 React 런타임 미포함"은 참조되지 않는 번들이 남는 상태로 사용자가 수용 | T03 |
 | 2026-10-30 | 내비게이션 일본어 문구 「経歴」「プロジェクト」「連絡先」 확정. 바꿀 때는 `src/i18n/ui.ts`의 `pages.*.name`만 고친다(URL은 그대로) | T03 사용자 확인 |
+| 2026-10-30 | T03 PR #11 merge 완료 반영. 단계 4는 원고 수집 전에 임시 문구(placeholder)로 진행하고, 원고는 콘텐츠 파일만 바꿔 반영 | 사용자 결정, T04 지시서 |
