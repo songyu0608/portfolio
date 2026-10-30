@@ -18,7 +18,7 @@ Cloudflare Workers (정적 자산)
 - 기본은 완전 정적. 서버 실행이 필요한 경로만 Workers 함수로 처리한다.
 - 단계 7까지는 Workers 함수가 없어도 사이트가 완성되어야 한다.
 
-## 2. 디렉터리 구조 (T04 기준)
+## 2. 디렉터리 구조 (T05 기준)
 
 ```text
 .
@@ -30,6 +30,8 @@ Cloudflare Workers (정적 자산)
 │  ├─ content/                   ← 페이지 본문 콘텐츠(아래 "콘텐츠 구조")
 │  │  ├─ profile/<ja|en>.yaml
 │  │  ├─ skills.yaml
+│  │  ├─ certifications.yaml
+│  │  ├─ career/<ja|en>/<slug>.yaml
 │  │  └─ projects/<ja|en>/<slug>.yaml
 │  ├─ lib/content.ts             ← 콘텐츠 조회, 여러 항목에 걸친 규칙 검사, 임시 항목 수 경고
 │  ├─ i18n/
@@ -39,6 +41,7 @@ Cloudflare Workers (정적 자산)
 │  ├─ components/
 │  │  ├─ SiteHeader.astro / SiteFooter.astro / LanguageSwitch.astro / ThemeToggle.astro
 │  │  ├─ SkillTag.astro / ProjectCard.astro ← 여러 페이지가 쓰는 기술 태그·프로젝트 카드
+│  │  ├─ CareerTimeline.astro / SkillStack.astro / CertificationList.astro ← About 화면 부품
 │  │  ├─ Phrases.astro          ← 일본어 문절 단위 줄바꿈 출력(docs/DESIGN.md §2)
 │  │  └─ pages/                 ← 페이지 화면 컴포넌트(레이아웃 + 본문). 언어만 props로 받음
 │  ├─ scripts/theme.ts          ← 테마 읽기·쓰기(헤더 버튼, 단계 5 명령 팔레트가 공유)
@@ -60,7 +63,7 @@ Cloudflare Workers (정적 자산)
 
 ### 페이지 파일 방식 (T03 결정)
 
-언어별 페이지 파일 방식을 쓴다. `src/pages/ja/about.astro`와 `src/pages/en/about.astro`는 같은 화면 컴포넌트(`src/components/pages/`)를 언어만 바꿔 호출하는 한 줄 파일이다. 지금은 `<ComingSoonPage locale="ja" page="about" />`이고, 단계 4에서 `<AboutPage locale="ja" />` 같은 페이지별 컴포넌트로 바꾼다. 레이아웃·제목·본문은 화면 컴포넌트가 정한다.
+언어별 페이지 파일 방식을 쓴다. `src/pages/ja/about.astro`와 `src/pages/en/about.astro`는 같은 화면 컴포넌트(`src/components/pages/`)를 언어만 바꿔 호출하는 한 줄 파일이다. T05부터 About은 `<AboutPage locale="ja" />`이고, 아직 만들지 않은 페이지는 `<ComingSoonPage locale="ja" page="projects" />`처럼 준비 중 화면을 쓴다. 단계 4에서 페이지마다 이런 페이지별 컴포넌트로 바꾼다. 레이아웃·제목·본문은 화면 컴포넌트가 정한다.
 
 - 이유: 파일 경로가 URL과 그대로 대응해 찾기 쉽고, T01 구조를 그대로 잇는다. 언어가 2개로 고정이라 파일이 두 벌인 비용이 작다. 동적 경로(`src/pages/[locale]/about.astro` + `getStaticPaths`)는 언어가 늘 때 유리하지만 지금은 이점이 적다.
 - 프로젝트 상세처럼 항목 수만큼 페이지가 생기는 경로는 `src/pages/ja/projects/[slug].astro`처럼 언어 폴더 안에서 동적 경로를 쓴다(단계 4에서 확정).
@@ -71,22 +74,25 @@ Cloudflare Workers (정적 자산)
 - 페이지 본문 콘텐츠(경력, 프로젝트, 자격증 등): `src/content/`(Astro content collections). 컬렉션 스키마는 각 페이지 지시서에서 정한다.
 - 경로: 페이지 URL은 `src/i18n/paths.ts`의 `localizePath`, 언어 전환 URL은 `switchLocalePath`로 만든다. 둘 다 `astro:i18n`의 `getRelativeLocaleUrl`을 써서 끝 슬래시 규칙(`trailingSlash: 'always'`)을 지킨다.
 
-### 콘텐츠 구조 (T04 결정)
+### 콘텐츠 구조 (T04 결정, T05 추가)
 
 페이지 본문 콘텐츠는 Astro content collections(`src/content.config.ts`, loader는 `astro/loaders`의 `glob`)로 읽고 zod 스키마로 검증한다. 형식은 YAML이다. 문장이 짧은 필드 위주라 Markdown 본문이 필요 없고, 주석으로 작성 규칙을 남길 수 있기 때문이다.
 
 | 컬렉션 | 파일 | 단위 | 주요 필드 |
 | --- | --- | --- | --- |
-| `profile` | `src/content/profile/<ja\|en>.yaml` | 언어별 1건(id = 언어) | `placeholder`, `name`, `role`(직함), `tagline`(한 줄 소개), `description`(Home meta description) |
+| `profile` | `src/content/profile/<ja\|en>.yaml` | 언어별 1건(id = 언어) | `placeholder`, `name`, `role`(직함), `tagline`(한 줄 소개), `description`(Home meta description), `resumes`(선택, 0~2개: `label` 링크 문구, `file` `public/` 기준 경로) |
 | `skills` | `src/content/skills.yaml` | 언어 공통 1건 | `categories[]`: `id`, `name.ja`/`name.en`, `items[]`: `placeholder`, `name`(언어 공통 문자열 또는 `{ ja, en }`), `primary`(기본 false), `homeOrder`(있으면 Home 핵심 기술) |
 | `projects` | `src/content/projects/<ja\|en>/<slug>.yaml` | 언어별, 같은 slug | `placeholder`, `title`, `summary`, `period`(문자열), `role`, `highlights`(1~2개), `tech`, `featuredOrder`(있으면 Home 대표 프로젝트) |
+| `career` | `src/content/career/<ja\|en>/<slug>.yaml` | 언어별, 같은 slug | `placeholder`, `company`, `period`(문자열), `role`, `highlights`(1~3개), `order`(1 = 최신), `current`(기본 false) |
+| `certifications` | `src/content/certifications.yaml` | 언어 공통 1건 | `items[]`: `status`(`acquired` \| `studying`), `placeholder`, `name`(언어 공통 문자열 또는 `{ ja, en }`), `acquired`(문자열 `YYYY.MM`, `acquired`일 때만) |
 
 - 필드 이름은 영어 camelCase로 통일한다. 스키마는 `z.strictObject`라서 모르는 필드(오타)가 있으면 빌드가 실패한다.
 - `placeholder`는 필수 boolean이다. 빠뜨렸을 때 실제 원고로 취급되는 일을 막기 위함이다.
 - 한 줄을 넘을 수 있는 일본어 문구(`profile.tagline`, `projects.title`)는 문자열 또는 문절 단위 문자열 배열이다. 배열이면 `Phrases.astro`가 문절 사이에서만 줄을 바꾼다(`docs/DESIGN.md` §2). 영어는 문자열로 쓴다.
 - 언어별 콘텐츠는 같은 slug를 쓰는 언어 폴더(프로필은 언어 이름 파일) 방식이다. 기술 스택은 기술 이름이 언어 공통이라 한 파일에 분류 이름만 두 벌 둔다. 분류·기술의 표시 순서는 파일 안 배열 순서다. 컬렉션 항목 사이의 순서에 기대지 않도록 분류마다 항목을 나누지 않고 한 파일 1건으로 둔다.
-- 여러 항목에 걸친 규칙은 `src/lib/content.ts`가 `getCollection` 결과를 검사하고, 어기면 어긴 규칙을 모두 적은 오류를 던져 빌드를 멈춘다: 언어 짝(프로필 ja/en, 프로젝트 slug), 대표 프로젝트 언어마다 2~3개, Home 핵심 기술 3~6개, 주력 기술은 모두 Home 핵심 기술에 포함, 주력 기술 전체 2~4개·분류당 0~2개, 순서 값 중복 금지, 같은 slug의 `featuredOrder`가 언어마다 같음. 페이지는 `getCollection`을 직접 쓰지 않고 이 파일의 함수(지금은 `getHomeContent`)를 쓴다. T05·Projects 지시서는 필요한 조회 함수를 같은 파일에 추가한다.
-- 임시 항목 수: 검사를 통과하면 `[content] placeholder entries: N (profile a, skills b, projects c)`를 빌드 로그에 경고로 한 번 출력한다(0건이어도 출력). 기술은 항목(기술) 하나를 1건으로 센다. 배포 전 0건이어야 한다(`docs/CONTENT.md` "임시 문구 규칙").
+- 여러 항목에 걸친 규칙은 `src/lib/content.ts`가 `getCollection` 결과를 검사하고, 어기면 어긴 규칙을 모두 적은 오류를 던져 빌드를 멈춘다: 언어 짝(프로필 ja/en, 프로젝트·경력 slug), 대표 프로젝트 언어마다 2~3개, Home 핵심 기술 3~6개, 주력 기술은 모두 Home 핵심 기술에 포함, 주력 기술 전체 2~4개·분류당 0~2개, 분류 안에서 주력 기술이 주력이 아닌 기술보다 앞, 순서 값 중복 금지, 같은 slug의 `featuredOrder`가 언어마다 같음, 경력은 언어마다 1건 이상이고 같은 slug의 `order`·`current`가 언어마다 같음, 학습 중 자격증은 0~1개이고 맨 끝, 이력서 경로(아래). 페이지는 `getCollection`을 직접 쓰지 않고 이 파일의 함수(`getHomeContent`, `getAboutContent`)를 쓴다. Projects 지시서는 필요한 조회 함수를 같은 파일에 추가한다.
+- 이력서 경로(`profile.resumes[].file`): `/`로 시작하는 사이트 내부 경로만 허용한다. 외부 URL(`https://`, `//`), 역슬래시, `..` 구간을 거부하고, `public/` 기준으로 해석한 경로가 `public/` 안이며 파일이 실제로 있어야 한다. `public/` 위치는 `astro:config/server`의 `publicDir`에서 읽는다. 파일 확인에 쓰는 `node:fs`는 `@types/node`가 없고(새 의존성 추가 금지) 정적 import하면 타입 검사가 실패하므로, 쓰는 메서드만 타입을 적고 빌드 시점에 동적 import한다(`/* @vite-ignore */`). `resumes`가 없거나 빈 배열이면 검사하지 않는다.
+- 임시 항목 수: 검사를 통과하면 `[content] placeholder entries: N (profile a, skills b, projects c, career d, certifications e)`를 빌드 로그에 경고로 한 번 출력한다(0건이어도 출력). 기술·자격증은 항목 하나, 프로필·프로젝트·경력은 언어별 파일 하나를 1건으로 센다. 배포 전 0건이어야 한다(`docs/CONTENT.md` "임시 문구 규칙").
 - 사이트 이름(`src/i18n/ui.ts`의 `site.name`)과 프로필 이름(`profile.name`)은 별개 값이다. 사이트 이름은 모든 페이지의 헤더·푸터·`<title>`에 쓰는 짧은 표기이고 레이아웃이 동기적으로 읽는 UI 문구다. 프로필 이름은 히어로·About에 쓰는 본문 콘텐츠이며 원고에서 漢字/カナ 표기가 될 수 있다. 지금은 사이트 이름 `choi`, 프로필 이름은 일본어 「チェ ソンギュ」, 영어 `choi seonggyu`다(2026-10-30 사용자 지정).
 - 기술 이름은 보통 언어 공통 문자열로 쓰고, 언어마다 다르게 보여야 할 때만 `{ ja, en }`으로 쓴다. 조회 함수(`localize`)가 페이지 언어의 값을 고른다. 지금은 임시 표식(「（仮）」/`(placeholder)`)이 언어마다 달라서 모두 `{ ja, en }`이다. 프로젝트의 `tech`는 언어별 파일이라 각 언어 표식을 그대로 쓴다.
 
