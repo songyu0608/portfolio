@@ -1,0 +1,13 @@
+placeholder: true
+title:
+  - 認証サービスの
+  - 分離と
+  - 無停止移行（仮）
+summary: C社のモノリスから認証機能を切り出し、サービスを止めずに移行した取り組みを一文で要約します。（仮）
+period: 20XX.XX – 20XX.XX
+role: 設計・移行計画（仮）
+highlights:
+  - 月間 〇〇 万リクエストを無停止で移行（仮）
+  - 認証関連の障害を月 〇 件 → 〇 件（仮）
+tech: [Go（仮）, Redis（仮）, Kubernetes（仮）]
+featuredOrder: 3

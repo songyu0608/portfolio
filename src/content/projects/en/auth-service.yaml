@@ -1,0 +1,10 @@
+placeholder: true
+title: Extracting the auth service with zero downtime (placeholder)
+summary: A one-sentence summary of splitting authentication out of Company C's monolith and migrating it without downtime. (placeholder)
+period: 20XX.XX – 20XX.XX
+role: Design and migration planning (placeholder)
+highlights:
+  - Migrated XX M requests per month with zero downtime (placeholder)
+  - Auth-related incidents per month X → X (placeholder)
+tech: [Go (placeholder), Redis (placeholder), Kubernetes (placeholder)]
+featuredOrder: 3

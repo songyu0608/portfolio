@@ -1,0 +1,99 @@
+# 기술 스택. Home 핵심 기술과 About 기술 스택(T05)이 같은 데이터를 쓴다.
+# 규칙(docs/CONTENT.md "기술 스택 표기 규칙"):
+# - 분류 순서와 분류 안 순서는 배열 순서. 분류 안은 주력 기술(primary)을 먼저, 나머지는 경험이 많은 순.
+# - 주력 기술은 전체 2~4개, 분류당 0~2개. 주력 기술은 모두 homeOrder를 가진다.
+# - homeOrder가 있는 기술이 Home 핵심 기술(3~6개)이고, 그 값의 순서로 표시한다.
+# 기술 이름은 언어 공통 문자열로 쓴다(예: name: Java). 언어마다 달라야 하면 { ja, en }으로 쓴다.
+# 지금은 임시 표식(일본어 「（仮）」, 영어 (placeholder))이 달라서 { ja, en }이다.
+# 분류 영어 이름은 T05에서 확정한다.
+categories:
+  - id: languages
+    name:
+      ja: 言語
+      en: Languages
+    items:
+      - name:
+          ja: Java（仮）
+          en: Java (placeholder)
+        primary: true
+        homeOrder: 1
+        placeholder: true
+      - name:
+          ja: Go（仮）
+          en: Go (placeholder)
+        placeholder: true
+      - name:
+          ja: Python（仮）
+          en: Python (placeholder)
+        placeholder: true
+  - id: frameworks
+    name:
+      ja: フレームワーク
+      en: Frameworks
+    items:
+      - name:
+          ja: Spring Boot（仮）
+          en: Spring Boot (placeholder)
+        primary: true
+        homeOrder: 2
+        placeholder: true
+  - id: databases
+    name:
+      ja: データベース
+      en: Databases
+    items:
+      - name:
+          ja: PostgreSQL（仮）
+          en: PostgreSQL (placeholder)
+        primary: true
+        homeOrder: 3
+        placeholder: true
+      - name:
+          ja: Redis（仮）
+          en: Redis (placeholder)
+        homeOrder: 5
+        placeholder: true
+  - id: infrastructure
+    name:
+      ja: インフラ・クラウド
+      en: Infrastructure & cloud
+    items:
+      - name:
+          ja: AWS（仮）
+          en: AWS (placeholder)
+        homeOrder: 4
+        placeholder: true
+      - name:
+          ja: Docker（仮）
+          en: Docker (placeholder)
+        placeholder: true
+      - name:
+          ja: Kubernetes（仮）
+          en: Kubernetes (placeholder)
+        placeholder: true
+  - id: messaging-monitoring
+    name:
+      ja: メッセージング・監視
+      en: Messaging & monitoring
+    items:
+      - name:
+          ja: Kafka（仮）
+          en: Kafka (placeholder)
+        placeholder: true
+      - name:
+          ja: Prometheus（仮）
+          en: Prometheus (placeholder)
+        placeholder: true
+  - id: tools
+    name:
+      ja: CI/CD・ツール
+      en: CI/CD & tools
+    items:
+      - name:
+          ja: GitHub Actions（仮）
+          en: GitHub Actions (placeholder)
+        placeholder: true
+      - name:
+          ja: Terraform（仮）
+          en: Terraform (placeholder)
+        placeholder: true

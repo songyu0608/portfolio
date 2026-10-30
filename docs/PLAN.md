@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-30 (T03 완료 반영, T04 Home 지시서 작성)
+마지막 갱신: 2026-10-30 (T04 Home 구현 PR)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
 | 현재 단계 | 단계 4 — 페이지 구현 |
-| 진행 중인 작업 | T04 Home 지시서 작성 (구현 담당 미배정) |
-| 다음 작업 | T04 Home 구현 (임시 문구). 이어서 T05 About~ 지시서 |
+| 진행 중인 작업 | T04 Home 구현 (Claude, 임시 문구) [PR #13](https://github.com/songyu0608/portfolio/pull/13). 교차 리뷰·사용자 확인 대기 |
+| 다음 작업 | T05 About/경력 지시서 |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -98,7 +98,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T01-followup | 교차 리뷰 후속 정리 | 1 | T01 | codex | done | `docs/tasks/T01-followup.md` — [PR #5](https://github.com/songyu0608/portfolio/pull/5) |
 | T02 | 디자인 시스템 | 2 | T01-followup | codex | done | `docs/tasks/T02-design-system.md` — [PR #9](https://github.com/songyu0608/portfolio/pull/9) |
 | T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | claude | done | `docs/tasks/T03-common-layout.md` — 지시서 [PR #10](https://github.com/songyu0608/portfolio/pull/10), 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) |
-| T04 | Home (한 줄 소개·핵심 기술·대표 프로젝트, 임시 문구) | 4 | T03 | - | todo | `docs/tasks/T04-home.md` |
+| T04 | Home (한 줄 소개·핵심 기술·대표 프로젝트, 임시 문구) | 4 | T03 | claude | review | `docs/tasks/T04-home.md` — 지시서 [PR #12](https://github.com/songyu0608/portfolio/pull/12), 구현 [PR #13](https://github.com/songyu0608/portfolio/pull/13) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T05 About/경력, T06 Projects(목록·상세), T07 Contact(정적 부분).
 
@@ -130,8 +130,8 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 ### T03에서 이월한 항목
 
-- [ ] T04: Home 히어로 등 긴 일본어 제목은 Firefox·Safari(`auto-phrase` 미지원)에서 단어 중간에서 끊길 수 있다(T03 확인 화면 h1: 「読みやすさを、設計/する。」). 문절 단위 `<wbr>` 또는 `inline-block` span을 검토한다. BudouX(새 의존성)는 사용자 확인 후에만 도입한다. 근거: `docs/DESIGN.md` §2 타이포그래피.
-- [ ] 단계 7 또는 Firefox·WebKit을 쓸 수 있는 환경: `auto-phrase` 미지원 브라우저의 실제 줄바꿈과 T03 헤더 배치(320px·1280px)를 확인한다.
+- [x] T04: Home 히어로 등 긴 일본어 제목은 Firefox·Safari(`auto-phrase` 미지원)에서 단어 중간에서 끊길 수 있다(T03 확인 화면 h1: 「読みやすさを、設計/する。」). 문절 단위 `<wbr>` 또는 `inline-block` span을 검토한다. BudouX(새 의존성)는 사용자 확인 후에만 도입한다. 근거: `docs/DESIGN.md` §2 타이포그래피. → T04: 콘텐츠에 문절 배열로 쓰고 `keep-all` + CSS 생성 U+200B로 문절 사이에서만 줄바꿈. `<wbr>`·`inline-block`은 Chromium 접근성 이름에 공백이 생겨 쓰지 않음. 결과는 `docs/DESIGN.md` §2.
+- [ ] 단계 7 또는 Firefox·WebKit을 쓸 수 있는 환경: `auto-phrase` 미지원 브라우저의 실제 줄바꿈과 T03 헤더 배치(320px·1280px)를 확인한다. T04 문절 처리(`Phrases.astro`)가 같은 위치에서 줄을 바꾸는지, 실제 스크린 리더(VoiceOver, NVDA)가 문절 사이에서 끊어 읽지 않는지도 함께 확인한다.
 - [x] `@astrojs/react` 통합 때문에 어느 페이지도 참조하지 않는 React 클라이언트 번들(`dist/_astro/client.*.js`, 220,749B)이 T01부터 빌드 결과에 생성된다. 페이지가 받는 JS에는 영향이 없다. → 2026-10-30 사용자 결정: 단계 5 인터랙션(A2)에서 React를 쓰므로 통합을 그대로 둔다. 단계 6 성능 점검 때 번들이 페이지에서 참조되지 않는지만 다시 확인한다.
 
 ### T04 지시서 작성 시 추가한 항목
@@ -154,3 +154,5 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-30 | `@astrojs/react` 통합 유지(단계 5에서 사용). T03 완료 조건의 "빌드 결과에 React 런타임 미포함"은 참조되지 않는 번들이 남는 상태로 사용자가 수용 | T03 |
 | 2026-10-30 | 내비게이션 일본어 문구 「経歴」「プロジェクト」「連絡先」 확정. 바꿀 때는 `src/i18n/ui.ts`의 `pages.*.name`만 고친다(URL은 그대로) | T03 사용자 확인 |
 | 2026-10-30 | T03 PR #11 merge 완료 반영. 단계 4는 원고 수집 전에 임시 문구(placeholder)로 진행하고, 원고는 콘텐츠 파일만 바꿔 반영 | 사용자 결정, T04 지시서 |
+| 2026-10-30 | 콘텐츠 구조(YAML content collections + `src/lib/content.ts` 규칙 검사), 일본어 문절 줄바꿈 방식, Home h1 = 이름, 사이트 이름과 프로필 이름은 별개 값 | T04 구현 (`docs/ARCHITECTURE.md` §2, A9, `docs/DESIGN.md` §2·§5) |
+| 2026-10-30 | Home h1 = 이름 확정, 프로필 이름 일본어 「チェ ソンギュ」·영어 `choi seonggyu`. 일본어 UI 문구(「主な技術」 등)는 지시서 기본안으로 두고 나중에 사용자가 `src/i18n/ui.ts`에서 직접 고친다. 한 줄 소개는 원고 합의 후 반영 | T04 사용자 확인 |

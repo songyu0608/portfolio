@@ -121,6 +121,15 @@ a {
   color: var(--color-on-accent);
 }
 
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .card {
   padding: var(--space-6);
   border: 1px solid var(--color-border);
