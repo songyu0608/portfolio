@@ -1,0 +1,114 @@
+---
+// 경력 타임라인. 최신이 위이고, 모든 항목을 펼쳐 보인다(정보를 숨기는 효과 금지).
+// 왼쪽 세로선과 점은 CSS 장식이라 접근성 트리에 나오지 않는다. 현재 재직 항목은 점을 채운다.
+// 단계 5 컨셉 5(스크롤 강조)는 .timeline__item을 감싸 강조만 더한다. 이 화면이 애니메이션 없는 최종 상태다.
+import type { CareerEntry } from '../lib/content';
+
+interface Props {
+  entries: CareerEntry[];
+}
+
+const { entries } = Astro.props;
+---
+
+<ol class="timeline">
+  {entries.map((entry) => (
+    <li
+      class:list={[
+        'timeline__item',
+        { 'timeline__item--current': entry.current },
+      ]}
+    >
+      <p class="timeline__period">{entry.period}</p>
+      <div class="timeline__body">
+        <h3 class="timeline__company">{entry.company}</h3>
+        <p class="timeline__role">{entry.role}</p>
+        <ul class="timeline__highlights">
+          {entry.highlights.map((highlight) => (
+            <li>{highlight}</li>
+          ))}
+        </ul>
+      </div>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .timeline {
+    /* 점 지름과, 점 중심을 기간 첫 줄 가운데에 맞추는 위쪽 여백 */
+    --dot-size: 14px;
+    --dot-top: 6px;
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .timeline__item {
+    position: relative;
+    display: grid;
+    gap: var(--space-1);
+    padding-bottom: var(--space-8);
+    padding-inline-start: calc(var(--dot-size) + var(--space-4));
+  }
+
+  .timeline__item:last-child {
+    padding-bottom: 0;
+  }
+
+  /* 세로선: 이 항목의 점 중심에서 다음 항목의 점 중심까지. 마지막 항목 아래로는 늘이지 않는다. */
+  .timeline__item:not(:last-child)::before {
+    position: absolute;
+    top: calc(var(--dot-top) + var(--dot-size) / 2);
+    bottom: calc(-1 * (var(--dot-top) + var(--dot-size) / 2));
+    inset-inline-start: calc(var(--dot-size) / 2 - 1px);
+    width: 2px;
+    background: var(--color-border);
+    content: '';
+  }
+
+  .timeline__item::after {
+    position: absolute;
+    top: var(--dot-top);
+    inset-inline-start: 0;
+    width: var(--dot-size);
+    height: var(--dot-size);
+    box-sizing: border-box;
+    border: 2px solid var(--color-text-muted);
+    border-radius: 50%;
+    background: var(--color-background);
+    content: '';
+  }
+
+  .timeline__item--current::after {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+  }
+
+  .timeline__period {
+    color: var(--color-text-muted);
+    /* 「現在」 같은 일본어가 섞인다. 일반 monospace로 넘어가면 일본어 Windows에서 MS ゴシック가
+       쓰이므로, 모노스페이스 글꼴 다음에 본문 글꼴로 넘어가게 한다. */
+    font-family: 'IBM Plex Mono', var(--font-sans);
+    font-size: var(--font-size-small);
+  }
+
+  .timeline__role {
+    margin-top: var(--space-1);
+    color: var(--color-text-muted);
+  }
+
+  .timeline__highlights {
+    display: grid;
+    gap: var(--space-1);
+    margin: var(--space-3) 0 0;
+    padding-inline-start: 1.25em;
+  }
+
+  @media (min-width: 40rem) {
+    .timeline__item {
+      grid-template-columns: 11rem minmax(0, 1fr);
+      column-gap: var(--space-8);
+    }
+  }
+</style>

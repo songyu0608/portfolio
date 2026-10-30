@@ -1,0 +1,8 @@
+# Placeholder copy (docs/CONTENT.md). Company names stay as "Company A"; numbers and dates stay as symbols.
+placeholder: true
+company: Company B (placeholder)
+period: 20XX.XX – 20XX.XX
+role: Server-side Engineer (placeholder)
+highlights:
+  - Cut batch processing time of the XX system by XX% (placeholder)
+order: 2

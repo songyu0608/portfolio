@@ -3,10 +3,25 @@
 # - 분류 순서와 분류 안 순서는 배열 순서. 분류 안은 주력 기술(primary)을 먼저, 나머지는 경험이 많은 순.
 # - 주력 기술은 전체 2~4개, 분류당 0~2개. 주력 기술은 모두 homeOrder를 가진다.
 # - homeOrder가 있는 기술이 Home 핵심 기술(3~6개)이고, 그 값의 순서로 표시한다.
+# - 분류 안에서 주력 기술은 주력이 아닌 기술보다 앞에 둔다(빌드 시 검사).
 # 기술 이름은 언어 공통 문자열로 쓴다(예: name: Java). 언어마다 달라야 하면 { ja, en }으로 쓴다.
-# 지금은 임시 표식(일본어 「（仮）」, 영어 (placeholder))이 달라서 { ja, en }이다.
-# 분류 영어 이름은 T05에서 확정한다.
+# 임시 항목은 임시 표식(일본어 「（仮）」, 영어 (placeholder))이 달라서 { ja, en }이다.
+# 분류 영어 이름은 T05 기본안이다(사용자 확인 전).
 categories:
+  # AI 활용 개발 어필을 위해 맨 앞에 둔다(docs/PLAN.md §2 전문 분야). 사용자가 준 실제 값이다(2026-10-30).
+  - id: ai-development
+    name:
+      ja: AI活用開発
+      en: AI-assisted development
+    items:
+      - name: ChatGPT
+        placeholder: false
+      - name: Claude Code
+        placeholder: false
+      - name: IBM Consulting Advantage
+        placeholder: false
+      - name: IBM Bob
+        placeholder: false
   - id: languages
     name:
       ja: 言語

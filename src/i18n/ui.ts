@@ -22,8 +22,7 @@ const ja = {
   pages: {
     about: {
       name: '経歴',
-      description:
-        '経歴、技術スタック、資格を掲載するページです。現在準備中です。',
+      description: '経歴、技術スタック、資格を掲載しています。',
     },
     projects: {
       name: 'プロジェクト',
@@ -42,16 +41,31 @@ const ja = {
     },
     skills: {
       title: '主な技術',
-      legend: '塗りつぶしたタグは主軸の技術です。',
     },
     projects: {
       title: '代表プロジェクト',
       all: 'すべてのプロジェクト',
     },
   },
+  about: {
+    career: {
+      title: '職歴',
+    },
+    skills: {
+      title: '技術スタック',
+    },
+    certifications: {
+      title: '資格',
+      // 학습 중 행의 왼쪽 라벨과 이름 문형. {name}에 자격증 이름(콘텐츠)이 들어간다.
+      studying: '学習中',
+      studyingName: '{name} 取得に向けて学習中',
+    },
+  },
   skill: {
     // 주력 기술 태그 앞에 붙는 시각적으로 숨긴 텍스트. 색만으로 의미를 전하지 않기 위함.
     primary: '主軸：',
+    // 주력 기술 범례. Home 핵심 기술과 About 기술 스택이 함께 쓴다.
+    legend: '塗りつぶしたタグは主軸の技術です。',
   },
   project: {
     period: '期間',
@@ -80,8 +94,7 @@ const en: UiText = {
   pages: {
     about: {
       name: 'About',
-      description:
-        'Career history, tech stack, and certifications. Coming soon.',
+      description: 'Career history, tech stack, and certifications.',
     },
     projects: {
       name: 'Projects',
@@ -100,15 +113,28 @@ const en: UiText = {
     },
     skills: {
       title: 'Core skills',
-      legend: 'Filled tags mark core technologies.',
     },
     projects: {
       title: 'Featured projects',
       all: 'All projects',
     },
   },
+  about: {
+    career: {
+      title: 'Experience',
+    },
+    skills: {
+      title: 'Tech stack',
+    },
+    certifications: {
+      title: 'Certifications',
+      studying: 'Studying',
+      studyingName: 'Studying for {name}',
+    },
+  },
   skill: {
     primary: 'Core: ',
+    legend: 'Filled tags mark core technologies.',
   },
   project: {
     period: 'Period',

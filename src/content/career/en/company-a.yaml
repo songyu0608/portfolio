@@ -1,0 +1,11 @@
+# Placeholder copy (docs/CONTENT.md). Company names stay as "Company A"; numbers and dates stay as symbols.
+# Replace the values and set placeholder to false when the real copy arrives. Use only publicly shareable company names.
+placeholder: true
+company: Company A (placeholder)
+period: 20XX.XX – Present
+role: Backend Engineer (placeholder)
+highlights:
+  - Improved p99 latency of the XX API from XX ms to XX ms (placeholder)
+  - Owned the XX platform from design through operations (placeholder)
+order: 1
+current: true

@@ -14,3 +14,5 @@ tagline:
   - 担当します。
   - （仮）
 description: バックエンドエンジニア choi のポートフォリオです。経歴、プロジェクト、技術スタックを掲載しています。（仮）
+# 이력서 PDF 링크는 PDF를 public/ 아래(예: public/files/)에 넣은 뒤 resumes에 적는다(0~2개, 첫 링크가 주 버튼).
+# 예: resumes: [{ label: 職務経歴書（PDF）, file: /files/resume-ja.pdf }]. 경로 규칙은 docs/ARCHITECTURE.md §2.
