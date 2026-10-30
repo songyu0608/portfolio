@@ -9,7 +9,7 @@
 | 항목 | 값 |
 | --- | --- |
 | 현재 단계 | 단계 4 — 페이지 구현 |
-| 진행 중인 작업 | T04 Home 구현 (Claude, 임시 문구). PR 교차 리뷰·사용자 확인 대기 |
+| 진행 중인 작업 | T04 Home 구현 (Claude, 임시 문구) [PR #13](https://github.com/songyu0608/portfolio/pull/13). 교차 리뷰·사용자 확인 대기 |
 | 다음 작업 | T05 About/경력 지시서 |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
@@ -98,7 +98,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T01-followup | 교차 리뷰 후속 정리 | 1 | T01 | codex | done | `docs/tasks/T01-followup.md` — [PR #5](https://github.com/songyu0608/portfolio/pull/5) |
 | T02 | 디자인 시스템 | 2 | T01-followup | codex | done | `docs/tasks/T02-design-system.md` — [PR #9](https://github.com/songyu0608/portfolio/pull/9) |
 | T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | claude | done | `docs/tasks/T03-common-layout.md` — 지시서 [PR #10](https://github.com/songyu0608/portfolio/pull/10), 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) |
-| T04 | Home (한 줄 소개·핵심 기술·대표 프로젝트, 임시 문구) | 4 | T03 | claude | review | `docs/tasks/T04-home.md` — 지시서 [PR #12](https://github.com/songyu0608/portfolio/pull/12) |
+| T04 | Home (한 줄 소개·핵심 기술·대표 프로젝트, 임시 문구) | 4 | T03 | claude | review | `docs/tasks/T04-home.md` — 지시서 [PR #12](https://github.com/songyu0608/portfolio/pull/12), 구현 [PR #13](https://github.com/songyu0608/portfolio/pull/13) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T05 About/경력, T06 Projects(목록·상세), T07 Contact(정적 부분).
 
