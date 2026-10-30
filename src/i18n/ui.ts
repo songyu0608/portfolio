@@ -31,9 +31,8 @@ const ja = {
     },
     contact: {
       name: '連絡先',
-      description: '連絡方法を掲載するページです。現在準備中です。',
+      description: 'メール、GitHub などの連絡方法を掲載しています。',
     },
-    comingSoon: 'このページは準備中です。',
   },
   home: {
     actions: {
@@ -51,6 +50,29 @@ const ja = {
     intro:
       '課題・設計・結果を、担当した工程とあわせてまとめています。カードを選ぶと詳細を表示します。',
     others: 'その他のプロジェクト',
+  },
+  contact: {
+    // 연락 수단 목록의 시각적으로 숨긴 제목
+    methods: '連絡方法',
+    // 서비스 이름. Contact의 라벨과 푸터 링크가 함께 쓴다. id는 src/content.config.ts의 CONTACT_LINKS.
+    method: {
+      email: 'メール',
+      github: 'GitHub',
+      linkedin: 'LinkedIn',
+    },
+    // 임시 값(placeholder: true) 뒤에 붙는 표식(docs/CONTENT.md "임시 문구 규칙")
+    placeholder: '（仮）',
+    copy: {
+      label: 'コピー',
+      // 버튼의 접근 가능한 이름. 보이는 문구(label)를 포함해야 한다.
+      name: 'メールアドレスをコピー',
+      done: 'コピーしました',
+      failed: 'コピーできませんでした',
+    },
+  },
+  footer: {
+    // 푸터 연락 링크 목록의 접근 가능한 이름
+    contact: '連絡先',
   },
   about: {
     career: {
@@ -138,9 +160,8 @@ const en: UiText = {
     },
     contact: {
       name: 'Contact',
-      description: 'How to get in touch. Coming soon.',
+      description: 'Ways to get in touch, including email and GitHub.',
     },
-    comingSoon: 'This page is coming soon.',
   },
   home: {
     actions: {
@@ -158,6 +179,24 @@ const en: UiText = {
     intro:
       'Each project covers the challenge, design, and results, along with the phases I handled. Select a card for details.',
     others: 'Other projects',
+  },
+  contact: {
+    methods: 'Contact methods',
+    method: {
+      email: 'Email',
+      github: 'GitHub',
+      linkedin: 'LinkedIn',
+    },
+    placeholder: ' (placeholder)',
+    copy: {
+      label: 'Copy',
+      name: 'Copy email address',
+      done: 'Copied',
+      failed: "Couldn't copy",
+    },
+  },
+  footer: {
+    contact: 'Contact',
   },
   about: {
     career: {

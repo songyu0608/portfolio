@@ -1,0 +1,18 @@
+# 연락처(언어 공통). Contact 페이지와 모든 페이지의 푸터가 이 값을 쓴다. 규칙은 docs/tasks/T07-contact.md.
+# placeholder는 intro(소개 문단)가 임시 문구인지 표시한다(docs/CONTENT.md "임시 문구 규칙").
+placeholder: true
+intro:
+  ja: 転職やお仕事のご相談は、メールでご連絡ください。〇 営業日以内に返信します。（仮）
+  en: For job opportunities or project inquiries, please contact me by email. I usually reply within X business days. (placeholder)
+# 2026-10-30 choi가 사이트 공개용으로 정한 주소.
+email:
+  placeholder: false
+  address: songyu0608@gmail.com
+# 배열 순서가 화면 순서다. 없는 서비스는 항목을 지운다(그 줄과 푸터 링크가 사라진다).
+links:
+  - id: github
+    placeholder: false
+    url: https://github.com/songyu0608
+  - id: linkedin
+    placeholder: false
+    url: https://www.linkedin.com/in/songyu0608
