@@ -5,7 +5,7 @@
 | 단계 | 3 |
 | 선행 작업 | T02 (PR #9) |
 | 담당 | claude |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-mx0tku` (실행 환경이 지정한 이름. 원칙상 이름은 `<agent>/T03-common-layout`) |
 
 ## 목표
