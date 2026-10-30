@@ -29,7 +29,7 @@
 | warning | `#8A4B00` | `#FFB454` | 경고 상태 글자 |
 | error | `#B42318` | `#FF8F8F` | 오류 상태 글자 |
 
-기본 테마는 `prefers-color-scheme`을 따른다. `<html data-theme="light">` 또는 `<html data-theme="dark">`가 있으면 그 값이 시스템 설정보다 우선한다. 수동 전환 UI는 T03에서 만든다.
+기본 테마는 `prefers-color-scheme`을 따른다. `<html data-theme="light">` 또는 `<html data-theme="dark">`가 있으면 그 값이 시스템 설정보다 우선한다. 수동 전환 UI(헤더의 테마 버튼)와 저장 규칙은 §4.
 
 대비(WCAG 2.x 상대 휘도 공식으로 계산, 단위 `:1`, 값은 `background / surface` 순서). 색을 바꿀 때는 이 표를 다시 계산해 갱신한다. 일반 텍스트 4.5:1, UI 경계·포커스 3:1 이상을 유지한다.
 
@@ -50,6 +50,11 @@
 - 본문·제목: IBM Plex Sans JP 400/700. 코드·보조 라벨: IBM Plex Mono 400. [IBM Plex](https://github.com/IBM/plex)는 SIL OFL 라이선스다.
 - 웹에서는 Fontsource 패키지의 문자 범위별 서브셋을 자체 호스팅하고 `font-display: swap`을 사용한다. 외부 글꼴 도메인 요청은 없다. 일본어 대체 글꼴은 Hiragino Sans, Yu Gothic UI, Meiryo 순서다. 글꼴 요청이 실패해도 본문을 읽을 수 있어야 한다.
 - 본문 16px. 줄높이 일본어 1.8, 영어 1.65. 작은 글자 14px, 라벨 12px. 제목은 h1 32~52px, h2 24~32px, h3 18px이며 제목 줄높이는 1.2다. 일본어 제목은 `word-break: auto-phrase`로 문절 단위 줄바꿈을 한다(지원하지 않는 브라우저는 기본 줄바꿈). 본문 최대 줄 길이는 `66ch`다.
+- `word-break: auto-phrase` 지원 현황(2026-10-30 확인, [web-features](https://web-platform-dx.github.io/web-features-explorer/features/word-break-auto-phrase)·[MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/word-break)): Chrome·Edge 119 이상만 지원(Baseline "Limited availability"). Firefox·Safari(iOS 포함)는 미지원이며 `word-break: normal`과 같은 기본 줄바꿈으로 표시된다.
+  - T03 확인(Chromium, 320px·375px·1280px): 사이트 이름(`choi`)과 준비 페이지 제목(経歴·プロジェクト·連絡先)은 한 줄이라 차이가 없다. Home 확인 화면 h1 「読みやすさを、設計する。」는 auto-phrase에서 「読みやすさを、/設計する。」, 기본 줄바꿈에서는 375px·1280px에서 「読みやすさを、設計/する。」로 단어 중간에서 끊긴다.
+  - Firefox·WebKit 실제 화면은 확인하지 못했다(작업 환경에 해당 브라우저 없음). 위 기본 줄바꿈 결과는 Chromium에서 `word-break: normal`로 바꿔 근사한 것이다.
+  - `text-wrap: balance`는 대안이 되지 않는다. 같은 h1이 「読みやすさ/を、設計する。」로 더 어색하게 끊겼다.
+  - 대안(Home 본문을 만드는 T04에서 검토): 긴 일본어 제목만 문구 파일에서 문절 단위로 나눠 `<wbr>` 또는 `display: inline-block` 문절 span으로 출력한다. 의존성을 추가하는 [BudouX](https://github.com/google/budoux)는 제안만 하고 구현하지 않는다.
 - 모노스페이스는 코드·작은 라벨에만 쓴다. 일본어 긴 문장에는 사용하지 않는다.
 
 ### 간격·크기·모션
@@ -84,3 +89,65 @@
 - **reduced-motion**: `prefers-reduced-motion: reduce`이면 1·2·5의 애니메이션을 끄고 최종 상태를 바로 보여준다. 3·4는 기능은 유지하고 전환 효과만 끈다.
 - **키보드**: 모든 인터랙션은 키보드로도 동작한다. 팔레트·터미널은 Esc로 닫고, 닫으면 포커스를 원래 위치로 되돌린다.
 - **측정**: 배포 후 방문 분석으로 카드 클릭률을 확인하고 효과를 조정한다 (단계 9).
+
+## 4. 공통 레이아웃 (T03)
+
+모든 페이지는 `src/layouts/BaseLayout.astro`를 쓴다. 구성 순서: 본문 바로가기 → 헤더(사이트 이름, 주 내비게이션, 언어 전환, 테마 버튼) → `<main id="main">` → 푸터. 키보드 포커스도 이 순서로 이동한다.
+
+### 헤더
+
+| 폭 | 배치 |
+| --- | --- |
+| 640px 미만 | 줄바꿈 배치. 1줄: 사이트 이름 + 내비게이션, 2줄: 언어 전환 + 테마 버튼(오른쪽 정렬). 항목 사이 간격 8px, 내비게이션 좌우 여백 8px. 글꼴이 대체 글꼴로 바뀌어 폭이 늘면 3줄로 늘어날 뿐 가로 스크롤은 생기지 않는다 |
+| 640px 이상 | 한 줄. 사이트 이름은 왼쪽, 내비게이션·언어 전환·테마 버튼은 오른쪽. 항목 사이 간격 16px, 내비게이션 좌우 여백 12px |
+
+- 햄버거 메뉴는 쓰지 않는다. 모든 항목을 항상 보여준다.
+- 스크롤 고정은 하지 않는다. 640px 미만에서 헤더가 2줄이라 고정하면 본문 영역이 줄어들기 때문이다. 고정하지 않으므로 `scroll-padding-top`도 필요 없다. 나중에 고정하면 헤더 높이만큼 `scroll-padding-top`을 준다.
+- 링크·버튼의 터치 대상은 최소 44×44px이다.
+- 헤더 아래 구분선은 장식이므로 `border` 색을 쓴다.
+
+### 내비게이션
+
+- 항목: 経歴 / プロジェクト / 連絡先 (영어 About / Projects / Contact). Home은 사이트 이름 링크다. 문구는 `src/i18n/ui.ts`의 `pages.*.name`이며 페이지 제목(h1, `<title>`)과 같은 값을 쓴다.
+- 기본 링크는 `text-muted` 색, 밑줄 없음. 마우스를 올리면 `text` 색과 1px 밑줄.
+- 현재 위치는 색 외에 굵기(700)와 2px `accent` 밑줄로 구분한다. 그 페이지 자체면 `aria-current="page"`, 하위 경로(예: 단계 4의 프로젝트 상세 `/ja/projects/<slug>/`)면 `aria-current="true"`를 붙이고 겉모습은 같다. 판정은 경로 접두어 비교다.
+
+### 언어 전환
+
+- 「日本語」「English」를 항상 그 언어 표기로 모두 보여준다. 현재 언어는 링크가 아닌 굵은 `text` 색 글자(`aria-current="true"`), 다른 언어는 `accent` 색 밑줄 링크(`lang`, `hreflang` 포함)다. 사이의 세로선은 장식이다.
+- 같은 페이지의 다른 언어 경로로 가는 일반 링크라 JS가 필요 없다. 경로 변환은 `src/i18n/paths.ts`의 `switchLocalePath` 하나로 한다.
+- 브라우저 언어 자동 감지·리다이렉트는 하지 않는다.
+
+### 테마 버튼
+
+- 라이트·다크 2단계 토글. 접근 가능한 이름은 「ダークモード」/「Dark mode」(시각적으로 숨긴 텍스트), 상태는 `aria-pressed`(다크면 `true`)로 전한다.
+- 아이콘은 적용 중인 테마를 나타낸다(라이트: 해, 다크: 달). 아이콘 표시는 CSS가 `data-theme`·시스템 설정을 보고 정하므로 첫 화면에서 아이콘이 바뀌어 보이지 않는다. 경계는 1px `text-muted`, 마우스를 올리면 `surface` 배경.
+- 우선순위: 저장된 선택(`localStorage`) → 없으면 시스템 설정. 저장 값이 없는 동안 시스템 설정이 바뀌면 화면과 `aria-pressed`가 따라간다. "시스템 설정으로 되돌리기"는 없다(단계 5 명령 팔레트에서 검토).
+- 저장 키: `theme`, 값 `light` / `dark`. 단계 5 명령 팔레트와 공유하므로 이름을 바꾸지 않는다. 키는 `src/scripts/theme.ts`의 `THEME_STORAGE_KEY` 한 곳에 있고, `<head>` 인라인 스크립트는 `define:vars`로 같은 값을 받는다.
+- 첫 렌더 전 적용: `<head>`의 인라인 스크립트가 저장 값을 `<html data-theme>`에 넣는다. `localStorage` 접근이 막히면 아무것도 하지 않아 시스템 설정을 따르고, 버튼으로 바꾼 값은 그 페이지에서만 유지된다.
+- JS가 꺼져 있으면 버튼을 숨긴다(인라인 스크립트가 붙이는 `html.js` 클래스가 있을 때만 표시). 이때는 시스템 설정만 적용된다.
+- 테마 읽기·쓰기 함수(`getTheme`, `setTheme`, `toggleTheme`, `onThemeChange`)는 `src/scripts/theme.ts`에 있다. 다른 곳에서 테마를 바꿀 때도 이 함수를 쓴다.
+
+### 본문 바로가기·푸터
+
+- 본문 바로가기는 평소 화면 위로 숨겨 두고, 포커스를 받으면 왼쪽 위에 `accent` 배경 버튼 모양으로 나타난다.
+- 푸터: 저작권 표기(「© 빌드 연도 사이트 이름」)만 둔다. 위 구분선은 장식이다. 연락처 링크는 Contact 지시서에서 푸터 오른쪽에 추가한다.
+
+### 대비 (헤더·푸터, T03에서 Chromium 계산 색으로 측정)
+
+모두 기존 토큰 조합이다. 단위 `:1`, 바탕은 `background`.
+
+| 요소 | 조합 | 라이트 | 다크 |
+| --- | --- | --- | --- |
+| 사이트 이름, 현재 내비게이션·현재 언어 글자 | text | 17.25 | 16.18 |
+| 내비게이션 링크, 푸터 글자 | text-muted | 6.63 | 7.79 |
+| 언어 링크 | accent | 4.74 | 8.14 |
+| 현재 위치 밑줄(UI) | accent | 4.74 | 8.14 |
+| 테마 버튼 아이콘 / 마우스를 올렸을 때(surface 위) | text | 17.25 / 18.19 | 16.18 / 14.72 |
+| 테마 버튼 경계(UI) | text-muted | 6.63 | 7.79 |
+| 포커스 표시(UI) | accent | 4.74 | 8.14 |
+| 본문 바로가기 글자 / 바탕과의 경계 | on-accent·accent / accent | 5.00 / 4.74 | 8.14 / 8.14 |
+
+### 모션
+
+내비게이션 링크 색, 테마 버튼 배경의 120ms 전환만 있다. `prefers-reduced-motion: reduce`에서는 끈다.
