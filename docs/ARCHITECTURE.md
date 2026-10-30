@@ -78,7 +78,7 @@ Cloudflare Workers (정적 자산)
 | 컬렉션 | 파일 | 단위 | 주요 필드 |
 | --- | --- | --- | --- |
 | `profile` | `src/content/profile/<ja\|en>.yaml` | 언어별 1건(id = 언어) | `placeholder`, `name`, `role`(직함), `tagline`(한 줄 소개), `description`(Home meta description) |
-| `skills` | `src/content/skills.yaml` | 언어 공통 1건 | `categories[]`: `id`, `name.ja`/`name.en`, `items[]`: `placeholder`, `name`, `primary`(기본 false), `homeOrder`(있으면 Home 핵심 기술) |
+| `skills` | `src/content/skills.yaml` | 언어 공통 1건 | `categories[]`: `id`, `name.ja`/`name.en`, `items[]`: `placeholder`, `name`(언어 공통 문자열 또는 `{ ja, en }`), `primary`(기본 false), `homeOrder`(있으면 Home 핵심 기술) |
 | `projects` | `src/content/projects/<ja\|en>/<slug>.yaml` | 언어별, 같은 slug | `placeholder`, `title`, `summary`, `period`(문자열), `role`, `highlights`(1~2개), `tech`, `featuredOrder`(있으면 Home 대표 프로젝트) |
 
 - 필드 이름은 영어 camelCase로 통일한다. 스키마는 `z.strictObject`라서 모르는 필드(오타)가 있으면 빌드가 실패한다.
@@ -86,9 +86,9 @@ Cloudflare Workers (정적 자산)
 - 한 줄을 넘을 수 있는 일본어 문구(`profile.tagline`, `projects.title`)는 문자열 또는 문절 단위 문자열 배열이다. 배열이면 `Phrases.astro`가 문절 사이에서만 줄을 바꾼다(`docs/DESIGN.md` §2). 영어는 문자열로 쓴다.
 - 언어별 콘텐츠는 같은 slug를 쓰는 언어 폴더(프로필은 언어 이름 파일) 방식이다. 기술 스택은 기술 이름이 언어 공통이라 한 파일에 분류 이름만 두 벌 둔다. 분류·기술의 표시 순서는 파일 안 배열 순서다. 컬렉션 항목 사이의 순서에 기대지 않도록 분류마다 항목을 나누지 않고 한 파일 1건으로 둔다.
 - 여러 항목에 걸친 규칙은 `src/lib/content.ts`가 `getCollection` 결과를 검사하고, 어기면 어긴 규칙을 모두 적은 오류를 던져 빌드를 멈춘다: 언어 짝(프로필 ja/en, 프로젝트 slug), 대표 프로젝트 언어마다 2~3개, Home 핵심 기술 3~6개, 주력 기술은 모두 Home 핵심 기술에 포함, 주력 기술 전체 2~4개·분류당 0~2개, 순서 값 중복 금지, 같은 slug의 `featuredOrder`가 언어마다 같음. 페이지는 `getCollection`을 직접 쓰지 않고 이 파일의 함수(지금은 `getHomeContent`)를 쓴다. T05·Projects 지시서는 필요한 조회 함수를 같은 파일에 추가한다.
-- 임시 항목 수: 검사를 통과하면 `[content] placeholder entries: N (profile a, skills b, projects c)`를 빌드 로그에 경고로 한 번 출력한다. 기술은 항목(기술) 하나를 1건으로 센다. 배포 전 0건이어야 한다(`docs/CONTENT.md` "임시 문구 규칙").
+- 임시 항목 수: 검사를 통과하면 `[content] placeholder entries: N (profile a, skills b, projects c)`를 빌드 로그에 경고로 한 번 출력한다(0건이어도 출력). 기술은 항목(기술) 하나를 1건으로 센다. 배포 전 0건이어야 한다(`docs/CONTENT.md` "임시 문구 규칙").
 - 사이트 이름(`src/i18n/ui.ts`의 `site.name`)과 프로필 이름(`profile.name`)은 별개 값이다. 사이트 이름은 모든 페이지의 헤더·푸터·`<title>`에 쓰는 짧은 표기이고 레이아웃이 동기적으로 읽는 UI 문구다. 프로필 이름은 히어로·About에 쓰는 본문 콘텐츠이며 원고에서 漢字/カナ 표기가 될 수 있다. 지금은 사이트 이름 `choi`, 프로필 이름은 일본어 「チェ ソンギュ」, 영어 `choi seonggyu`다(2026-10-30 사용자 지정).
-- 기술 이름은 언어 공통 값이라 임시 표식도 영어 페이지에서 「（仮）」로 보인다(프로젝트의 `tech`도 같은 규칙).
+- 기술 이름은 보통 언어 공통 문자열로 쓰고, 언어마다 다르게 보여야 할 때만 `{ ja, en }`으로 쓴다. 조회 함수(`localize`)가 페이지 언어의 값을 고른다. 지금은 임시 표식(「（仮）」/`(placeholder)`)이 언어마다 달라서 모두 `{ ja, en }`이다. 프로젝트의 `tech`는 언어별 파일이라 각 언어 표식을 그대로 쓴다.
 
 T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는 검사 도구의 지원 범위에 맞춰 6.0.3을 사용한다. 직접 의존성과 lockfile로 설치 버전을 기록한다. pnpm이 생성한 `pnpm-workspace.yaml`에는 이번 Astro 설치에 필요한 특정 버전의 release-age 예외만 기록한다.
 

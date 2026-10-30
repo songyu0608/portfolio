@@ -7,11 +7,13 @@ export type Profile = CollectionEntry<'profile'>['data'];
 export type Skill =
   CollectionEntry<'skills'>['data']['categories'][number]['items'][number];
 export type Project = CollectionEntry<'projects'>['data'] & { slug: string };
+/** 이름을 한 언어로 정한 기술. */
+export type LocalizedSkill = Omit<Skill, 'name'> & { name: string };
 
 export interface HomeContent {
   profile: Profile;
   /** Home 핵심 기술. homeOrder 순서. */
-  skills: Skill[];
+  skills: LocalizedSkill[];
   /** Home 대표 프로젝트. featuredOrder 순서. */
   projects: Project[];
 }
@@ -23,6 +25,12 @@ const PRIMARY_SKILLS = { min: 2, max: 4, perCategory: 2 };
 
 const isLocale = (value: string): value is Locale =>
   (locales as string[]).includes(value);
+
+/** 언어 공통 문자열 또는 언어별 값({ ja, en })에서 그 언어의 값을 고른다. */
+export const localize = (
+  value: string | Record<Locale, string>,
+  locale: Locale,
+): string => (typeof value === 'string' ? value : value[locale]);
 
 const outOfRange = (
   count: number,
@@ -132,7 +140,7 @@ async function loadContent() {
   const primaryOffHome = primary.filter((s) => s.homeOrder === undefined);
   if (primaryOffHome.length > 0) {
     errors.push(
-      `주력 기술은 모두 Home 핵심 기술에 포함해야 한다(homeOrder 필요): ${primaryOffHome.map((s) => s.name).join(', ')}`,
+      `주력 기술은 모두 Home 핵심 기술에 포함해야 한다(homeOrder 필요): ${primaryOffHome.map((s) => localize(s.name, 'ja')).join(', ')}`,
     );
   }
   if (outOfRange(primary.length, PRIMARY_SKILLS)) {
@@ -155,7 +163,7 @@ async function loadContent() {
     );
   }
 
-  // 배포 전 0건 확인용(docs/CONTENT.md "임시 문구 규칙"). 프로세스마다 한 번만 출력한다.
+  // 배포 전 0건 확인용(docs/CONTENT.md "임시 문구 규칙"). 0건이어도 출력하고, 프로세스마다 한 번만 출력한다.
   if (!placeholderReported) {
     placeholderReported = true;
     const counts = {
@@ -165,11 +173,9 @@ async function loadContent() {
         .length,
     };
     const total = counts.profile + counts.skills + counts.projects;
-    if (total > 0) {
-      console.warn(
-        `[content] placeholder entries: ${total} (profile ${counts.profile}, skills ${counts.skills}, projects ${counts.projects})`,
-      );
-    }
+    console.warn(
+      `[content] placeholder entries: ${total} (profile ${counts.profile}, skills ${counts.skills}, projects ${counts.projects})`,
+    );
   }
 
   return {
@@ -186,9 +192,9 @@ export async function getHomeContent(locale: Locale): Promise<HomeContent> {
   if (!profile) throw new Error(`[content] 프로필 없음: ${locale}`);
   return {
     profile,
-    skills: content.homeSkills.toSorted(
-      (a, b) => (a.homeOrder ?? 0) - (b.homeOrder ?? 0),
-    ),
+    skills: content.homeSkills
+      .toSorted((a, b) => (a.homeOrder ?? 0) - (b.homeOrder ?? 0))
+      .map((skill) => ({ ...skill, name: localize(skill.name, locale) })),
     projects: content.projects[locale]
       .filter((p) => p.featuredOrder !== undefined)
       .toSorted((a, b) => (a.featuredOrder ?? 0) - (b.featuredOrder ?? 0)),

@@ -15,6 +15,12 @@ const phrases = z.union([z.string().min(1), z.array(z.string().min(1)).min(1)]);
 /** 원고를 받기 전의 임시 값이면 true. 배포 전에 모두 false여야 한다(docs/CONTENT.md). */
 const placeholder = z.boolean();
 
+/** 언어 공통 값. 언어마다 다르게 보여야 하면(예: 임시 표식) { ja, en }으로 쓴다. */
+const localizable = z.union([
+  z.string().min(1),
+  z.strictObject({ ja: z.string().min(1), en: z.string().min(1) }),
+]);
+
 // 언어별 1건: src/content/profile/<ja|en>.yaml
 const profile = defineCollection({
   loader: glob({ pattern: '*.yaml', base: './src/content/profile' }),
@@ -44,7 +50,7 @@ const skills = defineCollection({
             .array(
               z.strictObject({
                 placeholder,
-                name: z.string().min(1),
+                name: localizable,
                 primary: z.boolean().default(false),
                 /** 있으면 Home 핵심 기술에 이 순서로 표시한다. */
                 homeOrder: z.number().int().positive().optional(),

@@ -7,6 +7,11 @@ role: Design and implementation lead (placeholder)
 highlights:
   - p99 latency XX ms → XX ms (placeholder)
   - Peak error rate reduced by XX% (placeholder)
-# Tech names are shared across languages, so the placeholder mark stays 「（仮）」.
-tech: [Java（仮）, Spring Boot（仮）, PostgreSQL（仮）, Kafka（仮）]
+tech:
+  [
+    Java (placeholder),
+    Spring Boot (placeholder),
+    PostgreSQL (placeholder),
+    Kafka (placeholder),
+  ]
 featuredOrder: 1

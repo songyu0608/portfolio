@@ -6,5 +6,5 @@ role: Design and migration planning (placeholder)
 highlights:
   - Migrated XX M requests per month with zero downtime (placeholder)
   - Auth-related incidents per month X → X (placeholder)
-tech: [Go（仮）, Redis（仮）, Kubernetes（仮）]
+tech: [Go (placeholder), Redis (placeholder), Kubernetes (placeholder)]
 featuredOrder: 3
