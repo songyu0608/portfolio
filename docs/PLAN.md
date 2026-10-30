@@ -96,7 +96,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T00 | 저장소 뼈대 | 0 | - | claude | done | PR #1 |
 | T01 | 프로젝트 초기화 | 1 | T00 | codex | done | `docs/tasks/T01-init.md` — [PR #4](https://github.com/songyu0608/portfolio/pull/4) |
 | T01-followup | 교차 리뷰 후속 정리 | 1 | T01 | codex | done | `docs/tasks/T01-followup.md` — [PR #5](https://github.com/songyu0608/portfolio/pull/5) |
-| T02 | 디자인 시스템 | 2 | T01-followup | codex | review | `docs/tasks/T02-design-system.md` |
+| T02 | 디자인 시스템 | 2 | T01-followup | codex | review | `docs/tasks/T02-design-system.md` — [PR #9](https://github.com/songyu0608/portfolio/pull/9) |
 
 단계 3 이후 지시서는 앞 단계가 끝날 때 작성한다. 예정: T03 공통 레이아웃·i18n, T04~ 페이지별 구현.
 

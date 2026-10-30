@@ -54,7 +54,7 @@ T03의 공통 레이아웃과 이후 페이지가 함께 사용할 디자인 토
 - [x] [WCAG 2.2 AA 대비 기준](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)을 라이트·다크 두 테마에서 확인했다. 일반 텍스트는 4.5:1 이상, 큰 글자는 3:1 이상이다. [UI 식별에 필요한 경계·상태와 직접 스타일을 지정한 포커스 표시](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html)는 인접 색상과 3:1 이상이다. 측정 도구·색상 조합·결과 수치와 작은 화면의 가독성 확인 결과를 PR에 기록하고 부족한 조합을 수정했다.
 - [x] 테두리 태그와 채운 주력 태그, `on-accent`, `sr-only`, 본문 최대 폭과 반응형 전환점이 확인 화면·문서에 반영되어 있다.
 - [x] 모션 감소 설정에서 장식 효과가 꺼지고 내용은 그대로 읽을 수 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
 - [x] `docs/PLAN.md`의 단계 2·T02 상태가 갱신되고 비밀 값이 커밋되지 않았다.
 
 ## 확인 방법
