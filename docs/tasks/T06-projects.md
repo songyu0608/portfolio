@@ -39,7 +39,7 @@
    | `result` | `{ metrics?: { label, value }[] (1~4), body?: 문자열 }` | 상세 結果. `metrics`와 `body` 중 하나 이상 필요 |
    | `techDetails` | `{ label, value }[]`, 1~5개 | 상세 技術. 분류별 기술과 선정 이유(예: 「言語・FW」「データ」「選定理由」) |
 
-   - 기존 필드(`title`, `summary`, `period`, `role`, `highlights`, `tech`, `featuredOrder`)는 그대로 둔다. 상세 페이지가 모든 카드에서 열리므로 새 필드 중 `team`·`points`·`metrics`·`body`(결과)를 뺀 필드는 모든 프로젝트에 필수다.
+   - 기존 필드(`title`, `summary`, `period`, `role`, `highlights`, `tech`, `featuredOrder`)는 그대로 둔다. 상세 페이지가 모든 카드에서 열리므로 `phases`, `challenge`, `design`, `result`, `techDetails`는 모든 프로젝트에 필수다. `order`는 예외로, 대표가 아닌 프로젝트(`featuredOrder` 없음)에만 필수이고 대표 프로젝트에는 쓰지 않는다. `team`, `challenge`·`design`의 `points`, `result`의 `metrics`·`body`는 선택이다(`result`는 둘 중 하나 이상).
    - 아래 규칙을 `src/lib/content.ts`에서 검사하고, 어기면 어긴 규칙을 적은 오류로 빌드를 멈춘다(기존 오류 목록에 합친다).
      - `featuredOrder`가 있는 항목은 `order`가 없고, 없는 항목은 `order`가 있다. 언어마다 `order`가 겹치지 않는다.
      - 같은 slug는 언어마다 `order`가 같고, `phases`의 집합이 같다(기존 `featuredOrder` 검사와 같은 방식).
