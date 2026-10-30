@@ -1,0 +1,151 @@
+---
+import { localizePath, type PageKey } from '../i18n/paths';
+import { ui, type Locale } from '../i18n/ui';
+import LanguageSwitch from './LanguageSwitch.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const text = ui[locale];
+const { pathname } = Astro.url;
+const navPages = ['about', 'projects', 'contact'] as const satisfies PageKey[];
+
+const homeHref = localizePath(locale, 'home');
+
+// 그 페이지 자체면 'page', 하위 경로(예: 프로젝트 상세)면 'true'로 현재 위치를 표시한다.
+// Home은 내비게이션 항목이 없으므로 사이트 이름 링크에 'page'를 붙인다.
+const navItems = navPages.map((page) => {
+  const href = localizePath(locale, page);
+  const current: 'page' | 'true' | undefined =
+    pathname === href ? 'page' : pathname.startsWith(href) ? 'true' : undefined;
+  return { href, label: text.pages[page].name, current };
+});
+---
+
+<header class="site-header">
+  <div class="site-header__inner container">
+    <a
+      class="site-header__name"
+      href={homeHref}
+      aria-current={pathname === homeHref ? 'page' : undefined}
+    >
+      {text.site.name}
+    </a>
+    <nav class="site-nav" aria-label={text.nav.label}>
+      <ul>
+        {navItems.map((item) => (
+          <li>
+            <a href={item.href} aria-current={item.current}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="site-header__tools">
+      <LanguageSwitch locale={locale} />
+      <ThemeToggle locale={locale} />
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .site-header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: var(--space-2);
+    padding-block: var(--space-2);
+  }
+
+  .site-header__name {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    color: var(--color-text);
+    font-size: var(--font-size-h3);
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: 0.35em;
+  }
+
+  .site-header__name[aria-current] {
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 2px;
+  }
+
+  .site-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-nav a {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--space-2);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.35em;
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .site-nav a:hover {
+    color: var(--color-text);
+    text-decoration-line: underline;
+  }
+
+  .site-nav a[aria-current] {
+    color: var(--color-text);
+    font-weight: 700;
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 2px;
+  }
+
+  .site-header__tools {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-inline-start: auto;
+  }
+
+  @media (min-width: 40rem) {
+    .site-header__inner {
+      column-gap: var(--space-4);
+    }
+
+    .site-nav {
+      margin-inline-start: auto;
+    }
+
+    .site-nav a {
+      padding-inline: var(--space-3);
+    }
+
+    .site-header__tools {
+      margin-inline-start: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-nav a {
+      transition: none;
+    }
+  }
+</style>

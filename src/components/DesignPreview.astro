@@ -1,17 +1,13 @@
 ---
-import { ui } from '../i18n/ui';
-import '../styles/global.css';
-import '@fontsource/ibm-plex-sans-jp/400.css';
-import '@fontsource/ibm-plex-sans-jp/700.css';
-import '@fontsource/ibm-plex-mono/400.css';
+// BaseLayout의 <main> 안에 들어가는 본문 컴포넌트. 랜드마크(main, footer)를 만들지 않는다.
+import { ui, type Locale } from '../i18n/ui';
 
 interface Props {
-  locale: keyof typeof ui;
+  locale: Locale;
 }
 
 const { locale } = Astro.props;
-const text = ui[locale];
-const d = text.design;
+const d = ui[locale].design;
 const swatches = [
   { key: 'background', label: d.swatchBackground },
   { key: 'surface', label: d.swatchSurface },
@@ -21,135 +17,121 @@ const swatches = [
 ] as const;
 ---
 
-<!doctype html>
-<html lang={locale}>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={text.description} />
-    <title>{d.title}</title>
-  </head>
-  <body>
-    <main class="preview container">
-      <header class="preview__hero">
-        <div class="preview__eyebrow-row">
-          <p class="preview__eyebrow">{d.eyebrow}</p>
-          <span class="preview__label">{d.label}</span>
-        </div>
-        <div class="preview__hero-copy">
-          <h1>{d.heading}</h1>
-          <p class="preview__lead measure">{d.introduction}</p>
-          <div class="preview__actions">
-            <a class="button button--primary" href="#typography">
-              {d.primaryAction} <span aria-hidden="true">↓</span>
-            </a>
-            <a class="button" href="#palette">
-              {d.secondaryAction}
-            </a>
-          </div>
-        </div>
-      </header>
-
-      <section
-        id="palette"
-        class="preview__section"
-        aria-labelledby="palette-heading"
-      >
-        <div class="preview__section-heading">
-          <div>
-            <p class="preview__section-number">01 / COLOR</p>
-            <h2 id="palette-heading">{d.paletteTitle}</h2>
-          </div>
-          <p class="preview__section-description">{d.paletteDescription}</p>
-        </div>
-        <ul class="preview__swatches">
-          {swatches.map((swatch) => (
-            <li class="preview__swatch">
-              <span
-                class:list={[
-                  'preview__swatch-color',
-                  `preview__swatch-color--${swatch.key}`,
-                ]}
-                aria-hidden="true"
-              ></span>
-              <span class="preview__swatch-label">{swatch.label}</span>
-              <code>{`--color-${swatch.key === 'muted' ? 'text-muted' : swatch.key}`}</code>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <div class="preview__details">
-        <section
-          id="typography"
-          class="preview__section preview__panel"
-          aria-labelledby="typography-heading"
-        >
-          <p class="preview__section-number">02 / TYPE</p>
-          <h2 id="typography-heading">{d.typographyTitle}</h2>
-          <p class="preview__section-description">{d.typographyDescription}</p>
-          <p class="preview__type-sample">{d.typographySample}</p>
-          <p class="preview__body-sample">{d.bodySample}</p>
-          <p class="preview__mono-sample">{d.monoSample}</p>
-        </section>
-
-        <section
-          id="samples"
-          class="preview__section preview__panel"
-          aria-labelledby="components-heading"
-        >
-          <p class="preview__section-number">03 / UI</p>
-          <h2 id="components-heading">{d.componentsTitle}</h2>
-          <p class="preview__section-description">{d.componentsDescription}</p>
-          <a class="preview__sample-link" href="#palette">
-            {d.textLink} <span aria-hidden="true">↑</span>
-          </a>
-          <ul class="preview__tags" aria-label={d.featuredExplanation}>
-            <li>
-              <span class="tag">{d.defaultTag}</span>
-            </li>
-            <li>
-              <span class="tag tag--featured">
-                <span class="sr-only">{d.featuredA11y} </span>
-                {d.featuredTag}
-              </span>
-            </li>
-          </ul>
-          <p class="preview__hint">{d.featuredExplanation}</p>
-          <ul class="preview__statuses">
-            <li class="preview__status preview__status--success">
-              {d.success}
-            </li>
-            <li class="preview__status preview__status--warning">
-              {d.warning}
-            </li>
-            <li class="preview__status preview__status--error">{d.error}</li>
-          </ul>
-        </section>
+<div class="preview container">
+  <header class="preview__hero">
+    <div class="preview__eyebrow-row">
+      <p class="preview__eyebrow">{d.eyebrow}</p>
+      <span class="preview__label">{d.label}</span>
+    </div>
+    <div class="preview__hero-copy">
+      <h1>{d.heading}</h1>
+      <p class="preview__lead measure">{d.introduction}</p>
+      <div class="preview__actions">
+        <a class="button button--primary" href="#typography">
+          {d.primaryAction} <span aria-hidden="true">↓</span>
+        </a>
+        <a class="button" href="#palette">
+          {d.secondaryAction}
+        </a>
       </div>
+    </div>
+  </header>
 
-      <article
-        class="preview__section card preview__example-card"
-        aria-labelledby="card-heading"
-      >
-        <p class="preview__section-number">04 / SURFACE</p>
-        <h2 id="card-heading">{d.cardTitle}</h2>
-        <p class="measure">{d.cardBody}</p>
-      </article>
+  <section
+    id="palette"
+    class="preview__section"
+    aria-labelledby="palette-heading"
+  >
+    <div class="preview__section-heading">
+      <div>
+        <p class="preview__section-number">01 / COLOR</p>
+        <h2 id="palette-heading">{d.paletteTitle}</h2>
+      </div>
+      <p class="preview__section-description">{d.paletteDescription}</p>
+    </div>
+    <ul class="preview__swatches">
+      {swatches.map((swatch) => (
+        <li class="preview__swatch">
+          <span
+            class:list={[
+              'preview__swatch-color',
+              `preview__swatch-color--${swatch.key}`,
+            ]}
+            aria-hidden="true"
+          ></span>
+          <span class="preview__swatch-label">{swatch.label}</span>
+          <code>{`--color-${swatch.key === 'muted' ? 'text-muted' : swatch.key}`}</code>
+        </li>
+      ))}
+    </ul>
+  </section>
 
-      <footer class="preview__footer">
-        <p>{d.footer}</p>
-        <span class="preview__footer-mark" aria-hidden="true">
-          CH / 02
-        </span>
-      </footer>
-    </main>
-  </body>
-</html>
+  <div class="preview__details">
+    <section
+      id="typography"
+      class="preview__section preview__panel"
+      aria-labelledby="typography-heading"
+    >
+      <p class="preview__section-number">02 / TYPE</p>
+      <h2 id="typography-heading">{d.typographyTitle}</h2>
+      <p class="preview__section-description">{d.typographyDescription}</p>
+      <p class="preview__type-sample">{d.typographySample}</p>
+      <p class="preview__body-sample">{d.bodySample}</p>
+      <p class="preview__mono-sample">{d.monoSample}</p>
+    </section>
+
+    <section
+      id="samples"
+      class="preview__section preview__panel"
+      aria-labelledby="components-heading"
+    >
+      <p class="preview__section-number">03 / UI</p>
+      <h2 id="components-heading">{d.componentsTitle}</h2>
+      <p class="preview__section-description">{d.componentsDescription}</p>
+      <a class="preview__sample-link" href="#palette">
+        {d.textLink} <span aria-hidden="true">↑</span>
+      </a>
+      <ul class="preview__tags" aria-label={d.featuredExplanation}>
+        <li>
+          <span class="tag">{d.defaultTag}</span>
+        </li>
+        <li>
+          <span class="tag tag--featured">
+            <span class="sr-only">{d.featuredA11y} </span>
+            {d.featuredTag}
+          </span>
+        </li>
+      </ul>
+      <p class="preview__hint">{d.featuredExplanation}</p>
+      <ul class="preview__statuses">
+        <li class="preview__status preview__status--success">{d.success}</li>
+        <li class="preview__status preview__status--warning">{d.warning}</li>
+        <li class="preview__status preview__status--error">{d.error}</li>
+      </ul>
+    </section>
+  </div>
+
+  <article
+    class="preview__section card preview__example-card"
+    aria-labelledby="card-heading"
+  >
+    <p class="preview__section-number">04 / SURFACE</p>
+    <h2 id="card-heading">{d.cardTitle}</h2>
+    <p class="measure">{d.cardBody}</p>
+  </article>
+
+  <div class="preview__note">
+    <p>{d.note}</p>
+    <span class="preview__note-mark" aria-hidden="true">
+      {' '}
+      CH / 02{' '}
+    </span>
+  </div>
+</div>
 
 <style>
   .preview {
-    padding-block: var(--space-6) var(--space-16);
+    padding-top: var(--space-6);
   }
 
   .preview__hero {
@@ -175,7 +157,7 @@ const swatches = [
 
   .preview__eyebrow-row,
   .preview__section-heading,
-  .preview__footer {
+  .preview__note {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
@@ -186,7 +168,7 @@ const swatches = [
   .preview__eyebrow,
   .preview__section-number,
   .preview__mono-sample,
-  .preview__footer-mark {
+  .preview__note-mark {
     font-family: var(--font-mono);
     font-size: var(--font-size-label);
     letter-spacing: 0.08em;
@@ -201,7 +183,7 @@ const swatches = [
   .preview__label,
   .preview__section-description,
   .preview__hint,
-  .preview__footer {
+  .preview__note {
     color: var(--color-text-muted);
     font-size: var(--font-size-small);
   }
@@ -404,13 +386,13 @@ const swatches = [
     color: var(--color-text-muted);
   }
 
-  .preview__footer {
+  .preview__note {
     margin-top: var(--space-16);
     padding-top: var(--space-6);
     border-top: 1px solid var(--color-border);
   }
 
-  .preview__footer p {
+  .preview__note p {
     max-width: 66ch;
   }
 

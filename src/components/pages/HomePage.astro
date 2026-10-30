@@ -1,0 +1,16 @@
+---
+// T04에서 본문을 Home 콘텐츠로 교체할 때까지 T02 디자인 확인 화면을 둔다.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ui, type Locale } from '../../i18n/ui';
+import DesignPreview from '../DesignPreview.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<BaseLayout locale={locale} description={ui[locale].pages.home.description}>
+  <DesignPreview locale={locale} />
+</BaseLayout>

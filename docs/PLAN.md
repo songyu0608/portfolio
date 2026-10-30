@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-30 (T02 PR #9 merge 반영, T03 공통 레이아웃 지시서 작성)
+마지막 갱신: 2026-10-30 (T03 공통 레이아웃 구현 PR, 교차 리뷰 대기)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 3 — 공통 레이아웃 (착수 전) |
-| 진행 중인 작업 | 없음 (T02 디자인 시스템 PR #9 merge 완료) |
-| 다음 작업 | T03 공통 레이아웃 (`docs/tasks/T03-common-layout.md`) |
+| 현재 단계 | 단계 3 — 공통 레이아웃 (리뷰 중) |
+| 진행 중인 작업 | T03 공통 레이아웃 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) (claude 구현, ChatGPT 교차 리뷰·사용자 확인 대기) |
+| 다음 작업 | T03 merge 후 단계 4 페이지 지시서(T04 Home~) 작성 |
 | 블로커 | 없음. 단계 4 전에 `docs/CONTENT.md`의 콘텐츠 원고가 필요 |
 
 ## 1. 개요
@@ -78,7 +78,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 0 | 요구사항·콘텐츠 정리, 저장소 뼈대(AGENTS.md, CLAUDE.md, docs/, 작업 지시서 템플릿) | done |
 | 1 | 프로젝트 초기화: Astro, TypeScript, lint/format, CI | done |
 | 2 | 디자인 시스템: 색, 타이포그래피, 간격, 다크 모드, 인터랙션 세부 확정 | done |
-| 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | todo |
+| 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | in-progress |
 | 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | todo |
 | 5 | 인터랙션 구현: 컨셉 1~5 | todo |
 | 6 | 품질: SEO, 접근성, 성능 최적화 | todo |
@@ -97,7 +97,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T01 | 프로젝트 초기화 | 1 | T00 | codex | done | `docs/tasks/T01-init.md` — [PR #4](https://github.com/songyu0608/portfolio/pull/4) |
 | T01-followup | 교차 리뷰 후속 정리 | 1 | T01 | codex | done | `docs/tasks/T01-followup.md` — [PR #5](https://github.com/songyu0608/portfolio/pull/5) |
 | T02 | 디자인 시스템 | 2 | T01-followup | codex | done | `docs/tasks/T02-design-system.md` — [PR #9](https://github.com/songyu0608/portfolio/pull/9) |
-| T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | - | todo | `docs/tasks/T03-common-layout.md` |
+| T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | claude | review | `docs/tasks/T03-common-layout.md` — 지시서 [PR #10](https://github.com/songyu0608/portfolio/pull/10), 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) |
 
 단계 4 이후 지시서는 앞 단계가 끝날 때 작성한다. 예정: T04~ 페이지별 구현.
 
@@ -123,9 +123,15 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 ### T02 교차 리뷰에서 이월한 항목
 
 - [ ] 단계 6: 글꼴 CSS 크기 재검토. T02 시점 빌드에서 공통 CSS가 357,868B(gzip 172,181B), `@font-face` 251개이며 `/ja/`, `/en/` 모두 첫 렌더 전에 받는다. 후보: 빌드 시 실제 사용 글자 기준 서브셋, 일본어 글꼴 CSS를 `/ja/`에만 적용. Lighthouse로 전후를 측정한다.
-- [ ] T03: 일본어 제목 `word-break: auto-phrase`를 Safari·Firefox에서 확인하고, 필요하면 명시적 줄바꿈을 검토한다 (T03 범위 8).
-- [ ] T03: PR #9 캡처는 `4aa6183` 기준이라 이후 수정이 반영되지 않았다. T03 PR에 최신 캡처를 싣는다 (T03 범위 8).
+- [x] T03: 일본어 제목 `word-break: auto-phrase`를 Safari·Firefox에서 확인하고, 필요하면 명시적 줄바꿈을 검토한다 (T03 범위 8). → 지원 현황은 공식 자료로 확인(Firefox·Safari 미지원), 실제 Firefox·WebKit 화면은 미확인. 결과·대안은 `docs/DESIGN.md` §2 타이포그래피, 후속은 아래 T03 이월 항목.
+- [x] T03: PR #9 캡처는 `4aa6183` 기준이라 이후 수정이 반영되지 않았다. T03 PR에 최신 캡처를 싣는다 (T03 범위 8). → `docs/screenshots/T03-*`, T03 PR 본문.
 - 근거: [PR #9](https://github.com/songyu0608/portfolio/pull/9) Claude 교차 리뷰, ChatGPT 재검증 리뷰.
+
+### T03에서 이월한 항목
+
+- [ ] T04: Home 히어로 등 긴 일본어 제목은 Firefox·Safari(`auto-phrase` 미지원)에서 단어 중간에서 끊길 수 있다(T03 확인 화면 h1: 「読みやすさを、設計/する。」). 문절 단위 `<wbr>` 또는 `inline-block` span을 검토한다. BudouX(새 의존성)는 사용자 확인 후에만 도입한다. 근거: `docs/DESIGN.md` §2 타이포그래피.
+- [ ] 단계 7 또는 Firefox·WebKit을 쓸 수 있는 환경: `auto-phrase` 미지원 브라우저의 실제 줄바꿈과 T03 헤더 배치(320px·1280px)를 확인한다.
+- [x] `@astrojs/react` 통합 때문에 어느 페이지도 참조하지 않는 React 클라이언트 번들(`dist/_astro/client.*.js`, 220,749B)이 T01부터 빌드 결과에 생성된다. 페이지가 받는 JS에는 영향이 없다. → 2026-10-30 사용자 결정: 단계 5 인터랙션(A2)에서 React를 쓰므로 통합을 그대로 둔다. 단계 6 성능 점검 때 번들이 페이지에서 참조되지 않는지만 다시 확인한다.
 
 ## 9. 결정 변경 기록
 
@@ -139,3 +145,6 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-30 | T01-followup PR #5 완료 반영, T02 디자인 시스템 지시서 작성 | T02 착수 전 |
 | 2026-10-30 | 디자인 색상(시안 E)·글꼴(IBM Plex) 선택, 색 변경은 토큰 교체 방식으로 결정 | T02 |
 | 2026-10-30 | T02 PR #9 merge 완료 반영, T03 공통 레이아웃 지시서 작성 | T03 착수 전 |
+| 2026-10-30 | 언어별 페이지 파일 + 공유 화면 컴포넌트 방식, UI 문구 위치(`src/i18n/ui.ts`, 일본어 기준 타입), 테마 저장 키 `theme` 확정 | T03 (`docs/ARCHITECTURE.md` §2, A8) |
+| 2026-10-30 | `@astrojs/react` 통합 유지(단계 5에서 사용). T03 완료 조건의 "빌드 결과에 React 런타임 미포함"은 참조되지 않는 번들이 남는 상태로 사용자가 수용 | T03 |
+| 2026-10-30 | 내비게이션 일본어 문구 「経歴」「プロジェクト」「連絡先」 확정. 바꿀 때는 `src/i18n/ui.ts`의 `pages.*.name`만 고친다(URL은 그대로) | T03 사용자 확인 |
