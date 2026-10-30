@@ -2,7 +2,7 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-30 (T01 후속 작업 완료 반영, T02 지시서 작성)
+마지막 갱신: 2026-10-30 (T02 색상·글꼴 선택 결과 기록)
 
 ## 현재 진행 상태
 
@@ -10,7 +10,7 @@
 | --- | --- |
 | 현재 단계 | 단계 2 — 디자인 시스템 (착수 전) |
 | 진행 중인 작업 | 없음 (T01-followup PR #5, 기술 스택 표기 PR #6 merge 완료) |
-| 다음 작업 | T02 디자인 시스템 (`docs/tasks/T02-design-system.md`) |
+| 다음 작업 | T02 디자인 시스템 구현 (codex). 색상 시안 E·글꼴 시안 3 선택 완료 (`docs/tasks/T02-design-system.md`) |
 | 블로커 | 없음. 단계 4 전에 `docs/CONTENT.md`의 콘텐츠 원고가 필요 |
 
 ## 1. 개요
@@ -42,6 +42,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 접근성·성능 | reduced-motion 존중, Lighthouse 기준 유지 | 모바일 열람 대비 |
 | 자격증 표기 | 취득 자격증(이름·연월) + 「〇〇 取得に向けて学習中」 최대 1개. 시안 A「シンプルリスト」 | 사용자 결정. 세부는 `docs/CONTENT.md` "자격증 표기 규칙" |
 | 기술 스택 표기 | 분류별 태그 목록, 주력 기술만 채운 태그로 구분. 시안 B「分類別タグ」 | 사용자 결정. 세부는 `docs/CONTENT.md` "기술 스택 표기 규칙" |
+| 디자인 색상·글꼴 | 색상 시안 E「Blue」(accent `#0F62FE` / 다크 `#78A9FF`), 글꼴 IBM Plex Sans JP + IBM Plex Mono. 색은 토큰 값 교체로 사이트 전체 변경, 회사별 강조색 구조는 만들지 않음 | 사용자 결정. 값은 `docs/tasks/T02-design-system.md` "사용자 선택 결과", 확정 기록은 T02 구현에서 `docs/DESIGN.md` §2 |
 
 ## 3. 페이지 구성
 
@@ -95,7 +96,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T00 | 저장소 뼈대 | 0 | - | claude | done | PR #1 |
 | T01 | 프로젝트 초기화 | 1 | T00 | codex | done | `docs/tasks/T01-init.md` — [PR #4](https://github.com/songyu0608/portfolio/pull/4) |
 | T01-followup | 교차 리뷰 후속 정리 | 1 | T01 | codex | done | `docs/tasks/T01-followup.md` — [PR #5](https://github.com/songyu0608/portfolio/pull/5) |
-| T02 | 디자인 시스템 | 2 | T01-followup | - | todo | `docs/tasks/T02-design-system.md` |
+| T02 | 디자인 시스템 | 2 | T01-followup | codex | todo | `docs/tasks/T02-design-system.md` |
 
 단계 3 이후 지시서는 앞 단계가 끝날 때 작성한다. 예정: T03 공통 레이아웃·i18n, T04~ 페이지별 구현.
 
@@ -128,3 +129,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-29 | T01 PR #4 merge·교차 리뷰 완료, 후속 개선의 처리 시점 기록 | T01-followup |
 | 2026-10-29 | 기술 스택 표기 방식 확정: 분류별 태그, 시안 B 채택 | 지시서 없음 (문서만 변경) |
 | 2026-10-30 | T01-followup PR #5 완료 반영, T02 디자인 시스템 지시서 작성 | T02 착수 전 |
+| 2026-10-30 | 디자인 색상(시안 E)·글꼴(IBM Plex) 선택, 색 변경은 토큰 교체 방식으로 결정 | T02 |
