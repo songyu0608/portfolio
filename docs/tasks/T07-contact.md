@@ -49,8 +49,8 @@
 2. **콘텐츠 값 (임시 문구)** (`docs/CONTENT.md` "임시 문구 규칙")
    - `placeholder: true`. `intro` 기본안: 「転職やお仕事のご相談は、メールでご連絡ください。〇 営業日以内に返信します。（仮）」/`For job opportunities or project inquiries, please contact me by email. I usually reply within X business days. (placeholder)`
    - `email`: `name@example.com`, `placeholder: true`. `example.com`은 예시용 예약 도메인이라 실제 주소로 오해되지 않는다. **실제 메일 주소는 커밋하지 않는다**(원고 반영 때 사용자가 공개용 주소를 정한다).
-   - `links`: `github` = `https://github.com/songyu0608`(`placeholder: false`. 이 저장소의 소유자 계정으로 이미 공개된 값), `linkedin` = `https://www.linkedin.com/in/xxxx`(`placeholder: true`).
-   - 임시 값의 표식: 화면에서 주소 문자열 뒤에 「（仮）」/`(placeholder)`를 링크 밖 텍스트로 붙인다(`mailto:`·URL 안에는 넣지 않는다). 시안은 메일 목록 아래 안내 문장으로 표시했으나, 항목마다 표식을 붙이는 쪽이 LinkedIn 등 다른 임시 값에도 같은 규칙으로 적용되므로 이 방식을 기본안으로 한다.
+   - `links`: `github` = `https://github.com/songyu0608`(`placeholder: false`. 이 저장소의 소유자 계정으로 이미 공개된 값), `linkedin` = `https://www.linkedin.com/in/songyu0608`(`placeholder: false`. 2026-10-30 사용자가 제공한 실제 값).
+   - 임시 값의 표식: 화면에서 주소 문자열 뒤에 「（仮）」/`(placeholder)`를 링크 밖 텍스트로 붙인다(`mailto:`·URL 안에는 넣지 않는다). 시안은 메일 목록 아래 안내 문장으로 표시했으나, 항목마다 표식을 붙이는 쪽이 원고 반영 순서와 무관하게 임시 값마다 같은 규칙으로 적용되므로 이 방식을 기본안으로 한다.
 
 3. **Contact 화면** (`src/components/pages/ContactPage.astro`와 하위 컴포넌트)
    - 순서: 페이지 머리 → 연락 수단 목록. 연락 폼 자리, 비활성 폼, 「準備中」 안내는 두지 않는다.
@@ -78,12 +78,12 @@
    - 라벨·버튼 문구·상태 문구·숨긴 제목·푸터 목록 이름은 `src/i18n/ui.ts`, 연락처 값과 소개 문단은 `src/content/contact.yaml`에 둔다. 컴포넌트에 문구를 하드코딩하지 않는다.
    - `docs/DESIGN.md`에 §8 Contact(구성, 전환점별 배치, 복사 버튼 동작, 대비 표, 모션)를 추가하고, §4 푸터 문장과 §5 Home의 "연락처 링크는 Contact 지시서에서 넣는다" 문장을 이번 결정으로 고친다.
    - `docs/ARCHITECTURE.md` §2 디렉터리 구조·콘텐츠 구조 표·규칙 목록에 `contact.yaml`과 검사 규칙을 더하고, §2 출력 설명의 "페이지가 받는 JS" 문장을 갱신한다.
-   - `docs/CONTENT.md` 수집 현황 "연락처"를 「미수집(임시 문구로 구현, T07). GitHub는 저장소 소유자 계정으로 반영」처럼 고친다.
+   - `docs/CONTENT.md` 수집 현황 "연락처"를 「일부 수집(2026-10-30): GitHub `songyu0608`, LinkedIn `linkedin.com/in/songyu0608`(실제 값으로 반영, T07). 메일 주소·소개 문단은 미수집(임시 문구로 구현, T07)」처럼 고친다.
 
 제외:
 
 - 연락 폼, Turnstile, 메일 발송, Workers 함수 (단계 8)
-- 실제 메일 주소·LinkedIn URL 반영 (원고 반영 PR)
+- 실제 메일 주소 반영 (원고 반영 PR)
 - 메일 주소 난독화·수집 봇 대책 (원고 반영 때 실제 주소와 함께 정한다. 아래 메모)
 - 희망 조건(희망 직종·근무지·입사 가능 시기) 칸 (2026-10-30 사용자 결정)
 - Home 히어로에 연락처 직접 노출 (기존 「連絡する」 버튼 유지)
@@ -110,11 +110,11 @@
 ## 완료 조건
 
 - [ ] `/ja/contact/`, `/en/contact/`에 페이지 머리와 연락 수단 목록(メール・GitHub・LinkedIn)이 표시되고, 준비 중 문구·폼 자리가 없다. 주소 문자열이 클릭하지 않아도 보인다.
-- [ ] 메일 링크는 `mailto:name@example.com`, GitHub 링크는 `https://github.com/songyu0608`, LinkedIn 링크는 콘텐츠의 URL로 간다. `contact.yaml`에서 `linkedin` 항목을 지우면 Contact와 푸터에서 그 줄·링크가 사라진다.
+- [ ] 메일 링크는 `mailto:name@example.com`, GitHub 링크는 `https://github.com/songyu0608`, LinkedIn 링크는 `https://www.linkedin.com/in/songyu0608`로 간다. `contact.yaml`에서 `linkedin` 항목을 지우면 Contact와 푸터에서 그 줄·링크가 사라진다.
 - [ ] 모든 페이지(Home·About·Projects 목록·상세·Contact, ja/en)의 푸터에 연락 링크가 있다.
 - [ ] 복사 버튼: JS가 켜진 Chromium에서 주소가 복사되고 「コピーしました」 표시와 `aria-live` 알림이 나온 뒤 약 2초 후 되돌아간다. JS를 끄면 버튼이 보이지 않고 나머지 화면은 같다.
 - [ ] 콘텐츠 검사: ① `email.address`에 `@`가 없음 ② `links[].url`이 `https://`로 시작하지 않음 ③ `github` 항목의 호스트가 `github.com`이 아님 ④ `links`의 `id` 중복 — 각각 빌드가 실패한다. ①~④를 한 번씩 재현해 오류 메시지를 PR에 적는다. T04~T06의 기존 검사도 계속 동작한다.
-- [ ] 임시 값(`intro`, `email`, `linkedin`)은 `placeholder: true`이고, 화면에서 주소 뒤에 「（仮）」/`(placeholder)`가 보인다. 실제 메일 주소가 저장소에 없다. 빌드 로그의 임시 항목 수가 갱신된다.
+- [ ] 임시 값(`intro`, `email`)은 `placeholder: true`이고, GitHub·LinkedIn은 `placeholder: false`이며 표식이 없다. 화면에서 그 주소 뒤에 「（仮）」/`(placeholder)`가 보인다. 실제 메일 주소가 저장소에 없다. 빌드 로그의 임시 항목 수가 갱신된다.
 - [ ] 화면의 콘텐츠 값은 모두 `src/content/`에서, UI 문구는 `src/i18n/ui.ts`에서 온다. 영어 UI 문구 키가 빠지면 `pnpm check`가 실패한다.
 - [ ] ja/en × 320px·375px·1280px × 라이트·다크에서 Contact와 푸터에 가로 스크롤이 없다. 연락 수단 항목의 배치(한 줄 ↔ 위아래)와 푸터 배치가 640px 전환점에서 바뀐다.
 - [ ] 제목 구조: h1(페이지 이름) → h2(시각적으로 숨긴 「連絡方法」). 아이콘은 접근성 트리에 나오지 않고, 복사 버튼의 접근 가능한 이름에 「メールアドレス」가 들어간다. 키보드 Tab으로 메일 링크 → 복사 버튼 → GitHub → LinkedIn 순서로 이동한다.
