@@ -119,6 +119,11 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 - [ ] 다음 의존성 갱신: `pnpm-workspace.yaml`의 `minimumReleaseAgeExclude`에 있는 특정 버전 예외를 재검토한다. 대기 기간 경과 또는 의존성 교체 후 예외 없이 설치·CI가 통과하는 것을 확인하고 불필요한 항목을 삭제한다.
 - 근거: [PR #4 교차 리뷰](https://github.com/songyu0608/portfolio/pull/4#issuecomment-6497967214). 나머지 설정·문서 개선은 T01-followup에서 처리한다.
 
+### T02 교차 리뷰에서 이월한 항목
+
+- [ ] 단계 6: 글꼴 CSS 크기 재검토. T02 시점 빌드에서 공통 CSS가 357,868B(gzip 172,181B), `@font-face` 251개이며 `/ja/`, `/en/` 모두 첫 렌더 전에 받는다. 후보: 빌드 시 실제 사용 글자 기준 서브셋, 일본어 글꼴 CSS를 `/ja/`에만 적용. Lighthouse로 전후를 측정한다.
+- 근거: [PR #9](https://github.com/songyu0608/portfolio/pull/9) Claude 교차 리뷰.
+
 ## 9. 결정 변경 기록
 
 | 날짜 | 변경 | 비고 |

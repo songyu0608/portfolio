@@ -45,6 +45,10 @@
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
+/*
+ * 다크 값은 아래 두 블록(시스템 설정, data-theme="dark")에 같은 값으로 둔다.
+ * 색을 바꿀 때는 두 블록을 함께 고친다. 라이트 값은 위 :root 한 곳뿐이다.
+ */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
     color-scheme: dark;
@@ -77,20 +81,4 @@
   --color-warning: #ffb454;
   --color-error: #ff8f8f;
   --shadow-card: 0 12px 32px rgb(0 0 0 / 25%);
-}
-
-:root[data-theme='light'] {
-  color-scheme: light;
-
-  --color-background: #f7f9fc;
-  --color-surface: #ffffff;
-  --color-text: #121619;
-  --color-text-muted: #525a63;
-  --color-border: #dde1e6;
-  --color-accent: #0f62fe;
-  --color-on-accent: #ffffff;
-  --color-success: #0b6b3a;
-  --color-warning: #8a4b00;
-  --color-error: #b42318;
-  --shadow-card: 0 12px 32px rgb(18 22 25 / 8%);
 }

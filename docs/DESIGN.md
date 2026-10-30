@@ -31,13 +31,25 @@
 
 기본 테마는 `prefers-color-scheme`을 따른다. `<html data-theme="light">` 또는 `<html data-theme="dark">`가 있으면 그 값이 시스템 설정보다 우선한다. 수동 전환 UI는 T03에서 만든다.
 
+대비(WCAG 2.x 상대 휘도 공식으로 계산, 단위 `:1`, 값은 `background / surface` 순서). 색을 바꿀 때는 이 표를 다시 계산해 갱신한다. 일반 텍스트 4.5:1, UI 경계·포커스 3:1 이상을 유지한다.
+
+| 조합 | 라이트 | 다크 |
+| --- | --- | --- |
+| text | 17.25 / 18.19 | 16.18 / 14.72 |
+| text-muted (보조 글자·태그 경계) | 6.63 / 7.00 | 7.79 / 7.09 |
+| accent (링크·포커스) | 4.74 / 5.00 | 8.14 / 7.41 |
+| success / warning / error | 6.26 / 6.45 / 6.23 (background) | 12.43 / 10.88 / 8.75 (background) |
+| on-accent / accent (채운 태그·주 버튼) | 5.00 | 8.14 |
+
+라이트 `accent`의 background 대비 4.74:1은 기준 4.5:1에 가깝다. accent를 바꾸거나 background보다 어두운 면에 링크를 둘 때는 다시 측정한다.
+
 시안 E의 핵심 색은 사용자가 선택했다. 상태색은 이 시안에 없어서 같은 배경에서 읽히는 색으로 T02에서 보충했다. `accent` 두 값은 [IBM Carbon의 Blue 60/40](https://www.carbondesignsystem.com/building-blocks/foundations/color/tokens)과 일치한다. 전체 테마는 Carbon 테마를 복제한 것이 아니다.
 
 ### 타이포그래피
 
 - 본문·제목: IBM Plex Sans JP 400/700. 코드·보조 라벨: IBM Plex Mono 400. [IBM Plex](https://github.com/IBM/plex)는 SIL OFL 라이선스다.
 - 웹에서는 Fontsource 패키지의 문자 범위별 서브셋을 자체 호스팅하고 `font-display: swap`을 사용한다. 외부 글꼴 도메인 요청은 없다. 일본어 대체 글꼴은 Hiragino Sans, Yu Gothic UI, Meiryo 순서다. 글꼴 요청이 실패해도 본문을 읽을 수 있어야 한다.
-- 본문 16px. 줄높이 일본어 1.8, 영어 1.65. 작은 글자 14px, 라벨 12px. 제목은 h1 32~52px, h2 24~32px, h3 18px이며 제목 줄높이는 1.2다. 본문 최대 줄 길이는 `66ch`다.
+- 본문 16px. 줄높이 일본어 1.8, 영어 1.65. 작은 글자 14px, 라벨 12px. 제목은 h1 32~52px, h2 24~32px, h3 18px이며 제목 줄높이는 1.2다. 일본어 제목은 `word-break: auto-phrase`로 문절 단위 줄바꿈을 한다(지원하지 않는 브라우저는 기본 줄바꿈). 본문 최대 줄 길이는 `66ch`다.
 - 모노스페이스는 코드·작은 라벨에만 쓴다. 일본어 긴 문장에는 사용하지 않는다.
 
 ### 간격·크기·모션
