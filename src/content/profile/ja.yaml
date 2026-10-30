@@ -1,0 +1,15 @@
+# 임시 문구(docs/CONTENT.md "임시 문구 규칙"). 원고를 받으면 값을 바꾸고 placeholder를 false로 바꾼다.
+placeholder: true
+# 이름 표기는 원고 미수집. 지금은 사이트 이름(src/i18n/ui.ts의 site.name)과 같은 값을 쓴다.
+name: choi
+role: バックエンドエンジニア（仮）
+# 문절 단위로 나눈다. 화면은 문절 안에서 줄을 바꾸지 않는다(docs/DESIGN.md §2).
+tagline:
+  - 止まらない
+  - バックエンドを、
+  - 設計から
+  - 運用まで
+  - 一貫して
+  - 担当します。
+  - （仮）
+description: バックエンドエンジニア choi のポートフォリオです。経歴、プロジェクト、技術スタックを掲載しています。（仮）

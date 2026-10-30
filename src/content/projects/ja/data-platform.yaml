@@ -1,0 +1,12 @@
+placeholder: true
+title:
+  - 社内データ
+  - 連携基盤の
+  - 構築（仮）
+summary: B社で部署ごとに分かれていたデータ連携を、共通の基盤にまとめた取り組みを一文で要約します。（仮）
+period: 20XX.XX – 20XX.XX
+role: バックエンド開発（仮）
+highlights:
+  - 日次バッチの処理時間を 〇〇% 短縮（仮）
+tech: [Python（仮）, AWS（仮）, Terraform（仮）]
+featuredOrder: 2

@@ -4,7 +4,8 @@
 
 const ja = {
   site: {
-    // 사이트 이름 표기는 원고 미수집(docs/CONTENT.md). 원고를 받으면 이 값만 바꾼다.
+    // 헤더·푸터·<title>에 쓰는 사이트 이름. Home 히어로의 이름은 프로필 콘텐츠
+    // (src/content/profile/*.yaml의 name)이며 별개 값이다(docs/ARCHITECTURE.md §2).
     name: 'choi',
   },
   skipLink: '本文へ移動',
@@ -19,10 +20,6 @@ const ja = {
     label: 'ダークモード',
   },
   pages: {
-    home: {
-      description:
-        'バックエンドエンジニアのポートフォリオサイトです。現在準備中です。',
-    },
     about: {
       name: '経歴',
       description:
@@ -38,42 +35,29 @@ const ja = {
     },
     comingSoon: 'このページは準備中です。',
   },
-  design: {
-    eyebrow: 'DESIGN SYSTEM / 02',
-    label: '選択した色と書体の確認画面',
-    heading: '読みやすさを、設計する。',
-    introduction:
-      '日本語と英語の情報を、落ち着いた余白と明確なコントラストで届けるためのデザイン見本です。完成したポートフォリオではありません。',
-    primaryAction: '文字を見る',
-    secondaryAction: '色を見る',
-    paletteTitle: 'カラートークン',
-    paletteDescription: '背景、情報面、文字、アクセントの関係を確認します。',
-    swatchBackground: '背景',
-    swatchSurface: '情報面',
-    swatchAccent: 'アクセント',
-    swatchText: '本文',
-    swatchMuted: '補助文字',
-    typographyTitle: 'タイポグラフィ',
-    typographyDescription:
-      '本文は IBM Plex Sans JP、補助ラベルは IBM Plex Mono。',
-    typographySample: '大切な情報を、ひと目で。',
-    bodySample:
-      '余白、文字の大きさ、行間を整え、長い文章でも読み進めやすくします。',
-    monoSample: '01 / SYSTEM / SAMPLE',
-    componentsTitle: 'コンポーネントの状態',
-    componentsDescription:
-      'リンク、ボタン、タグ、状態色、カードの基本表現です。',
-    textLink: 'テキストリンクを見る',
-    defaultTag: '通常のタグ',
-    featuredTag: '主軸のタグ',
-    featuredExplanation: '塗りつぶしたタグは主軸を示します。',
-    featuredA11y: '主軸:',
-    success: '成功',
-    warning: '注意',
-    error: 'エラー',
-    cardTitle: 'カードの見本',
-    cardBody: '情報は最初から読める状態に保ち、装飾は内容より控えめにします。',
-    note: 'これはデザイン確認用の画面です。実際の内容は次の段階でこのページに実装します。',
+  home: {
+    actions: {
+      projects: 'プロジェクトを見る',
+      contact: '連絡する',
+    },
+    skills: {
+      title: '主な技術',
+      legend: '塗りつぶしたタグは主軸の技術です。',
+    },
+    projects: {
+      title: '代表プロジェクト',
+      all: 'すべてのプロジェクト',
+    },
+  },
+  skill: {
+    // 주력 기술 태그 앞에 붙는 시각적으로 숨긴 텍스트. 색만으로 의미를 전하지 않기 위함.
+    primary: '主軸：',
+  },
+  project: {
+    period: '期間',
+    role: '役割',
+    highlights: '成果',
+    tech: '技術',
   },
 };
 
@@ -94,10 +78,6 @@ const en: UiText = {
     label: 'Dark mode',
   },
   pages: {
-    home: {
-      description:
-        'Portfolio of a backend engineer. Currently under construction.',
-    },
     about: {
       name: 'About',
       description:
@@ -113,44 +93,28 @@ const en: UiText = {
     },
     comingSoon: 'This page is coming soon.',
   },
-  design: {
-    eyebrow: 'DESIGN SYSTEM / 02',
-    label: 'A preview of the selected colors and type',
-    heading: 'Designed for clarity.',
-    introduction:
-      'This preview explores how Japanese and English content can stay readable through calm spacing and clear contrast. It is not the finished portfolio.',
-    primaryAction: 'View type',
-    secondaryAction: 'View colors',
-    paletteTitle: 'Color tokens',
-    paletteDescription:
-      'See how the background, surfaces, text, and accent work together.',
-    swatchBackground: 'Background',
-    swatchSurface: 'Surface',
-    swatchAccent: 'Accent',
-    swatchText: 'Body text',
-    swatchMuted: 'Muted text',
-    typographyTitle: 'Typography',
-    typographyDescription:
-      'IBM Plex Sans JP for body text, IBM Plex Mono for supporting labels.',
-    typographySample: 'The important things, at a glance.',
-    bodySample:
-      'Spacing, type size, and line height make longer passages easy to follow.',
-    monoSample: '01 / SYSTEM / SAMPLE',
-    componentsTitle: 'Component states',
-    componentsDescription:
-      'Basic treatments for links, buttons, tags, status colors, and cards.',
-    textLink: 'View a text link',
-    defaultTag: 'Standard tag',
-    featuredTag: 'Core skill tag',
-    featuredExplanation: 'A filled tag indicates a core skill.',
-    featuredA11y: 'Core skill:',
-    success: 'Success',
-    warning: 'Caution',
-    error: 'Error',
-    cardTitle: 'Sample card',
-    cardBody:
-      'Keep information visible from the start and let decoration stay in the background.',
-    note: 'This is a design preview. Real content will replace it on this page in a later stage.',
+  home: {
+    actions: {
+      projects: 'View projects',
+      contact: 'Get in touch',
+    },
+    skills: {
+      title: 'Core skills',
+      legend: 'Filled tags mark core technologies.',
+    },
+    projects: {
+      title: 'Featured projects',
+      all: 'All projects',
+    },
+  },
+  skill: {
+    primary: 'Core: ',
+  },
+  project: {
+    period: 'Period',
+    role: 'Role',
+    highlights: 'Results',
+    tech: 'Tech',
   },
 };
 

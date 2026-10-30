@@ -1,0 +1,12 @@
+# Placeholder copy (docs/CONTENT.md). Company names stay as "Company A"; numbers and dates stay as symbols.
+placeholder: true
+title: Order processing API redesign (placeholder)
+summary: A one-sentence summary of the performance issues in Company A's order processing API and how it was redesigned. (placeholder)
+period: 20XX.XX – 20XX.XX
+role: Design and implementation lead (placeholder)
+highlights:
+  - p99 latency XX ms → XX ms (placeholder)
+  - Peak error rate reduced by XX% (placeholder)
+# Tech names are shared across languages, so the placeholder mark stays 「（仮）」.
+tech: [Java（仮）, Spring Boot（仮）, PostgreSQL（仮）, Kafka（仮）]
+featuredOrder: 1
