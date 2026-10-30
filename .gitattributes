@@ -1,0 +1,14 @@
+# 줄바꿈은 OS와 무관하게 LF로 고정한다(.editorconfig, Prettier 기본값과 같음).
+# Windows의 core.autocrlf=true에서도 체크아웃 결과가 LF가 되어 `pnpm format:check`가 통과한다.
+* text=auto eol=lf
+
+# 바이너리는 줄바꿈 변환·diff 대상에서 뺀다.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary

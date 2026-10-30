@@ -72,6 +72,14 @@ pnpm preview    # 빌드 결과 확인
 
 `test` 명령은 아직 없다. E2E 테스트는 단계 7에서 추가한다. CI는 설치 → 포맷 → lint → 타입 체크 → 빌드 순서로 실행한다.
 
+줄바꿈은 `.gitattributes`(`* text=auto eol=lf`)로 LF에 고정되어 있다. Windows에서도 새로 clone하면 그대로 LF로 받는다. `.gitattributes`가 추가되기 전(2026-10-30)에 받아 둔 Windows 체크아웃은 CRLF 파일이 남아 `pnpm format:check`가 실패할 수 있으므로, 한 번만 아래처럼 다시 체크아웃한다(`reset --hard`는 커밋하지 않은 변경을 지우므로 먼저 커밋하거나 stash한다).
+
+```bash
+git pull
+git rm -r --cached -q .
+git reset --hard
+```
+
 ## 7. 코드·콘텐츠 원칙
 
 - 핵심 정보는 클릭하지 않아도 보여야 한다. 정보를 숨기는 효과(카드 플립 등)는 쓰지 않는다.
