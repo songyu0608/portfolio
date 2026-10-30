@@ -13,7 +13,10 @@ const text = ui[locale];
 const { pathname } = Astro.url;
 const navPages = ['about', 'projects', 'contact'] as const satisfies PageKey[];
 
+const homeHref = localizePath(locale, 'home');
+
 // 그 페이지 자체면 'page', 하위 경로(예: 프로젝트 상세)면 'true'로 현재 위치를 표시한다.
+// Home은 내비게이션 항목이 없으므로 사이트 이름 링크에 'page'를 붙인다.
 const navItems = navPages.map((page) => {
   const href = localizePath(locale, page);
   const current: 'page' | 'true' | undefined =
@@ -24,7 +27,11 @@ const navItems = navPages.map((page) => {
 
 <header class="site-header">
   <div class="site-header__inner container">
-    <a class="site-header__name" href={localizePath(locale, 'home')}>
+    <a
+      class="site-header__name"
+      href={homeHref}
+      aria-current={pathname === homeHref ? 'page' : undefined}
+    >
       {text.site.name}
     </a>
     <nav class="site-nav" aria-label={text.nav.label}>
@@ -67,6 +74,13 @@ const navItems = navPages.map((page) => {
     font-size: var(--font-size-h3);
     font-weight: 700;
     text-decoration: none;
+    text-underline-offset: 0.35em;
+  }
+
+  .site-header__name[aria-current] {
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 2px;
   }
 
   .site-nav ul {
