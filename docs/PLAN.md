@@ -100,7 +100,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T02 | 디자인 시스템 | 2 | T01-followup | codex | done | `docs/tasks/T02-design-system.md` — [PR #9](https://github.com/songyu0608/portfolio/pull/9) |
 | T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | claude | done | `docs/tasks/T03-common-layout.md` — 지시서 [PR #10](https://github.com/songyu0608/portfolio/pull/10), 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) |
 | T04 | Home (한 줄 소개·핵심 기술·대표 프로젝트, 임시 문구) | 4 | T03 | claude | done | `docs/tasks/T04-home.md` — 지시서 [PR #12](https://github.com/songyu0608/portfolio/pull/12), 구현 [PR #13](https://github.com/songyu0608/portfolio/pull/13) |
-| T05 | About/경력 (경력 타임라인·기술 스택·자격증·이력서 PDF, 임시 문구) | 4 | T04 | claude | review | `docs/tasks/T05-about.md` — 지시서 [PR #15](https://github.com/songyu0608/portfolio/pull/15), 구현 PR (번호는 PR을 연 뒤 기입) |
+| T05 | About/경력 (경력 타임라인·기술 스택·자격증·이력서 PDF, 임시 문구) | 4 | T04 | claude | review | `docs/tasks/T05-about.md` — 지시서 [PR #15](https://github.com/songyu0608/portfolio/pull/15), 구현 [PR #16](https://github.com/songyu0608/portfolio/pull/16) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T06 Projects(목록·상세, 프로젝트별 担当工程 필드), T07 Contact(정적 부분), 원고 반영(기술 로고 포함).
 
