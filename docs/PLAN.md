@@ -9,7 +9,7 @@
 | 항목 | 값 |
 | --- | --- |
 | 현재 단계 | 단계 3 — 공통 레이아웃 (리뷰 중) |
-| 진행 중인 작업 | T03 공통 레이아웃 구현 PR (claude 구현, ChatGPT 교차 리뷰·사용자 확인 대기) |
+| 진행 중인 작업 | T03 공통 레이아웃 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) (claude 구현, ChatGPT 교차 리뷰·사용자 확인 대기) |
 | 다음 작업 | T03 merge 후 단계 4 페이지 지시서(T04 Home~) 작성 |
 | 블로커 | 없음. 단계 4 전에 `docs/CONTENT.md`의 콘텐츠 원고가 필요 |
 
@@ -97,7 +97,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T01 | 프로젝트 초기화 | 1 | T00 | codex | done | `docs/tasks/T01-init.md` — [PR #4](https://github.com/songyu0608/portfolio/pull/4) |
 | T01-followup | 교차 리뷰 후속 정리 | 1 | T01 | codex | done | `docs/tasks/T01-followup.md` — [PR #5](https://github.com/songyu0608/portfolio/pull/5) |
 | T02 | 디자인 시스템 | 2 | T01-followup | codex | done | `docs/tasks/T02-design-system.md` — [PR #9](https://github.com/songyu0608/portfolio/pull/9) |
-| T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | claude | review | `docs/tasks/T03-common-layout.md` — 지시서 [PR #10](https://github.com/songyu0608/portfolio/pull/10) |
+| T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | claude | review | `docs/tasks/T03-common-layout.md` — 지시서 [PR #10](https://github.com/songyu0608/portfolio/pull/10), 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) |
 
 단계 4 이후 지시서는 앞 단계가 끝날 때 작성한다. 예정: T04~ 페이지별 구현.
 
