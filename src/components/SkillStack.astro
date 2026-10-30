@@ -1,0 +1,80 @@
+---
+// 기술 스택 전체(About). 분류 블록 그리드이며 순서는 skills.yaml 배열 순서다(docs/CONTENT.md "기술 스택 표기 규칙").
+// 영어가 아닌 페이지에서는 분류 이름 옆에 영어 이름을 보조로 붙인다(시안 B).
+import type { Locale } from '../i18n/ui';
+import type { SkillCategory } from '../lib/content';
+import SkillTag from './SkillTag.astro';
+
+interface Props {
+  locale: Locale;
+  categories: SkillCategory[];
+}
+
+const { locale, categories } = Astro.props;
+---
+
+<div class="skill-stack">
+  {categories.map((category) => (
+    <div class="skill-stack__category">
+      <h3 class="skill-stack__title">
+        <span>{category.name}</span>
+        {locale !== 'en' && (
+          <>
+            {' '}
+            <span class="skill-stack__title-en" lang="en">
+              {category.nameEn}
+            </span>
+          </>
+        )}
+      </h3>
+      <ul class="tag-list skill-stack__tags">
+        {category.skills.map((skill) => (
+          <li>
+            <SkillTag
+              locale={locale}
+              name={skill.name}
+              primary={skill.primary}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>
+
+<style>
+  .skill-stack {
+    display: grid;
+    gap: var(--space-8) var(--space-12);
+  }
+
+  .skill-stack__category {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .skill-stack__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--space-3);
+  }
+
+  .skill-stack__title-en {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-label);
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  .skill-stack__tags {
+    margin-top: var(--space-3);
+  }
+
+  @media (min-width: 40rem) {
+    .skill-stack {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

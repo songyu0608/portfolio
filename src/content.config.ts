@@ -31,6 +31,19 @@ const profile = defineCollection({
     tagline: phrases,
     /** Home의 <meta name="description"> */
     description: z.string().min(1),
+    /**
+     * About의 이력서 PDF 링크. 파일이 있을 때만 쓴다(없으면 생략). file은 public/ 기준
+     * 사이트 내부 경로이며, 경로·파일 존재는 src/lib/content.ts가 검사한다.
+     */
+    resumes: z
+      .array(
+        z.strictObject({
+          label: z.string().min(1),
+          file: z.string().min(1),
+        }),
+      )
+      .max(2)
+      .optional(),
   }),
 });
 
@@ -80,4 +93,50 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { profile, skills, projects };
+// 언어별: src/content/career/<ja|en>/<slug>.yaml. 같은 slug가 두 언어에 모두 있어야 한다.
+const career = defineCollection({
+  loader: glob({ pattern: '*/*.yaml', base: './src/content/career' }),
+  schema: z.strictObject({
+    placeholder,
+    company: z.string().min(1),
+    /** 날짜 타입이 아닌 표기 문자열. 예: 2023.04 – 現在 */
+    period: z.string().min(1),
+    role: z.string().min(1),
+    highlights: z.array(z.string().min(1)).min(1).max(3),
+    /** 화면 순서. 1이 최신이다. 같은 slug는 언어마다 같은 값이어야 한다. */
+    order: z.number().int().positive(),
+    /** 현재 재직 중이면 true. 타임라인의 점을 채워 표시한다. */
+    current: z.boolean().default(false),
+  }),
+});
+
+// 언어 공통 1건: src/content/certifications.yaml. 배열 순서가 화면 순서다.
+const certifications = defineCollection({
+  loader: glob({ pattern: 'certifications.yaml', base: './src/content' }),
+  schema: z.strictObject({
+    items: z.array(
+      z.discriminatedUnion('status', [
+        z.strictObject({
+          status: z.literal('acquired'),
+          placeholder,
+          name: localizable,
+          /** 취득 연월. 날짜 타입이 아닌 표기 문자열(YYYY.MM, 임시 값은 20XX.XX) */
+          acquired: z.string().min(1),
+        }),
+        z.strictObject({
+          status: z.literal('studying'),
+          placeholder,
+          name: localizable,
+        }),
+      ]),
+    ),
+  }),
+});
+
+export const collections = {
+  profile,
+  skills,
+  projects,
+  career,
+  certifications,
+};

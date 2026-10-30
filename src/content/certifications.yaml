@@ -1,0 +1,25 @@
+# 자격증. 규칙(docs/CONTENT.md "자격증 표기 규칙"):
+# - 배열 순서가 화면 순서. 취득한 자격증은 최근 취득 순으로 둔다.
+# - 학습 중(status: studying)은 0~1개이고 목록 맨 끝에 둔다(빌드 시 검사).
+#   화면 문구 「〇〇 取得に向けて学習中」/"Studying for 〇〇"는 UI 문구 템플릿(src/i18n/ui.ts)이 만들고, 여기에는 이름만 쓴다.
+# - acquired(취득 연월)는 YYYY.MM 문자열. 임시 값은 20XX.XX.
+# 자격증 이름은 언어 공통 문자열로 쓴다. 언어마다 달라야 하면 { ja, en }으로 쓴다.
+# 지금은 모두 임시 문구(docs/CONTENT.md "임시 문구 규칙")라 표식이 달라서 { ja, en }이다.
+items:
+  - status: acquired
+    name:
+      ja: 〇〇 認定資格（仮）
+      en: XX Certification (placeholder)
+    acquired: 20XX.XX
+    placeholder: true
+  - status: acquired
+    name:
+      ja: 〇〇 技術者試験（仮）
+      en: XX Engineer Examination (placeholder)
+    acquired: 20XX.XX
+    placeholder: true
+  - status: studying
+    name:
+      ja: 〇〇（仮）
+      en: XX (placeholder)
+    placeholder: true

@@ -1,0 +1,8 @@
+# 임시 문구(docs/CONTENT.md "임시 문구 규칙"). 회사명은 A社처럼, 수치·기간은 기호로 둔다.
+placeholder: true
+company: C社（仮）
+period: 20XX.XX – 20XX.XX
+role: ソフトウェアエンジニア（仮）
+highlights:
+  - 社内向け 〇〇 ツールの開発（仮）
+order: 3

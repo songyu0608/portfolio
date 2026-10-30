@@ -218,3 +218,63 @@
 ### 모션
 
 새 전환 효과는 없다. 행동 링크는 기존 `.button`(떠오름 120ms·그림자 200ms)을 그대로 쓰며 `prefers-reduced-motion: reduce`에서 꺼진다(T02).
+
+## 6. About (T05)
+
+`src/components/pages/AboutPage.astro`와 하위 컴포넌트 `CareerTimeline.astro`, `SkillStack.astro`, `CertificationList.astro`. 콘텐츠 값은 `src/content/`(조회는 `src/lib/content.ts`의 `getAboutContent`), UI 문구는 `src/i18n/ui.ts`의 `pages.about.*`·`about.*`·`skill.*`에서 가져온다.
+
+### 섹션 구성
+
+순서: 페이지 머리 → 職歴 → 技術スタック → 資格. 섹션마다 `<section aria-labelledby>`이고 제목은 h1(페이지 이름) → h2(섹션) → h3(회사·분류)다.
+
+| 섹션 | 구성 |
+| --- | --- |
+| 페이지 머리 | h1 「経歴」/`About`(페이지 이름, T03 규칙) → 한 줄에 프로필 이름(20px, 700)과 직함(text-muted). 좁으면 두 줄로 내려간다 → 이력서 링크 목록(`<ul>`) |
+| 職歴 | h2 + 타임라인(`<ol>`, 최신이 위, 콘텐츠의 `order` 순). 항목: 기간 → 회사명(h3) → 직무(text-muted) → 성과(`<ul>`) |
+| 技術スタック | h2 + 범례 문구(Home과 같은 `skill.legend`) + 분류 블록 그리드. 블록: 위쪽 가는 구분선(border) + h3 + 태그 목록(`<ul>`, `SkillTag`). 분류·기술 순서는 `skills.yaml` 배열 순서 |
+| 資格 | h2 + `<dl>`(시안 A, `docs/CONTENT.md` "자격증 표기 규칙"). 자격증이 0건이면 섹션을 출력하지 않는다 |
+
+- 이력서 링크는 콘텐츠의 `resumes`가 있을 때만 출력한다. 없으면 빈 `<ul>`·빈 여백 없이 아무것도 출력하지 않는다. 첫 링크는 `.button--primary`, 나머지는 `.button`이고, 링크 앞에 내려받기 아이콘(인라인 SVG, `aria-hidden="true"`)을 둔다. 링크 문구(콘텐츠 값)에 「（PDF）」/`(PDF)`를 넣어 파일 형식을 알린다.
+- 기술 스택 분류 h3: 영어가 아닌 페이지는 그 언어 분류 이름 옆에 영어 이름(모노스페이스 12px, 400, text-muted, `lang="en"`)을 보조로 붙인다. 영어 페이지는 영어 이름만 쓴다.
+
+### 전환점별 배치
+
+| 폭 | 배치 |
+| --- | --- |
+| 640px 미만 | 머리 위 여백 48px. 타임라인 기간은 회사명 위. 기술 스택 1열 |
+| 640px 이상 | 머리 위 여백 64px. 타임라인 기간은 왼쪽 열(11rem, 열 간격 32px). 기술 스택 2열(열 간격 48px, 줄 간격 32px) |
+
+- 섹션 사이 64px, 섹션 제목(또는 범례)과 본문 사이 24px, 이름·직함 줄과 이력서 링크 사이 24px.
+- 1024px에서 바뀌는 배치는 없다.
+
+### 경력 타임라인 (`src/components/CareerTimeline.astro`)
+
+- 점: 지름 14px, 중심을 기간 첫 줄 가운데에 맞춘다(위 6px). 현재 재직(`current: true`)은 accent로 채운 점, 나머지는 text-muted 2px 테두리 점이다.
+- 세로선: 폭 2px, border 색. 이 항목의 점 중심에서 다음 항목의 점 중심까지 잇고, 마지막 항목 아래로는 늘이지 않는다.
+- 선·점은 `::before`/`::after` 장식이라 접근성 트리에 나오지 않는다. 현재 재직 여부는 기간 문구(「現在」/`Present`)가 전한다.
+- 기간: 14px, text-muted, 글꼴 `'IBM Plex Mono', var(--font-sans)`. 「現在」 같은 일본어가 섞이므로 일반 `monospace`로 넘어가 일본어 Windows에서 MS ゴシック가 쓰이지 않게, 모노스페이스 글꼴 다음에 본문 글꼴로 넘긴다.
+- 모든 항목을 펼쳐 보인다. 단계 5 컨셉 5(스크롤 타임라인)는 `.timeline__item`에 강조만 더하며, 지금 화면이 애니메이션 없는 최종 상태다.
+
+### 자격증 행 (`src/components/CertificationList.astro`)
+
+- 행: 그리드 `7rem | 나머지`(열 간격 24px, 위아래 12px), 목록 위와 각 행 아래에 가는 구분선(border). 목록 최대 폭 48rem. 320px에서도 두 열을 유지한다.
+- 취득: `<dt>` 연월(모노스페이스 14px, text-muted), `<dd>` 이름.
+- 학습 중: `<dt>` 「学習中」/`Studying`(14px, 700, accent), `<dd>`는 UI 문구 템플릿 `about.certifications.studyingName`(「{name} 取得に向けて学習中」/`Studying for {name}`)에 이름을 넣은 문장이다. 학습 중은 0~1개이고 맨 끝에 둔다(콘텐츠 검사).
+
+### 대비 (About)
+
+새 토큰 조합은 없다. 모두 §2 대비 표의 기존 조합이며 바탕은 background다. 단위 `:1`.
+
+| 요소 | 조합 | 라이트 | 다크 |
+| --- | --- | --- | --- |
+| 이름, 회사명, 성과, 분류 이름, 자격증 이름 | text / background | 17.25 | 16.18 |
+| 직함, 기간, 직무, 범례, 분류 영어 이름, 취득 연월 | text-muted / background | 6.63 | 7.79 |
+| 「学習中」 라벨, 이력서 테두리 버튼 글자·경계 | accent / background | 4.74 | 8.14 |
+| 이력서 주 버튼, 채운 태그(주력) | on-accent / accent | 5.00 | 8.14 |
+| 타임라인 점 테두리 | text-muted / background | 6.63 | 7.79 |
+
+- 타임라인 세로선, 분류 구분선, 자격증 구분선은 border(장식용, §2)다. 정보를 전하지 않으므로 UI 경계 기준(3:1)의 대상이 아니다.
+
+### 모션
+
+새 전환 효과는 없다. 이력서 링크는 기존 `.button`(떠오름 120ms·그림자 200ms)을 그대로 쓰며 `prefers-reduced-motion: reduce`에서 꺼진다(T02).

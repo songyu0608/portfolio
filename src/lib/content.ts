@@ -1,6 +1,7 @@
 // 콘텐츠 조회와 여러 항목에 걸친 규칙 검사. 페이지는 getCollection을 직접 쓰지 않고 이 함수들을 쓴다.
 // 규칙을 어기면 어긴 규칙을 모두 적은 오류를 던져 빌드를 멈춘다(docs/ARCHITECTURE.md §2 "콘텐츠 구조").
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { publicDir } from 'astro:config/server';
 import { locales, type Locale } from '../i18n/ui';
 
 export type Profile = CollectionEntry<'profile'>['data'];
@@ -9,6 +10,22 @@ export type Skill =
 export type Project = CollectionEntry<'projects'>['data'] & { slug: string };
 /** 이름을 한 언어로 정한 기술. */
 export type LocalizedSkill = Omit<Skill, 'name'> & { name: string };
+export type CareerEntry = CollectionEntry<'career'>['data'] & { slug: string };
+type Certification = CollectionEntry<'certifications'>['data']['items'][number];
+/** 유니온의 각 타입에서 name을 한 언어 문자열로 바꾼다(Omit이 유니온을 합치지 않게 분배). */
+type WithLocalizedName<T> = T extends unknown
+  ? Omit<T, 'name'> & { name: string }
+  : never;
+/** 이름을 한 언어로 정한 자격증. status로 구분하며, 학습 중이면 acquired가 없다. */
+export type LocalizedCertification = WithLocalizedName<Certification>;
+
+/** About 기술 스택의 분류. 이름은 페이지 언어 값, nameEn은 일본어 페이지의 보조 표기용 영어 이름. */
+export interface SkillCategory {
+  id: string;
+  name: string;
+  nameEn: string;
+  skills: LocalizedSkill[];
+}
 
 export interface HomeContent {
   profile: Profile;
@@ -18,10 +35,22 @@ export interface HomeContent {
   projects: Project[];
 }
 
+export interface AboutContent {
+  profile: Profile;
+  /** 경력. order 순서(최신이 먼저). */
+  career: CareerEntry[];
+  /** 기술 스택 전체. skills.yaml의 분류·기술 순서. */
+  skillCategories: SkillCategory[];
+  /** 자격증. certifications.yaml의 순서(학습 중은 맨 끝). */
+  certifications: LocalizedCertification[];
+}
+
 // docs/CONTENT.md "기술 스택 표기 규칙", docs/PLAN.md §3
 const FEATURED_PROJECTS = { min: 2, max: 3 };
 const HOME_SKILLS = { min: 3, max: 6 };
 const PRIMARY_SKILLS = { min: 2, max: 4, perCategory: 2 };
+// docs/CONTENT.md "자격증 표기 규칙"
+const MAX_STUDYING_CERTIFICATIONS = 1;
 
 const isLocale = (value: string): value is Locale =>
   (locales as string[]).includes(value);
@@ -42,13 +71,50 @@ function duplicates(values: number[]): number[] {
   return [...new Set(values.filter((v, i) => values.indexOf(v) !== i))];
 }
 
+// 이력서 파일 존재 확인에 쓰는 Node 내장 모듈. @types/node가 없어(T05: 새 의존성 금지) 정적 import는
+// 타입 검사가 실패하므로, 쓰는 메서드만 타입을 적고 빌드(Node) 시점에 동적 import한다.
+interface NodeFs {
+  statSync(
+    path: URL,
+    options: { throwIfNoEntry: false },
+  ): { isFile(): boolean } | undefined;
+}
+const NODE_FS = 'node:fs';
+const loadFs = async () => (await import(/* @vite-ignore */ NODE_FS)) as NodeFs;
+
+/**
+ * 이력서 링크 경로를 검사하고 문제가 있으면 이유를 돌려준다. 외부 URL·`..` 경로를 거부하고,
+ * public/ 기준으로 해석한 최종 경로가 public/ 안의 실제 파일이어야 한다(docs/tasks/T05-about.md).
+ */
+function resumeFileProblem(file: string, fs: NodeFs): string | undefined {
+  if (!file.startsWith('/') || file.startsWith('//') || file.includes('\\')) {
+    return '`/`로 시작하는 사이트 내부 경로여야 한다(외부 URL 불가)';
+  }
+  if (file.split('/').includes('..')) return '`..`를 쓸 수 없다';
+  const base = new URL(String(publicDir).replace(/\/?$/, '/'));
+  const target = new URL(`.${file}`, base);
+  if (!target.href.startsWith(base.href)) return 'public/ 밖을 가리킨다';
+  if (!fs.statSync(target, { throwIfNoEntry: false })?.isFile()) {
+    return `public${file} 파일이 없다`;
+  }
+  return undefined;
+}
+
 let placeholderReported = false;
 
 async function loadContent() {
-  const [profileEntries, skillEntries, projectEntries] = await Promise.all([
+  const [
+    profileEntries,
+    skillEntries,
+    projectEntries,
+    careerEntries,
+    certificationEntries,
+  ] = await Promise.all([
     getCollection('profile'),
     getCollection('skills'),
     getCollection('projects'),
+    getCollection('career'),
+    getCollection('certifications'),
   ]);
   const errors: string[] = [];
 
@@ -66,6 +132,17 @@ async function loadContent() {
   for (const locale of locales) {
     if (!profiles.has(locale))
       errors.push(`프로필: profile/${locale}.yaml이 없다`);
+  }
+  const resumes = [...profiles].flatMap(([id, profile]) =>
+    (profile.resumes ?? []).map((resume) => ({ id, file: resume.file })),
+  );
+  if (resumes.length > 0) {
+    const fs = await loadFs();
+    for (const { id, file } of resumes) {
+      const problem = resumeFileProblem(file, fs);
+      if (problem)
+        errors.push(`이력서: profile/${id}.yaml의 ${file} — ${problem}`);
+    }
   }
 
   // 프로젝트: <언어>/<slug>, 같은 slug가 모든 언어에 있어야 한다
@@ -115,6 +192,70 @@ async function loadContent() {
       );
   }
 
+  // 경력: <언어>/<slug>, 같은 slug가 모든 언어에 있고 order·current가 같아야 한다
+  const career = Object.fromEntries(
+    locales.map((l) => [l, [] as CareerEntry[]]),
+  ) as Record<Locale, CareerEntry[]>;
+  for (const entry of careerEntries) {
+    const [locale, slug] = entry.id.split('/');
+    if (!isLocale(locale) || !slug) {
+      errors.push(
+        `경력: career/${entry.id}.yaml — 언어 폴더(${locales.join(', ')}) 안에 있어야 한다`,
+      );
+      continue;
+    }
+    career[locale].push({ ...entry.data, slug });
+  }
+  const careerSlugs = new Set(
+    locales.flatMap((l) => career[l].map((c) => c.slug)),
+  );
+  for (const slug of careerSlugs) {
+    const found = locales.map((l) => career[l].find((c) => c.slug === slug));
+    const missing = locales.filter((_, i) => !found[i]);
+    if (missing.length > 0) {
+      errors.push(
+        `경력: ${slug} — ${missing.map((l) => `${l}/${slug}.yaml`).join(', ')}이 없다`,
+      );
+      continue;
+    }
+    for (const key of ['order', 'current'] as const) {
+      const values = found.map((c) => c?.[key]);
+      if (new Set(values).size > 1) {
+        errors.push(
+          `경력: ${slug} — ${key}가 언어마다 다르다 (${locales.map((l, i) => `${l}: ${values[i]}`).join(', ')})`,
+        );
+      }
+    }
+  }
+  for (const locale of locales) {
+    if (career[locale].length === 0)
+      errors.push(`경력: ${locale}에 항목이 없다(1건 이상 필요)`);
+    const dup = duplicates(career[locale].map((c) => c.order));
+    if (dup.length > 0)
+      errors.push(`경력: ${locale}에서 order ${dup.join(', ')}이 겹친다`);
+  }
+
+  // 자격증: 언어 공통 1건. 학습 중은 0~1개이고 맨 끝
+  const certifications = certificationEntries.flatMap(
+    (entry) => entry.data.items,
+  );
+  const studyingIndexes = certifications.flatMap((c, i) =>
+    c.status === 'studying' ? [i] : [],
+  );
+  if (studyingIndexes.length > MAX_STUDYING_CERTIFICATIONS) {
+    errors.push(
+      `자격증: 학습 중(status: studying)은 ${MAX_STUDYING_CERTIFICATIONS}개까지다: ${studyingIndexes.length}개`,
+    );
+  }
+  if (studyingIndexes.some((index) => index !== certifications.length - 1)) {
+    errors.push(
+      `자격증: 학습 중(status: studying) 항목은 목록 맨 끝에 둔다: ${studyingIndexes
+        .filter((index) => index !== certifications.length - 1)
+        .map((index) => localize(certifications[index].name, 'ja'))
+        .join(', ')}`,
+    );
+  }
+
   // 기술 스택: 언어 공통 1건
   const categories = skillEntries.flatMap((entry) => entry.data.categories);
   if (skillEntries.length === 0) errors.push('기술 스택: skills.yaml이 없다');
@@ -155,6 +296,16 @@ async function loadContent() {
         `주력 기술은 분류당 0~${PRIMARY_SKILLS.perCategory}개여야 한다: ${category.id} ${count}개`,
       );
     }
+    // 주력 기술은 분류 안에서 주력이 아닌 기술보다 앞에 둔다
+    const firstNormal = category.items.findIndex((s) => !s.primary);
+    const latePrimary = category.items.filter(
+      (s, i) => s.primary && firstNormal !== -1 && i > firstNormal,
+    );
+    if (latePrimary.length > 0) {
+      errors.push(
+        `주력 기술은 분류 안에서 주력이 아닌 기술보다 앞에 둔다: ${category.id} — ${latePrimary.map((s) => localize(s.name, 'ja')).join(', ')}`,
+      );
+    }
   }
 
   if (errors.length > 0) {
@@ -171,10 +322,15 @@ async function loadContent() {
       skills: allSkills.filter((s) => s.placeholder).length,
       projects: locales.flatMap((l) => projects[l]).filter((p) => p.placeholder)
         .length,
+      career: locales.flatMap((l) => career[l]).filter((c) => c.placeholder)
+        .length,
+      certifications: certifications.filter((c) => c.placeholder).length,
     };
-    const total = counts.profile + counts.skills + counts.projects;
+    const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
     console.warn(
-      `[content] placeholder entries: ${total} (profile ${counts.profile}, skills ${counts.skills}, projects ${counts.projects})`,
+      `[content] placeholder entries: ${total} (${Object.entries(counts)
+        .map(([name, n]) => `${name} ${n}`)
+        .join(', ')})`,
     );
   }
 
@@ -182,21 +338,49 @@ async function loadContent() {
     profiles: profiles as Map<Locale, Profile>,
     projects,
     homeSkills,
+    career,
+    categories,
+    certifications,
   };
+}
+
+function getProfile(profiles: Map<Locale, Profile>, locale: Locale): Profile {
+  const profile = profiles.get(locale);
+  // loadContent가 모든 언어의 프로필이 있는지 검사했으므로 여기에 오지 않는다.
+  if (!profile) throw new Error(`[content] 프로필 없음: ${locale}`);
+  return profile;
 }
 
 export async function getHomeContent(locale: Locale): Promise<HomeContent> {
   const content = await loadContent();
-  const profile = content.profiles.get(locale);
-  // loadContent가 모든 언어의 프로필이 있는지 검사했으므로 여기에 오지 않는다.
-  if (!profile) throw new Error(`[content] 프로필 없음: ${locale}`);
   return {
-    profile,
+    profile: getProfile(content.profiles, locale),
     skills: content.homeSkills
       .toSorted((a, b) => (a.homeOrder ?? 0) - (b.homeOrder ?? 0))
       .map((skill) => ({ ...skill, name: localize(skill.name, locale) })),
     projects: content.projects[locale]
       .filter((p) => p.featuredOrder !== undefined)
       .toSorted((a, b) => (a.featuredOrder ?? 0) - (b.featuredOrder ?? 0)),
+  };
+}
+
+export async function getAboutContent(locale: Locale): Promise<AboutContent> {
+  const content = await loadContent();
+  return {
+    profile: getProfile(content.profiles, locale),
+    career: content.career[locale].toSorted((a, b) => a.order - b.order),
+    skillCategories: content.categories.map((category) => ({
+      id: category.id,
+      name: category.name[locale],
+      nameEn: category.name.en,
+      skills: category.items.map((skill) => ({
+        ...skill,
+        name: localize(skill.name, locale),
+      })),
+    })),
+    certifications: content.certifications.map((certification) => ({
+      ...certification,
+      name: localize(certification.name, locale),
+    })),
   };
 }

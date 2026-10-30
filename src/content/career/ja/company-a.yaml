@@ -1,0 +1,11 @@
+# 임시 문구(docs/CONTENT.md "임시 문구 규칙"). 회사명은 A社처럼, 수치·기간은 기호로 둔다.
+# 원고를 받으면 값을 바꾸고 placeholder를 false로 바꾼다. 회사명은 공개 가능한 표기만 쓴다.
+placeholder: true
+company: A社（仮）
+period: 20XX.XX – 現在
+role: バックエンドエンジニア（仮）
+highlights:
+  - 〇〇 API の p99 レイテンシを XX ms から XX ms に改善（仮）
+  - 〇〇 基盤の設計から運用までを担当（仮）
+order: 1
+current: true
