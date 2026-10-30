@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-30 (T02 색상·글꼴 선택 결과 기록)
+마지막 갱신: 2026-10-30 (T02 디자인 시스템 구현·검증 완료, 교차 리뷰 대기)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 2 — 디자인 시스템 (착수 전) |
-| 진행 중인 작업 | 없음 (T01-followup PR #5, 기술 스택 표기 PR #6 merge 완료) |
-| 다음 작업 | T02 디자인 시스템 구현 (codex). 색상 시안 E·글꼴 시안 3 선택 완료 (`docs/tasks/T02-design-system.md`) |
+| 현재 단계 | 단계 2 — 디자인 시스템 (교차 리뷰 대기) |
+| 진행 중인 작업 | T02 디자인 시스템 구현 (codex). 색상 시안 E·글꼴 시안 3을 적용한 확인 화면 검토 중 (`docs/tasks/T02-design-system.md`) |
+| 다음 작업 | T02 구현 PR 교차 리뷰·merge 후 T03 공통 레이아웃 지시서 작성 |
 | 블로커 | 없음. 단계 4 전에 `docs/CONTENT.md`의 콘텐츠 원고가 필요 |
 
 ## 1. 개요
@@ -77,7 +77,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | --- | --- | --- |
 | 0 | 요구사항·콘텐츠 정리, 저장소 뼈대(AGENTS.md, CLAUDE.md, docs/, 작업 지시서 템플릿) | done |
 | 1 | 프로젝트 초기화: Astro, TypeScript, lint/format, CI | done |
-| 2 | 디자인 시스템: 색, 타이포그래피, 간격, 다크 모드, 인터랙션 세부 확정 | todo |
+| 2 | 디자인 시스템: 색, 타이포그래피, 간격, 다크 모드, 인터랙션 세부 확정 | in-progress |
 | 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | todo |
 | 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | todo |
 | 5 | 인터랙션 구현: 컨셉 1~5 | todo |
@@ -96,7 +96,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T00 | 저장소 뼈대 | 0 | - | claude | done | PR #1 |
 | T01 | 프로젝트 초기화 | 1 | T00 | codex | done | `docs/tasks/T01-init.md` — [PR #4](https://github.com/songyu0608/portfolio/pull/4) |
 | T01-followup | 교차 리뷰 후속 정리 | 1 | T01 | codex | done | `docs/tasks/T01-followup.md` — [PR #5](https://github.com/songyu0608/portfolio/pull/5) |
-| T02 | 디자인 시스템 | 2 | T01-followup | codex | todo | `docs/tasks/T02-design-system.md` |
+| T02 | 디자인 시스템 | 2 | T01-followup | codex | review | `docs/tasks/T02-design-system.md` |
 
 단계 3 이후 지시서는 앞 단계가 끝날 때 작성한다. 예정: T03 공통 레이아웃·i18n, T04~ 페이지별 구현.
 
