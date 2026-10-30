@@ -5,7 +5,7 @@
 | 단계 | 1 |
 | 선행 작업 | T01 (PR #4 merge 완료) |
 | 담당 | codex |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `codex/T01-followup` |
 
 ## 목표
@@ -51,4 +51,4 @@ lockfile diff는 직접 의존성 3개의 specifier에서 `^` 제거만 포함�
 
 ## 메모
 
-이 PR은 Claude 교차 리뷰와 사용자 merge 후 완료 처리한다. 다음은 `docs/DESIGN.md`를 기준으로 T02 디자인 시스템 지시서 작성이다.
+Claude 교차 리뷰와 사용자 merge를 마쳤다 ([PR #5](https://github.com/songyu0608/portfolio/pull/5)). 후속 작업은 `docs/tasks/T02-design-system.md`에 정리했다.
