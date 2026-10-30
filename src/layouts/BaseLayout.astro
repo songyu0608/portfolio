@@ -1,0 +1,88 @@
+---
+import '../styles/global.css';
+import '@fontsource/ibm-plex-sans-jp/400.css';
+import '@fontsource/ibm-plex-sans-jp/700.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { ui, type Locale } from '../i18n/ui';
+import { THEME_STORAGE_KEY } from '../scripts/theme';
+
+interface Props {
+  locale: Locale;
+  /** 페이지 이름. 생략하면 Home으로 보고 사이트 이름만 제목에 쓴다. */
+  title?: string;
+  description: string;
+}
+
+const { locale, title, description } = Astro.props;
+const text = ui[locale];
+const pageTitle = title ? `${title} | ${text.site.name}` : text.site.name;
+
+// <head>의 인라인 스크립트는 첫 렌더 전에 저장된 테마를 적용한다. 저장소 접근이 막히면
+// 아무것도 하지 않아 시스템 설정을 따른다. 저장 키는 src/scripts/theme.ts의 THEME_STORAGE_KEY를
+// define:vars로 받는다. js 클래스는 JS가 동작할 때만 테마 버튼을 보여주는 데 쓴다.
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{pageTitle}</title>
+    <script is:inline define:vars={{ storageKey: THEME_STORAGE_KEY }}>
+      const root = document.documentElement;
+      root.classList.add('js');
+      try {
+        const theme = localStorage.getItem(storageKey);
+        if (theme === 'light' || theme === 'dark') root.dataset.theme = theme;
+      } catch {
+        // 시스템 설정을 따른다.
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      {text.skipLink}
+    </a>
+    <SiteHeader locale={locale} />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter locale={locale} />
+  </body>
+</html>
+
+<style>
+  body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    z-index: 10;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-button);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: 700;
+    text-decoration: none;
+    transform: translateY(calc(-100% - var(--space-4)));
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+</style>

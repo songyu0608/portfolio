@@ -1,0 +1,71 @@
+---
+import { switchLocalePath } from '../i18n/paths';
+import { localeNames, locales, ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const { pathname } = Astro.url;
+---
+
+<nav class="lang-switch" aria-label={ui[locale].language.label}>
+  <ul>
+    {locales.map((code) => (
+      <li>
+        {code === locale ? (
+          <span aria-current="true" lang={code}>
+            {localeNames[code]}
+          </span>
+        ) : (
+          <a
+            href={switchLocalePath(pathname, code)}
+            lang={code}
+            hreflang={code}
+          >
+            {localeNames[code]}
+          </a>
+        )}
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .lang-switch ul {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lang-switch li {
+    display: flex;
+    align-items: center;
+  }
+
+  .lang-switch li + li::before {
+    width: 1px;
+    height: 1em;
+    background: var(--color-border);
+    content: '';
+  }
+
+  .lang-switch a,
+  .lang-switch span {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--space-2);
+    font-size: var(--font-size-small);
+  }
+
+  .lang-switch span {
+    color: var(--color-text);
+    font-weight: 700;
+  }
+</style>
