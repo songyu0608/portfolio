@@ -2,14 +2,14 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-30 (T04 Home 구현 PR)
+마지막 갱신: 2026-10-30 (T04 PR #13 merge 반영)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
 | 현재 단계 | 단계 4 — 페이지 구현 |
-| 진행 중인 작업 | T04 Home 구현 (Claude, 임시 문구) [PR #13](https://github.com/songyu0608/portfolio/pull/13). 교차 리뷰·사용자 확인 대기 |
+| 진행 중인 작업 | 없음. T04 Home(임시 문구)은 [PR #13](https://github.com/songyu0608/portfolio/pull/13) merge로 완료 |
 | 다음 작업 | T05 About/경력 지시서 |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
@@ -98,7 +98,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T01-followup | 교차 리뷰 후속 정리 | 1 | T01 | codex | done | `docs/tasks/T01-followup.md` — [PR #5](https://github.com/songyu0608/portfolio/pull/5) |
 | T02 | 디자인 시스템 | 2 | T01-followup | codex | done | `docs/tasks/T02-design-system.md` — [PR #9](https://github.com/songyu0608/portfolio/pull/9) |
 | T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | claude | done | `docs/tasks/T03-common-layout.md` — 지시서 [PR #10](https://github.com/songyu0608/portfolio/pull/10), 구현 [PR #11](https://github.com/songyu0608/portfolio/pull/11) |
-| T04 | Home (한 줄 소개·핵심 기술·대표 프로젝트, 임시 문구) | 4 | T03 | claude | review | `docs/tasks/T04-home.md` — 지시서 [PR #12](https://github.com/songyu0608/portfolio/pull/12), 구현 [PR #13](https://github.com/songyu0608/portfolio/pull/13) |
+| T04 | Home (한 줄 소개·핵심 기술·대표 프로젝트, 임시 문구) | 4 | T03 | claude | done | `docs/tasks/T04-home.md` — 지시서 [PR #12](https://github.com/songyu0608/portfolio/pull/12), 구현 [PR #13](https://github.com/songyu0608/portfolio/pull/13) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T05 About/경력, T06 Projects(목록·상세), T07 Contact(정적 부분).
 
@@ -156,3 +156,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-30 | T03 PR #11 merge 완료 반영. 단계 4는 원고 수집 전에 임시 문구(placeholder)로 진행하고, 원고는 콘텐츠 파일만 바꿔 반영 | 사용자 결정, T04 지시서 |
 | 2026-10-30 | 콘텐츠 구조(YAML content collections + `src/lib/content.ts` 규칙 검사), 일본어 문절 줄바꿈 방식, Home h1 = 이름, 사이트 이름과 프로필 이름은 별개 값 | T04 구현 (`docs/ARCHITECTURE.md` §2, A9, `docs/DESIGN.md` §2·§5) |
 | 2026-10-30 | Home h1 = 이름 확정, 프로필 이름 일본어 「チェ ソンギュ」·영어 `choi seonggyu`. 일본어 UI 문구(「主な技術」 등)는 지시서 기본안으로 두고 나중에 사용자가 `src/i18n/ui.ts`에서 직접 고친다. 한 줄 소개는 원고 합의 후 반영 | T04 사용자 확인 |
+| 2026-10-30 | T04 PR #13 merge 완료 반영(Codex 교차 리뷰 수정 필요 1건·개선 제안 1건 반영 후 재검증 통과) | 지시서 없음 (문서만 변경) |
