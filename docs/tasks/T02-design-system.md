@@ -5,7 +5,7 @@
 | 단계 | 2 |
 | 선행 작업 | T01-followup (PR #5) |
 | 담당 | codex |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `codex/T02-design-system` |
 
 ## 목표

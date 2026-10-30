@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-30 (T02 디자인 시스템 구현·검증 완료, 교차 리뷰 대기)
+마지막 갱신: 2026-10-30 (T02 PR #9 merge 반영, T03 공통 레이아웃 지시서 작성)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 2 — 디자인 시스템 (교차 리뷰 대기) |
-| 진행 중인 작업 | T02 디자인 시스템 구현 (codex). 색상 시안 E·글꼴 시안 3을 적용한 확인 화면 검토 중 (`docs/tasks/T02-design-system.md`) |
-| 다음 작업 | T02 구현 PR 교차 리뷰·merge 후 T03 공통 레이아웃 지시서 작성 |
+| 현재 단계 | 단계 3 — 공통 레이아웃 (착수 전) |
+| 진행 중인 작업 | 없음 (T02 디자인 시스템 PR #9 merge 완료) |
+| 다음 작업 | T03 공통 레이아웃 (`docs/tasks/T03-common-layout.md`) |
 | 블로커 | 없음. 단계 4 전에 `docs/CONTENT.md`의 콘텐츠 원고가 필요 |
 
 ## 1. 개요
@@ -77,7 +77,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | --- | --- | --- |
 | 0 | 요구사항·콘텐츠 정리, 저장소 뼈대(AGENTS.md, CLAUDE.md, docs/, 작업 지시서 템플릿) | done |
 | 1 | 프로젝트 초기화: Astro, TypeScript, lint/format, CI | done |
-| 2 | 디자인 시스템: 색, 타이포그래피, 간격, 다크 모드, 인터랙션 세부 확정 | in-progress |
+| 2 | 디자인 시스템: 색, 타이포그래피, 간격, 다크 모드, 인터랙션 세부 확정 | done |
 | 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | todo |
 | 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | todo |
 | 5 | 인터랙션 구현: 컨셉 1~5 | todo |
@@ -96,9 +96,11 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T00 | 저장소 뼈대 | 0 | - | claude | done | PR #1 |
 | T01 | 프로젝트 초기화 | 1 | T00 | codex | done | `docs/tasks/T01-init.md` — [PR #4](https://github.com/songyu0608/portfolio/pull/4) |
 | T01-followup | 교차 리뷰 후속 정리 | 1 | T01 | codex | done | `docs/tasks/T01-followup.md` — [PR #5](https://github.com/songyu0608/portfolio/pull/5) |
-| T02 | 디자인 시스템 | 2 | T01-followup | codex | review | `docs/tasks/T02-design-system.md` — [PR #9](https://github.com/songyu0608/portfolio/pull/9) |
+| T02 | 디자인 시스템 | 2 | T01-followup | codex | done | `docs/tasks/T02-design-system.md` — [PR #9](https://github.com/songyu0608/portfolio/pull/9) |
 
-단계 3 이후 지시서는 앞 단계가 끝날 때 작성한다. 예정: T03 공통 레이아웃·i18n, T04~ 페이지별 구현.
+| T03 | 공통 레이아웃·언어·테마 전환 | 3 | T02 | - | todo | `docs/tasks/T03-common-layout.md` |
+
+단계 4 이후 지시서는 앞 단계가 끝날 때 작성한다. 예정: T04~ 페이지별 구현.
 
 ## 7. 미결 사항
 
@@ -122,7 +124,9 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 ### T02 교차 리뷰에서 이월한 항목
 
 - [ ] 단계 6: 글꼴 CSS 크기 재검토. T02 시점 빌드에서 공통 CSS가 357,868B(gzip 172,181B), `@font-face` 251개이며 `/ja/`, `/en/` 모두 첫 렌더 전에 받는다. 후보: 빌드 시 실제 사용 글자 기준 서브셋, 일본어 글꼴 CSS를 `/ja/`에만 적용. Lighthouse로 전후를 측정한다.
-- 근거: [PR #9](https://github.com/songyu0608/portfolio/pull/9) Claude 교차 리뷰.
+- [ ] T03: 일본어 제목 `word-break: auto-phrase`를 Safari·Firefox에서 확인하고, 필요하면 명시적 줄바꿈을 검토한다 (T03 범위 8).
+- [ ] T03: PR #9 캡처는 `4aa6183` 기준이라 이후 수정이 반영되지 않았다. T03 PR에 최신 캡처를 싣는다 (T03 범위 8).
+- 근거: [PR #9](https://github.com/songyu0608/portfolio/pull/9) Claude 교차 리뷰, ChatGPT 재검증 리뷰.
 
 ## 9. 결정 변경 기록
 
@@ -135,3 +139,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-29 | 기술 스택 표기 방식 확정: 분류별 태그, 시안 B 채택 | 지시서 없음 (문서만 변경) |
 | 2026-10-30 | T01-followup PR #5 완료 반영, T02 디자인 시스템 지시서 작성 | T02 착수 전 |
 | 2026-10-30 | 디자인 색상(시안 E)·글꼴(IBM Plex) 선택, 색 변경은 토큰 교체 방식으로 결정 | T02 |
+| 2026-10-30 | T02 PR #9 merge 완료 반영, T03 공통 레이아웃 지시서 작성 | T03 착수 전 |
