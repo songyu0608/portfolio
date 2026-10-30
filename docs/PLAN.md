@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-30 (T02 색상·글꼴 선택 결과 기록)
+마지막 갱신: 2026-10-30 (T02 디자인 시스템 구현·검증 완료, 교차 리뷰 대기)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 2 — 디자인 시스템 (착수 전) |
-| 진행 중인 작업 | 없음 (T01-followup PR #5, 기술 스택 표기 PR #6 merge 완료) |
-| 다음 작업 | T02 디자인 시스템 구현 (codex). 색상 시안 E·글꼴 시안 3 선택 완료 (`docs/tasks/T02-design-system.md`) |
+| 현재 단계 | 단계 2 — 디자인 시스템 (교차 리뷰 대기) |
+| 진행 중인 작업 | T02 디자인 시스템 구현 (codex). 색상 시안 E·글꼴 시안 3을 적용한 확인 화면 검토 중 (`docs/tasks/T02-design-system.md`) |
+| 다음 작업 | T02 구현 PR 교차 리뷰·merge 후 T03 공통 레이아웃 지시서 작성 |
 | 블로커 | 없음. 단계 4 전에 `docs/CONTENT.md`의 콘텐츠 원고가 필요 |
 
 ## 1. 개요
@@ -77,7 +77,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | --- | --- | --- |
 | 0 | 요구사항·콘텐츠 정리, 저장소 뼈대(AGENTS.md, CLAUDE.md, docs/, 작업 지시서 템플릿) | done |
 | 1 | 프로젝트 초기화: Astro, TypeScript, lint/format, CI | done |
-| 2 | 디자인 시스템: 색, 타이포그래피, 간격, 다크 모드, 인터랙션 세부 확정 | todo |
+| 2 | 디자인 시스템: 색, 타이포그래피, 간격, 다크 모드, 인터랙션 세부 확정 | in-progress |
 | 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | todo |
 | 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | todo |
 | 5 | 인터랙션 구현: 컨셉 1~5 | todo |
@@ -96,7 +96,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T00 | 저장소 뼈대 | 0 | - | claude | done | PR #1 |
 | T01 | 프로젝트 초기화 | 1 | T00 | codex | done | `docs/tasks/T01-init.md` — [PR #4](https://github.com/songyu0608/portfolio/pull/4) |
 | T01-followup | 교차 리뷰 후속 정리 | 1 | T01 | codex | done | `docs/tasks/T01-followup.md` — [PR #5](https://github.com/songyu0608/portfolio/pull/5) |
-| T02 | 디자인 시스템 | 2 | T01-followup | codex | todo | `docs/tasks/T02-design-system.md` |
+| T02 | 디자인 시스템 | 2 | T01-followup | codex | review | `docs/tasks/T02-design-system.md` — [PR #9](https://github.com/songyu0608/portfolio/pull/9) |
 
 단계 3 이후 지시서는 앞 단계가 끝날 때 작성한다. 예정: T03 공통 레이아웃·i18n, T04~ 페이지별 구현.
 
@@ -118,6 +118,11 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 - [ ] 단계 8: `/` → `/ja/`를 HTTP 301로 처리해 현재 정적 HTML의 2초 meta refresh를 대체한다. 언어 정책이 바뀌면 상태 코드도 재검토한다. 배포 URL에서 응답 상태와 Location을 확인한다.
 - [ ] 다음 의존성 갱신: `pnpm-workspace.yaml`의 `minimumReleaseAgeExclude`에 있는 특정 버전 예외를 재검토한다. 대기 기간 경과 또는 의존성 교체 후 예외 없이 설치·CI가 통과하는 것을 확인하고 불필요한 항목을 삭제한다.
 - 근거: [PR #4 교차 리뷰](https://github.com/songyu0608/portfolio/pull/4#issuecomment-6497967214). 나머지 설정·문서 개선은 T01-followup에서 처리한다.
+
+### T02 교차 리뷰에서 이월한 항목
+
+- [ ] 단계 6: 글꼴 CSS 크기 재검토. T02 시점 빌드에서 공통 CSS가 357,868B(gzip 172,181B), `@font-face` 251개이며 `/ja/`, `/en/` 모두 첫 렌더 전에 받는다. 후보: 빌드 시 실제 사용 글자 기준 서브셋, 일본어 글꼴 CSS를 `/ja/`에만 적용. Lighthouse로 전후를 측정한다.
+- 근거: [PR #9](https://github.com/songyu0608/portfolio/pull/9) Claude 교차 리뷰.
 
 ## 9. 결정 변경 기록
 

@@ -1,20 +1,5 @@
 ---
-import { ui } from '../../i18n/ui';
-const text = ui.ja;
+import DesignPreview from '../../components/DesignPreview.astro';
 ---
 
-<!doctype html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={text.description} />
-    <title>{text.title}</title>
-  </head>
-  <body>
-    <main>
-      <h1>{text.heading}</h1>
-      <p>{text.description}</p>
-    </main>
-  </body>
-</html>
+<DesignPreview locale="ja" />

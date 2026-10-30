@@ -1,0 +1,84 @@
+:root {
+  color-scheme: light;
+
+  --color-background: #f7f9fc;
+  --color-surface: #ffffff;
+  --color-text: #121619;
+  --color-text-muted: #525a63;
+  --color-border: #dde1e6;
+  --color-accent: #0f62fe;
+  --color-on-accent: #ffffff;
+  --color-success: #0b6b3a;
+  --color-warning: #8a4b00;
+  --color-error: #b42318;
+
+  --font-sans:
+    'IBM Plex Sans JP', 'Hiragino Sans', 'Yu Gothic UI', Meiryo, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  --font-size-body: 1rem;
+  --font-size-small: 0.875rem;
+  --font-size-label: 0.75rem;
+  --font-size-h1: clamp(2rem, 1.5rem + 2.5vw, 3.25rem);
+  --font-size-h2: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --font-size-h3: 1.125rem;
+  --line-height-body: 1.65;
+  --line-height-heading: 1.2;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  --radius-button: 0.5rem;
+  --radius-card: 0.75rem;
+  --radius-pill: 999px;
+  --shadow-card: 0 12px 32px rgb(18 22 25 / 8%);
+
+  --content-max: 70rem;
+  --measure: 66ch;
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/*
+ * 다크 값은 아래 두 블록(시스템 설정, data-theme="dark")에 같은 값으로 둔다.
+ * 색을 바꿀 때는 두 블록을 함께 고친다. 라이트 값은 위 :root 한 곳뿐이다.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+
+    --color-background: #0b0f17;
+    --color-surface: #141a24;
+    --color-text: #e8ecf2;
+    --color-text-muted: #9ca6b4;
+    --color-border: #26303d;
+    --color-accent: #78a9ff;
+    --color-on-accent: #0b0f17;
+    --color-success: #6ee7a2;
+    --color-warning: #ffb454;
+    --color-error: #ff8f8f;
+    --shadow-card: 0 12px 32px rgb(0 0 0 / 25%);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-background: #0b0f17;
+  --color-surface: #141a24;
+  --color-text: #e8ecf2;
+  --color-text-muted: #9ca6b4;
+  --color-border: #26303d;
+  --color-accent: #78a9ff;
+  --color-on-accent: #0b0f17;
+  --color-success: #6ee7a2;
+  --color-warning: #ffb454;
+  --color-error: #ff8f8f;
+  --shadow-card: 0 12px 32px rgb(0 0 0 / 25%);
+}
