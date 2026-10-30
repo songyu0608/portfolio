@@ -5,7 +5,7 @@
 | 단계 | 4 |
 | 선행 작업 | T04 (PR #13) |
 | 담당 | claude |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-hjt6my` (실행 환경이 지정한 이름. 원칙상 이름은 `<agent>/T05-about`) |
 
 ## 목표
@@ -104,7 +104,7 @@
 - [x] `prefers-reduced-motion: reduce`에서 새로 추가한 장식 전환 효과가 꺼진다(추가하지 않았다면 그렇게 적는다).
 - [x] PR 본문에 최신 커밋 기준 캡처가 있다: ja 라이트 375px(첫 화면), ja 다크 1280px(전체), en 라이트 1280px(전체), en 다크 320px(전체) 이상.
 - [x] `docs/DESIGN.md` §6, `docs/ARCHITECTURE.md` §2, `docs/CONTENT.md` 수집 현황이 갱신되어 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
 - [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
