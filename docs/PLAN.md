@@ -154,4 +154,5 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-30 | `@astrojs/react` 통합 유지(단계 5에서 사용). T03 완료 조건의 "빌드 결과에 React 런타임 미포함"은 참조되지 않는 번들이 남는 상태로 사용자가 수용 | T03 |
 | 2026-10-30 | 내비게이션 일본어 문구 「経歴」「プロジェクト」「連絡先」 확정. 바꿀 때는 `src/i18n/ui.ts`의 `pages.*.name`만 고친다(URL은 그대로) | T03 사용자 확인 |
 | 2026-10-30 | T03 PR #11 merge 완료 반영. 단계 4는 원고 수집 전에 임시 문구(placeholder)로 진행하고, 원고는 콘텐츠 파일만 바꿔 반영 | 사용자 결정, T04 지시서 |
-| 2026-10-30 | 콘텐츠 구조(YAML content collections + `src/lib/content.ts` 규칙 검사), 일본어 문절 줄바꿈 방식, Home h1 = 이름, 사이트 이름과 프로필 이름은 별개 값 | T04 구현 (`docs/ARCHITECTURE.md` §2, A9, `docs/DESIGN.md` §2·§5). 일본어 UI 문구·h1 선택은 PR에서 사용자 확인 |
+| 2026-10-30 | 콘텐츠 구조(YAML content collections + `src/lib/content.ts` 규칙 검사), 일본어 문절 줄바꿈 방식, Home h1 = 이름, 사이트 이름과 프로필 이름은 별개 값 | T04 구현 (`docs/ARCHITECTURE.md` §2, A9, `docs/DESIGN.md` §2·§5) |
+| 2026-10-30 | Home h1 = 이름 확정, 프로필 이름 일본어 「チェ ソンギュ」·영어 `choi seonggyu`. 일본어 UI 문구(「主な技術」 등)는 지시서 기본안으로 두고 나중에 사용자가 `src/i18n/ui.ts`에서 직접 고친다. 한 줄 소개는 원고 합의 후 반영 | T04 사용자 확인 |
