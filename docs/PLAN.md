@@ -8,9 +8,9 @@
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 5 인터랙션 — T08 완료, T09 지시서 대기 |
-| 진행 중인 작업 | 없음 (T08 완료) |
-| 다음 작업 | T09 지시서(컨셉 5) → T10(컨셉 3·4). 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 5 인터랙션 — T09 지시서 작성 |
+| 진행 중인 작업 | T09 지시서(컨셉 5) 작성·리뷰 |
+| 다음 작업 | T09 구현(담당 미정) → T10(컨셉 3·4). 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -104,8 +104,9 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T06 | Projects (목록·상세·担当工程, 임시 문구) | 4 | T05 | claude | done | `docs/tasks/T06-projects.md` — 지시서 [PR #18](https://github.com/songyu0608/portfolio/pull/18), 구현 [PR #19](https://github.com/songyu0608/portfolio/pull/19) |
 | T07 | Contact (연락 수단 목록·메일 복사 버튼·푸터 연락 링크, 임시 문구) | 4 | T06 | claude | done | `docs/tasks/T07-contact.md` — 지시서 [PR #21](https://github.com/songyu0608/portfolio/pull/21), 구현 [PR #22](https://github.com/songyu0608/portfolio/pull/22) |
 | T08 | Hero 디코딩·프로젝트 카드 틸트와 상세 전환 (인터랙션 컨셉 1·2) | 5 | T07 | claude | done | `docs/tasks/T08-hero-cards.md` — 지시서 [PR #24](https://github.com/songyu0608/portfolio/pull/24), 구현 [PR #25](https://github.com/songyu0608/portfolio/pull/25) |
+| T09 | 스크롤 경력 타임라인 (인터랙션 컨셉 5) | 5 | T08 | - | todo | `docs/tasks/T09-career-timeline.md` |
 
-이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T09 스크롤 경력 타임라인(컨셉 5) → T10 터미널 모드·명령 팔레트(컨셉 3·4) → 단계 6~8. 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
+이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T10 터미널 모드·명령 팔레트(컨셉 3·4) → 단계 6~8. 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
 ## 7. 미결 사항
 
@@ -189,3 +190,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | 단계 5 지시서를 3개로 나눔: T08 = 컨셉 1·2, T09 = 컨셉 5, T10 = 컨셉 3·4. T08 지시서 작성: 컨셉 1·2는 React island·새 의존성 없이 Astro `<script>`와 CSS cross-document View Transitions로 구현(`docs/ARCHITECTURE.md` A2 비고, `docs/DESIGN.md` §3) | 사용자 결정(나눔), T08 지시서 |
 | 2026-10-31 | T08 지시서 PR #24 merge, T08 구현 담당 claude. 구현: 디코딩·틸트는 인라인 모듈 2개(압축 전 합계 약 2.5KB), 상세 전환은 CSS View Transitions. 프로젝트 slug 형식 검사 추가. Home CLS(기존 글꼴 교체)는 단계 6 항목으로 이월 | 사용자 결정(담당), T08 구현 |
 | 2026-10-31 | T08 PR #25 merge 완료 반영(CI 통과, Codex 교차 리뷰 수정 필요 1건(디코딩 문자 폭 분류)·개선 제안 2건 반영 후 재검증 통과). 디코딩 1초·틸트 4°·전환 280ms는 지시서 기본안으로 merge했고 사용자 확인 전이다 | 지시서 없음 (문서만 변경) |
+| 2026-10-31 | T09 지시서 작성: 컨셉 5는 JS·React island·새 의존성 없이 CSS 스크롤 기반 애니메이션(`animation-timeline: view()`)으로 선 채움·점 강조만 한다. 글자는 흐리게 하지 않는다(시안의 불투명도 나타남 미적용). 미지원 브라우저·reduced-motion은 T05 화면 그대로(`docs/DESIGN.md` §3, `docs/ARCHITECTURE.md` A2 비고) | T09 지시서 |
