@@ -74,10 +74,10 @@ Lighthouse 12.6.1(`npx`로 실행, 의존성 아님, `pnpm preview` 대상), 페
 2. **글꼴 CSS 줄이기**
    - 목표: 첫 렌더 전에 받는 CSS에 **사이트에서 실제로 쓰는 글자를 포함하는 `unicode-range`의 `@font-face`만** 남긴다. 글꼴 파일 자체(Fontsource가 배포한 woff2·woff)는 바꾸지 않는다. 글꼴 파일을 다시 자르는 서브셋 생성(새 도구·의존성 필요)은 하지 않는다(아래 제외, 메모).
    - 방식은 구현자가 아래 후보를 조사해 고르고, 고른 이유와 비교를 PR에 적는다. 새 의존성은 추가하지 않는다.
-     - 후보 A: Astro 내장 Fonts API(`astro.config.mjs`의 `fonts` + `<Font />` 컴포넌트). Astro 6.0부터 실험 플래그 없는 최상위 설정이며(설치된 Astro 7.4.4 타입 정의에서 확인) Fontsource·npm·local provider, `subsets`·`unicodeRange`·preload·대체 글꼴 메트릭 자동 생성(`fallbacks`, `optimizedFallbacks`)을 제공한다. 확인할 점: `<Font />`는 `@font-face`를 각 HTML에 **인라인 `<style>`**로 넣으므로(`node_modules/astro/components/Font.astro`에서 확인) 범위를 줄이지 않으면 모든 HTML이 커진다. Fontsource provider가 빌드 때 네트워크로 받는지, npm/local provider로 `node_modules`의 패키지를 쓸 수 있는지, IBM Plex Sans JP의 번호 붙은 범위(`[0]`~`[119]`)를 고를 수 있는지 공식 문서와 실제 빌드로 확인한다(확인 필요).
+     - 후보 A: Astro 내장 Fonts API(`astro.config.mjs`의 `fonts` + `<Font />` 컴포넌트). Astro 6.0부터 실험 플래그 없는 최상위 설정이며(설치된 Astro 7.4.4 타입 정의에서 확인) Fontsource·npm·local provider, `subsets`·`unicodeRange`·preload·대체 글꼴 메트릭 자동 생성(`fallbacks`, `optimizedFallbacks`)을 제공한다. 확인할 점: `<Font />`는 `@font-face`를 각 HTML에 **인라인 `<style>`**로 넣으므로(`node_modules/astro/components/Font.astro`에서 확인) 범위를 줄이지 않으면 모든 HTML이 커진다. Fontsource provider가 빌드 때 네트워크로 받는지, npm/local provider로 `node_modules`의 패키지를 쓸 수 있는지, IBM Plex Sans JP의 번호 붙은 범위(`[0]`~`[119]`)를 고를 수 있는지, 고르는 범위가 원본 텍스트가 바뀌면 자동으로 다시 계산되는지(설정에 범위를 손으로 적는 방식이면 메모의 요구를 어긴다) 공식 문서와 실제 빌드로 확인한다(확인 필요).
      - 후보 B: 빌드 전에 실행하는 Node 스크립트(새 의존성 없음)가 콘텐츠·UI 문구 원본(`src/content/**`, `src/i18n/ui.ts` 등)에서 쓰인 글자를 모아, Fontsource CSS에서 그 글자와 겹치는 `@font-face`만 골라 CSS 파일을 만든다. `BaseLayout.astro`는 그 파일을 import한다. Vite가 처리하므로 파일 이름의 해시가 내용에 따라 바뀐다. `pnpm dev`·`pnpm build`·CI에서 모두 같은 결과가 나와야 한다(생성 파일을 커밋할지, 빌드 때 만들지는 구현자가 정하고 이유를 적는다).
      - 빌드가 끝난 `dist/`의 CSS를 직접 고쳐 쓰는 방식은 쓰지 않는다. 파일 이름의 해시가 내용과 맞지 않게 되어, 배포 후 오래 캐시하면 새 내용이 반영되지 않을 수 있기 때문이다.
-   - **글자 누락 검사**: 빌드 결과(`dist/**/*.html`, `dist/**/*.json`)의 표시 텍스트에 쓰인 글자 중, 남긴 `@font-face`가 덮지 않는 글자가 0개인지 확인하는 방법을 둔다(빌드 후 스크립트, 또는 PR에 실행한 명령과 결과). 원래 Fontsource 251개 범위로도 덮지 않는 글자(글꼴에 없는 글자)는 제외하고 목록을 PR에 적는다. 원고 반영 때 글자가 늘어도 같은 방법으로 다시 확인할 수 있어야 한다.
+   - **글자 누락 검사**: 빌드 결과(`dist/**/*.html`, `dist/**/*.json`)의 표시 텍스트와 **스크립트가 화면에 그리는 글자**(T08 디코딩의 임의 글자 `src/scripts/hero-decode.ts`의 `WIDE_POOL`·`NARROW_POOL`, 팔레트·터미널 번들에만 있는 문구가 있으면 그것)에 쓰인 글자 중, 남긴 `@font-face`가 덮지 않는 글자가 0개인지 확인하는 방법을 둔다(빌드 후 스크립트, 또는 PR에 실행한 명령과 결과). 원래 Fontsource 251개 범위로도 덮지 않는 글자(글꼴에 없는 글자)는 제외하고 목록을 PR에 적는다. 원고 반영 때 글자가 늘어도 같은 방법으로 다시 확인할 수 있어야 한다.
    - 명령 팔레트·터미널에 사용자가 입력한 글자는 대상이 아니다(덮지 않으면 대체 글꼴로 보이며, 이것을 정상으로 본다).
    - `/en/` 페이지가 일본어 범위의 `@font-face`를 받지 않게 언어별로 나누는 것은 선택이다. 나눌 경우 언어 전환 링크의 「日本語」처럼 `/en/`에도 일본어가 나오는 곳의 글자가 빠지지 않는지 위 누락 검사로 확인한다.
 
@@ -132,7 +132,7 @@ Lighthouse 12.6.1(`npx`로 실행, 의존성 아님, `pnpm preview` 대상), 페
 
 - [ ] PR 본문에 main 기준값과 구현 후 값을 같은 표로 비교한다: 공통 CSS 크기(압축 전·gzip), `@font-face` 개수, 페이지별 받는 글꼴 파일 수·크기, 페이지별 CLS(1280px·375px), Lighthouse 모바일·데스크톱 Performance·FCP·LCP·CLS·TBT(각 3회 중앙값). 측정 환경·명령·Lighthouse 버전을 적는다.
 - [ ] 첫 렌더 전에 받는 CSS에 실제로 쓰는 글자를 포함하지 않는 `@font-face`가 없다. 공통 CSS(글꼴 CSS가 HTML 인라인이면 HTML 증가분 포함)가 압축 전 100KB 이하다.
-- [ ] 글자 누락 검사 결과, 빌드 결과에 쓰인 글자 중 남긴 범위가 덮지 않는 글자가 0개다(원래 글꼴에 없는 글자는 목록으로 제외). 검사 방법이 문서(`docs/ARCHITECTURE.md` 또는 `AGENTS.md` §6)에 있어 원고 반영 때 다시 실행할 수 있다.
+- [ ] 글자 누락 검사 결과, 빌드 결과와 디코딩 임의 글자 목록에 쓰인 글자 중 남긴 범위가 덮지 않는 글자가 0개다(원래 글꼴에 없는 글자는 목록으로 제외). 검사 방법이 문서(`docs/ARCHITECTURE.md` 또는 `AGENTS.md` §6)에 있어 원고 반영 때 다시 실행할 수 있다.
 - [ ] 페이지별 받는 글꼴 파일 수·크기가 main보다 늘지 않는다.
 - [ ] 측정한 모든 페이지(`/ja/`, `/en/`, `/ja/about/`, `/ja/projects/`, 프로젝트 상세 1개, `/ja/contact/`)에서 CLS가 0.1 이하다: Playwright 1280px·375px, Lighthouse 모바일·데스크톱 중앙값 모두. 범위 3-4로 사용자 결정이 필요하면 PR에서 묻고, 결정에 따라 적용한 뒤 이 조건을 확인한다.
 - [ ] Lighthouse Performance 중앙값이 측정한 모든 페이지에서 모바일 90 이상, 데스크톱 95 이상이고 main보다 낮아지지 않는다. 못 미치는 페이지는 원인(진단 항목)과 이 범위에서 고치지 않은 이유를 PR에 적는다. "렌더 차단 리소스" 진단의 예상 절감이 main보다 줄어든다.
