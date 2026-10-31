@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T14 완료, 단계 6 완료)
+마지막 갱신: 2026-10-31 (T15 지시서)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 6 품질 완료(T11~T14). 다음은 단계 7 테스트 |
-| 진행 중인 작업 | 없음. 다음은 단계 7 지시서 작성 |
-| 다음 작업 | 단계 7(E2E·Lighthouse CI) → 단계 8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 7 테스트 — T15 지시서 |
+| 진행 중인 작업 | T15 E2E 테스트 지시서 PR 리뷰(`docs/tasks/T15-e2e-tests.md`) |
+| 다음 작업 | T15 구현 → T16 Lighthouse CI → 단계 8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -83,7 +83,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | done |
 | 5 | 인터랙션 구현: 컨셉 1~5 (T08 = 1·2, T09 = 5, T10 = 3·4) | done |
 | 6 | 품질: 성능(T11) → React 중심 전환(T12) → SEO(T13) → 접근성(T14) | done |
-| 7 | 테스트: E2E(Playwright), Lighthouse CI | todo |
+| 7 | 테스트: E2E(Playwright, T15) → Lighthouse CI(T16) | in-progress |
 | 8 | 배포와 동적 기능: Cloudflare, 도메인, HTTPS, 방문 분석, 연락 폼, 회사별 비공개 페이지 | todo |
 | 9 | 운영: 콘텐츠 추가 절차 문서화, 카드 클릭률 확인 후 효과 조정 | todo |
 
@@ -110,8 +110,9 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T12 | React 중심 전환 (화면 컴포넌트 React + TypeScript, CSS Modules, 소개 문서) | 6 | T11 | claude | done | `docs/tasks/T12-react-components.md` — 지시서 [PR #36](https://github.com/songyu0608/portfolio/pull/36), 구현 [PR #37](https://github.com/songyu0608/portfolio/pull/37) |
 | T13 | SEO (canonical·hreflang·OG·sitemap·robots·favicon·404) | 6 | T12 | claude | done | `docs/tasks/T13-seo.md` — 지시서 [PR #39](https://github.com/songyu0608/portfolio/pull/39), 구현 [PR #40](https://github.com/songyu0608/portfolio/pull/40) |
 | T14 | 접근성 점검·수정 (WCAG 2.2 AA 자동·수동 점검, 강제 색상 모드, 터미널 출력 스크롤) | 6 | T13 | claude | done | `docs/tasks/T14-accessibility.md` — 지시서 [PR #42](https://github.com/songyu0608/portfolio/pull/42), 구현 [PR #43](https://github.com/songyu0608/portfolio/pull/43) |
+| T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | - | todo | `docs/tasks/T15-e2e-tests.md` |
 
-이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 7~8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
+이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T16 Lighthouse CI(단계 7), 단계 8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
 ## 7. 미결 사항
 
@@ -257,3 +258,5 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | T14 지시서 작성: 기준은 WCAG 2.2 AA. 19페이지(404 포함)·팔레트·터미널을 axe-core(실행 환경에 있는 것, 새 의존성 없음)·Lighthouse·키보드·320/640px·텍스트 간격·강제 색상으로 점검한다. 사전 점검(위반 0건)에서 찾은 2건을 고친다: 터미널 출력 스크롤 영역 `tabIndex`, 강제 색상 모드의 주력 기술 태그 채움(시스템 색). 본문 바로가기 `tabindex`·자동 검사의 테스트화·WebKit/Firefox 확인은 단계 7 | T14 지시서 |
 | 2026-10-31 | T14 지시서 PR #42 merge, T14 구현 담당 claude. 구현은 지시서 기본안대로: 터미널 출력(`role="log"`)에 `tabIndex={0}`과 안쪽 2px accent 포커스 외곽선, 강제 색상 모드에서 `.tag--featured`를 `forced-color-adjust: none` + `CanvasText`/`Canvas`로 채움 유지. 점검에서 새 위반은 없었다(axe 4.14.0 위반 0, Lighthouse 접근성 100). 점검 기준은 `docs/DESIGN.md` §11 | 사용자 결정(담당), T14 구현 (`docs/DESIGN.md` §11) |
 | 2026-10-31 | T14 PR #43 merge 완료 반영(CI 통과, Codex 교차 리뷰 수정 필요·개선 제안 없음). 단계 6 완료. 단계 7로 넘긴 접근성 항목(axe의 E2E 편입, WebKit·Firefox 확인, 원고 반영 뒤 재점검)은 §8 "T14 구현 시 추가한 항목" | 지시서 없음 (문서만 변경) |
+| 2026-10-31 | 단계 7 E2E 범위 A안: 기능·키보드·axe는 Chromium·WebKit·Firefox 3개 브라우저에서 돌리고, 화면 회귀는 픽셀 캡처 대신 접근성 트리(`toMatchAriaSnapshot`)·레이아웃 값으로 본다(픽셀 기준 이미지는 OS·브라우저 빌드마다 달라 Windows에서는 Docker가 필요). 단계 7은 T15 E2E와 T16 Lighthouse CI로 나눈다 | 사용자 결정 |
+| 2026-10-31 | T15 지시서 작성: 새 devDependencies `@playwright/test` 1.64.1·`@axe-core/playwright` 4.14.0(사용자 결정 A안으로 승인), `pnpm test` = `playwright test`(빌드 결과를 `pnpm preview`로 띄움), 페이지 목록은 sitemap에서·문구는 하드코딩하지 않음, CI에 3개 브라우저 E2E 추가(브라우저 캐시 없음, 목표 10분 이하). 본문 바로가기 `main` `tabindex`는 WebKit·Firefox 결과로 정한다 | T15 지시서 |
