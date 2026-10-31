@@ -32,7 +32,8 @@ About의 경력 타임라인에서, 페이지를 스크롤하면 세로선이 �
 1. **구현 방식 (기본안)**
    - **CSS 스크롤 기반 애니메이션(`animation-timeline: view()`)만 쓰고 JS는 추가하지 않는다.** React island·새 의존성도 쓰지 않는다.
    - 이유: 효과가 "각 항목의 화면 안 위치 → 선·점 스타일" 한 가지라 상태가 필요 없고, 스크롤 이벤트·IntersectionObserver 스크립트 없이 브라우저가 합성 스레드에서 처리할 수 있다. 지원하지 않는 브라우저는 지금 화면(최종 상태) 그대로다.
-   - 모든 규칙을 `@supports (animation-timeline: view())`와 `@media (prefers-reduced-motion: no-preference)` 안에 둔다. 둘 중 하나라도 맞지 않으면 T05 화면과 같다.
+   - 선(`::before`)과 점(`::after`)은 같은 항목(`li`)의 화면 안 위치를 따라야 한다. 의사 요소에 `animation-timeline: view()`를 직접 주면 각 의사 요소가 자기 박스를 추적하므로, `li`에 이름 있는 view timeline(`view-timeline: --timeline-item block`, 이름은 기본안)을 만들고 두 의사 요소가 `animation-timeline: --timeline-item`으로 공유한다([Chrome 가이드](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-behaviors/scroll-entry-exit-effects), [MDN animation-timeline](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-timeline)).
+   - 모든 규칙을 `@supports (animation-timeline: view()) and (animation-range: entry)`와 `@media (prefers-reduced-motion: no-preference)` 안에 둔다. 둘 중 하나라도 맞지 않으면 T05 화면과 같다.
    - 이 결정을 `docs/DESIGN.md` §3 공통 구현 규칙과 `docs/ARCHITECTURE.md` A2 비고에 반영한다(지시서 PR에서 반영 완료).
    - 대체안: CSS만으로 아래 동작을 만들 수 없거나 지원 브라우저에서 깨지는 문제가 있으면, IntersectionObserver를 쓰는 작은 Astro `<script>`(`src/scripts/career-timeline.ts`, 압축 전 1KB 이하)로 바꿔도 된다. 바꾼 이유를 PR에 적는다.
 
@@ -90,7 +91,8 @@ About의 경력 타임라인에서, 페이지를 스크롤하면 세로선이 �
 ```bash
 pnpm install --frozen-lockfile
 pnpm format:check && pnpm lint && pnpm check && pnpm build
-grep -c "animation-timeline" dist/_astro/*.css   # 규칙이 빌드 CSS에 있는지
+# 규칙이 빌드 결과에 있는지. 컴포넌트 스타일은 크기에 따라 About HTML에 인라인되거나 dist/_astro/*.css로 나가므로 둘 다 본다
+grep -l "animation-timeline" dist/ja/about/index.html dist/en/about/index.html dist/_astro/*.css
 pnpm preview
 ```
 
