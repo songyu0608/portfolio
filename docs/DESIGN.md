@@ -284,7 +284,7 @@
 - 기준선은 화면 가운데 가로선이다. 항목(`li`)마다 이름 있는 view timeline(`view-timeline: --timeline-item block`, `view-timeline-inset: 50%`)을 만들고 선(`::before`)과 점(`::after`)이 같은 timeline을 따른다. 의사 요소에 `view()`를 직접 주면 각자 자기 박스를 추적하기 때문이다.
 - 선: 화면 가운데가 이 항목의 점에서 다음 항목의 점으로 가는 동안(`animation-range: cover 0% cover 100%`) border 색 선 위에 accent 선이 위에서 아래로 채워진다(`background-size`, 크기·위치는 바뀌지 않음).
 - 점: 화면 가운데가 점에 닿으면(`cover 0%` ~ `cover 2%`) 테두리가 text-muted에서 accent가 된다. 앞 항목의 선이 다 채워지는 때와 같다. 현재 재직의 채운 점은 처음부터 accent다.
-- 스크롤 위치에 묶인 상태라 되돌리면 되돌아가고, 페이지를 열 때 이미 화면 가운데보다 위에 있는 항목은 채워진 채로 보인다. 페이지 끝에서는 모든 선·점이 강조된다(1280×800·1280×1200·375×667 확인). 타임라인 아래 내용(기술 스택·자격증·푸터)이 화면 높이의 절반보다 짧아지면 마지막 항목에 닿지 못할 수 있으므로 원고 반영 때 다시 확인한다.
+- 스크롤 위치에 묶인 상태라 되돌리면 되돌아가고, 페이지를 열 때 이미 화면 가운데보다 위에 있는 항목은 채워진 채로 보인다. 페이지 끝에서는 모든 선·점이 강조된다(1280×800·1280×1200·375×667 확인). 타임라인 아래 내용(기술 스택·자격증·푸터)이 화면 높이의 절반보다 짧아지면 마지막 항목에 닿지 못할 수 있으므로 원고 반영 때 다시 확인한다(2026-10-31 사용자 결정으로 가운데 기준 유지, `docs/PLAN.md` §8).
 - 글자(기간·회사명·직무·성과)의 색·불투명도·위치는 바꾸지 않는다. 시안의 "흐린 글자가 나타남"은 멈춘 위치에서 대비 기준 아래로 남을 수 있어 적용하지 않았다.
 - 적용 조건: `@supports (animation-timeline: view()) and (animation-range: entry)`이고 `@media screen and (prefers-reduced-motion: no-preference)`. 지원하지 않는 브라우저, reduced-motion, 인쇄에서는 T05 화면 그대로다.
 - `animation` 단축 속성을 쓰면 빌드 압축(Lightning CSS)이 `animation-timeline`까지 단축 속성에 합쳐 Chromium이 규칙을 버린다(2026-10-31 확인). 개별 속성(`animation-name`, `animation-duration: auto` 등)으로 쓴다.
