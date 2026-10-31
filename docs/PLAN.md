@@ -172,6 +172,12 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 - [x] 단계 6(T11): Home의 CLS가 Chromium 1280px에서 0.32~0.37이다(T07 main도 같음, 2026-10-31 측정). 원인은 IBM Plex Sans JP 글꼴 교체 때 히어로 줄바꿈이 바뀌어 아래 내용이 약 35px 올라가는 것이다. 글꼴 로딩 방식(`font-display`, preload, 대체 글꼴 크기 맞춤 등)을 단계 6에서 정한다. → T11: 일본어 페이지에서 가나 범위(400·700) 2개 preload로 Home 1280px CLS 0.298 → 0.001(Playwright 지연 150ms·1.6Mbps), Lighthouse 모든 측정 페이지 0.017 이하. 3G 수준 이하에서는 Home CLS 약 0.3이 남으며, 2026-10-31 사용자 결정으로 그대로 둔다(`docs/DESIGN.md` §2 한계).
 - [ ] 원고 반영 후: Home 한 줄 소개 길이가 바뀌면 Home CLS를 다시 잰다(T11 측정 방법, `docs/tasks/T11-performance.md`). 지금 값은 임시 문구가 `max-width: 34em`에 거의 꽉 차는 길이라 생긴 것이다.
 
+### T12 교차 리뷰에서 이월한 항목
+
+- [ ] 단계 7: 화면 회귀 검사에 CSS 순서를 지키는 대표 페이지를 넣는다. 페이지 레이아웃(`src/layouts/*Layout.astro`)이 `BaseLayout`을 화면 컴포넌트보다 먼저 import해야 CSS Modules 규칙이 같은 명시도의 전역 클래스를 이긴다. 순서가 바뀌면 About·Projects에서 `.tag-list`·`.project-grid`의 `margin: 0`이 모듈의 `margin-top`을 이겨 화면이 48px 짧아진다(`docs/ARCHITECTURE.md` §2 "화면 컴포넌트와 스타일").
+- [ ] 화면 컴포넌트의 이식성을 높일 때(다른 React 환경으로 옮기기 등): `PhaseList.tsx`가 런타임 import하는 `PHASES`를 Astro 전용 `src/content.config.ts`에서 프레임워크에 독립적인 파일로 옮긴다. `astro:i18n`을 쓰는 `src/i18n/paths.ts`도 이때 바꾼다. 지금은 빌드 때 HTML로만 렌더해 문제가 없어 그대로 둔다.
+- 근거: [PR #37](https://github.com/songyu0608/portfolio/pull/37) ChatGPT(Codex) 교차 리뷰 개선 제안(머지 차단 아님).
+
 ### T05 지시서 작성 시 추가한 항목
 
 - [x] T06 Projects 지시서: 프로젝트 스키마에 担当工程(要件定義・設計・開発・テスト・運用) 필드를 추가한다. 카드에도 표시할지 상세에만 둘지는 T06에서 정한다(2026-10-30 사용자 확인: 担当工程은 경력이 아니라 프로젝트 단위). → 2026-10-30 사용자 결정: 카드와 상세 모두에 표시. `docs/tasks/T06-projects.md` 범위 1·4.

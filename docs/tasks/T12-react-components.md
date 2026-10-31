@@ -202,7 +202,7 @@
 - [x] 새 의존성이 없다(`package.json` 의존성 항목, `pnpm-lock.yaml` 변경 없음).
 - [x] 문서가 갱신되어 있다: `README.md`(React + TypeScript 중심, 최신 상태), `docs/ARCHITECTURE.md` §2·A11 비고, `docs/DESIGN.md` 경로·표현, `AGENTS.md` §5·§7(구현과 다르면), `docs/PLAN.md` §7.
 - [x] PR 본문에 main과 구현 후의 출력 표(위 "현재 출력"과 같은 열), 캡처 비교 결과(장수·차이 0), 접근성 트리 비교 결과, 대표 캡처 3장(Home ja 라이트 1280px, Projects en 다크 375px, Contact ja 라이트 1280px)이 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다. (로컬 4개 통과. CI는 PR에서 확인)
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
 - [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
