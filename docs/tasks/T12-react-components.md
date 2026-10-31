@@ -5,7 +5,7 @@
 | 단계 | 6 |
 | 선행 작업 | T11 (PR #34) |
 | 담당 | claude |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T12-react-components`) |
 
 ## 목표
