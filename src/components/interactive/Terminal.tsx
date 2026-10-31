@@ -76,8 +76,9 @@ export default function Terminal({ data, ctx, onEffect, onClose }: Props) {
   };
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    // IME 변환 중의 키(후보 선택 ↑↓, 확정 Enter)는 IME에 맡긴다.
+    if (event.nativeEvent.isComposing || event.keyCode === 229) return;
     if (event.key === 'Enter') {
-      if (event.nativeEvent.isComposing || event.keyCode === 229) return;
       event.preventDefault();
       run(input);
     } else if (event.key === 'ArrowUp') {

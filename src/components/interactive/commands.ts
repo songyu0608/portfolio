@@ -221,6 +221,10 @@ export function welcomeLines(data: CommandData): Line[] {
   ];
 }
 
+/** 이동 안내. 이동이 늦거나 막혀도 누를 수 있게 목적지를 링크로 둔다. */
+const navigateLine = (data: CommandData, href: string) =>
+  line('muted', `${data.text.terminal.navigate} `, { text: href, href });
+
 const HELP_COLUMN = 27;
 
 /** 터미널 명령. 이름은 두 언어 공통 영어이고, 인자는 소문자로 비교한다. */
@@ -308,9 +312,7 @@ const TERMINAL_COMMANDS: Record<
       const page = data.pages.find((p) => p.id === target);
       if (!page) return usageError(data, 'open');
       return {
-        lines: [
-          line('muted', fill(data.text.terminal.navigate, { href: page.href })),
-        ],
+        lines: [navigateLine(data, page.href)],
         effect: { type: 'navigate', href: page.href },
       };
     },
@@ -323,12 +325,7 @@ const TERMINAL_COMMANDS: Record<
       }
       if (target !== data.alternate.locale) return usageError(data, 'lang');
       return {
-        lines: [
-          line(
-            'muted',
-            fill(data.text.terminal.navigate, { href: ctx.alternateHref }),
-          ),
-        ],
+        lines: [navigateLine(data, ctx.alternateHref)],
         effect: { type: 'navigate', href: ctx.alternateHref },
       };
     },

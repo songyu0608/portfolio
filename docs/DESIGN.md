@@ -460,7 +460,7 @@
 - `<dialog>`를 `showModal()`로 연다(이름 「コマンドパレット」). 너비 35rem(좁은 화면은 좌우 16px 여백), 위 여백 `min(15vh, 7.5rem)`. 구성: 검색 줄(아이콘 + 입력란 56px) → 목록(넘치면 목록만 스크롤) → 아래 줄(키 안내 「↑↓ 選択 / Enter 実行 / Esc 閉じる」 + 「閉じる」 버튼). 터치 기기(`hover: none`)에서는 키 안내를 숨긴다.
 - 항목 묶음과 순서: 「ページ」(ホーム·経歴·プロジェクト·連絡先, 힌트는 경로) → 「プロジェクト」(목록 순서, 힌트는 상세 경로) → 「操作」(다른 언어로 전환, ライトモード·ダークモード·システム設定に合わせる(적용 중이면 힌트에 「· 適用中」), メールアドレスをコピー(클립보드를 쓸 수 있을 때만), 이력서 PDF(`profile.resumes`가 있을 때만), ターミナルを開く).
 - 검색: 공백으로 나눈 모든 단어가 표시 이름·힌트·검색어(`open about`, `terminal`, slug 등)에 부분 일치(대소문자 무시)하면 남긴다. 없으면 「「…」に一致する項目はありません」.
-- 조작: ↑↓ 선택(끝에서 멈춤), Enter 실행(IME 변환 중 제외), 클릭 실행, 마우스 이동으로 선택, Esc·배경 클릭·「閉じる」·⌘K / Ctrl+K로 닫기. 입력이 바뀌면 첫 항목을 선택한다.
+- 조작: ↑↓ 선택(끝에서 멈춤), Enter 실행(IME 변환 중에는 ↑↓·Enter 모두 IME에 맡김), 클릭 실행, 마우스 이동으로 선택, Esc·배경 클릭·「閉じる」·⌘K / Ctrl+K로 닫기. 입력이 바뀌면 첫 항목을 선택한다.
 - 실행: 페이지·언어는 이동, 테마는 적용 후 닫기, 메일 복사는 닫은 뒤 화면 아래 알림(「コピーしました」 등, 2초, 다이얼로그 밖의 `role="status"`), 터미널은 팔레트를 닫고 터미널을 연다.
 - 접근성: [APG 콤보박스](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) 패턴. 입력란 `role="combobox"`(이름 「ページや操作を検索」, 시각적으로 숨긴 label), 목록 `role="listbox"`(이름 「候補」), 묶음 `role="group"`(묶음 이름), 항목 `role="option"` + `aria-selected`, 선택은 `aria-activedescendant`. 남은 항목 수는 시각적으로 숨긴 `role="status"`(「15 件」)로 알린다.
 - 선택 항목: accent 12%를 surface에 섞은 배경 + 2px accent 안쪽 외곽선(색만으로 구분하지 않음).
@@ -468,8 +468,8 @@
 ### 터미널
 
 - 팔레트의 「ターミナルを開く」에서만 연다. `<dialog>`(이름 「ターミナル」), 너비 55rem, 높이 `min(37.5rem, 100dvh - 32px)`, 모노스페이스 14px. 구성: 제목 줄(`guest@choi: ~` 장식 + 닫기 버튼 44px) → 출력(`role="log"`, 줄이 적으면 아래에 붙음) → `$` 입력란(시각적으로 숨긴 label 「コマンド」) → 추천 명령 버튼(`help`·`whoami`·`skills`·`projects`·`contact`·`clear`, 높이 44px, 최소 폭 6.5rem 격자).
-- 명령: `help`, `whoami`, `skills`(주력 기술에 `*`), `projects`(상세 링크), `contact`(메일·GitHub·LinkedIn 링크), `open <home|about|projects|contact>`, `lang <ja|en>`, `theme <light|dark|system>`, `clear`, `exit`. 대소문자·앞뒤 공백 무시. 모르는 명령은 error 색 「command not found: …」, 인자가 틀리면 사용법.
-- 입력 줄(`$ 명령`)은 accent, 보조 출력은 text-muted. 링크는 실제 `<a>`(문자열로 HTML을 만들지 않음). ↑↓로 이번에 연 동안 실행한 명령을 불러온다. 출력은 최근 200줄까지.
+- 명령: `help`, `whoami`, `skills`(주력 기술에 `*`), `projects`(상세 링크), `contact`(메일·GitHub·LinkedIn 링크), `open <home|about|projects|contact>`, `lang <ja|en>`(둘 다 「移動します: 」 + 목적지 링크를 출력하고 바로 이동), `theme <light|dark|system>`, `clear`, `exit`. 대소문자·앞뒤 공백 무시. 모르는 명령은 error 색 「command not found: …」, 인자가 틀리면 사용법.
+- 입력 줄(`$ 명령`)은 accent, 보조 출력은 text-muted. 링크는 실제 `<a>`(문자열로 HTML을 만들지 않음). ↑↓로 이번에 연 동안 실행한 명령을 불러온다(IME 변환 중 제외). 출력은 최근 200줄까지.
 - 처음 열면 입력란에 포커스. 닫으면(Esc·닫기 버튼·`exit`·⌘K / Ctrl+K) 팔레트를 연 원래 위치로 포커스를 돌려보낸다.
 
 ### 대비 (T10)

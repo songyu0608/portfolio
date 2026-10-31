@@ -52,6 +52,8 @@ export default function Palette({ data, ctx, onRun, onClose }: Props) {
   }, [activeItem?.id]);
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    // IME 변환 중의 키(후보 선택 ↑↓, 확정 Enter)는 IME에 맡긴다.
+    if (event.nativeEvent.isComposing || event.keyCode === 229) return;
     if (event.key === 'ArrowDown') {
       event.preventDefault();
       setActive(Math.min(activeIndex + 1, results.length - 1));
@@ -59,8 +61,6 @@ export default function Palette({ data, ctx, onRun, onClose }: Props) {
       event.preventDefault();
       setActive(Math.max(activeIndex - 1, 0));
     } else if (event.key === 'Enter') {
-      // IME 변환을 확정하는 Enter는 실행하지 않는다.
-      if (event.nativeEvent.isComposing || event.keyCode === 229) return;
       event.preventDefault();
       if (activeItem) onRun(activeItem.effect);
     }
