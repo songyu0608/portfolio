@@ -4,9 +4,9 @@
 | --- | --- |
 | 단계 | 5 |
 | 선행 작업 | T07 (PR #22) |
-| 담당 | 미배정 |
-| 상태 | todo |
-| 브랜치 | `<agent>/T08-hero-cards` (실행 환경이 이름을 강제하면 그 이름을 쓰고 PR 제목에 `T08`을 넣는다) |
+| 담당 | claude |
+| 상태 | review |
+| 브랜치 | `claude/project-thread-9xxr6l` (실행 환경이 지정한 이름. 원칙상 이름은 `<agent>/T08-hero-cards`) |
 
 ## 목표
 
@@ -89,21 +89,21 @@ Home 히어로의 한 줄 소개가 페이지를 열 때 한 번 디코딩되며
 
 ## 완료 조건
 
-- [ ] `/ja/`, `/en/`을 열면 한 줄 소개가 약 1초 동안 디코딩된 뒤 최종 문구로 끝난다. 헤더의 언어 전환으로 Home을 오가면 다시 재생된다. About 등 다른 페이지에서는 재생하지 않는다.
-- [ ] 디코딩 중에도 빌드된 HTML(`dist/{ja,en}/index.html`)과 접근성 트리의 한 줄 소개는 최종 문구다. 겹침 요소는 `aria-hidden="true"`이고, 재생이 끝나면 DOM에서 사라진다. 재생 중 문단을 선택해 복사하면 최종 문구가 복사된다.
-- [ ] 디코딩 전후로 히어로 높이와 행동 링크 위치가 같다(Chromium에서 Home의 CLS가 T07 main과 같음을 PR에 적는다). 320px·375px·1280px에서 재생 중 가로 스크롤이 생기지 않는다.
-- [ ] 마우스가 있는 Chromium에서 카드 위를 움직이면 최대 4° 기울고 4px 떠오르며, 나가면 원래 자리로 돌아온다. Home·Projects 목록의 `full`·`compact` 카드 모두 같다. 터치 에뮬레이션(Chromium 개발자 도구 기기 모드)에서는 기울지 않는다.
-- [ ] 키보드 Tab으로 카드 링크에 포커스하면 기울기 없이 떠오르고, 포커스 링이 잘리지 않고 보인다. Tab 순서와 링크 이름은 T07과 같다.
-- [ ] 지원 브라우저(Chromium)에서 Home·Projects 목록의 카드를 누르면 카드 제목이 상세 제목으로 이어지는 전환이 보이고, 상세의 「一覧へ戻る」·이전·다음·뒤로 가기도 전환된다. Home ↔ About·Contact 이동에는 전환이 없다. 한 페이지에 같은 `view-transition-name`이 두 번 없다(콘솔 경고 없음).
-- [ ] `prefers-reduced-motion: reduce` 에뮬레이션에서 디코딩·틸트·떠오름·페이지 전환이 모두 꺼지고, 최종 상태와 기존 경계 색 표시만 보인다(경계 색 전환은 T06 규칙대로 꺼짐).
-- [ ] JavaScript를 끄면 Home·Projects·상세가 T07과 같은 화면이며 모든 링크가 동작한다.
-- [ ] 클라이언트 JS: Home·Projects 목록이 받는 새 스크립트 크기(압축 전, 압축 후)를 PR에 적는다. 두 효과 합계가 압축 전 4KB 이하다. About·Contact·상세가 받는 JS는 T07과 같다. React island를 쓰지 않는다.
-- [ ] 새 의존성이 없다(`package.json`, `pnpm-lock.yaml` 변경 없음).
-- [ ] cross-document View Transitions 브라우저 지원 범위를 공식 자료로 확인해 `docs/DESIGN.md`에 출처와 함께 적는다. 이 환경에서 확인하지 못한 브라우저(Firefox·Safari 실기 등)는 PR에 미확인으로 적는다.
-- [ ] PR 본문에 최신 커밋 기준 캡처가 있다: Home ja 라이트 1280px(디코딩 재생 중 1장, 끝난 뒤 1장), Projects 목록 ja 다크 1280px(카드 틸트 중), en 라이트 375px Home(끝난 상태). 가능하면 카드 → 상세 전환을 짧은 GIF나 연속 캡처로 남긴다.
-- [ ] `docs/DESIGN.md` §5·§7, `docs/ARCHITECTURE.md` §2가 갱신되어 있다.
+- [x] `/ja/`, `/en/`을 열면 한 줄 소개가 약 1초 동안 디코딩된 뒤 최종 문구로 끝난다. 헤더의 언어 전환으로 Home을 오가면 다시 재생된다. About 등 다른 페이지에서는 재생하지 않는다.
+- [x] 디코딩 중에도 빌드된 HTML(`dist/{ja,en}/index.html`)과 접근성 트리의 한 줄 소개는 최종 문구다. 겹침 요소는 `aria-hidden="true"`이고, 재생이 끝나면 DOM에서 사라진다. 재생 중 문단을 선택해 복사하면 최종 문구가 복사된다.
+- [x] 디코딩 전후로 히어로 높이와 행동 링크 위치가 같다(Chromium에서 Home의 CLS가 T07 main과 같음을 PR에 적는다). 320px·375px·1280px에서 재생 중 가로 스크롤이 생기지 않는다.
+- [x] 마우스가 있는 Chromium에서 카드 위를 움직이면 최대 4° 기울고 4px 떠오르며, 나가면 원래 자리로 돌아온다. Home·Projects 목록의 `full`·`compact` 카드 모두 같다. 터치 에뮬레이션(Chromium 개발자 도구 기기 모드)에서는 기울지 않는다.
+- [x] 키보드 Tab으로 카드 링크에 포커스하면 기울기 없이 떠오르고, 포커스 링이 잘리지 않고 보인다. Tab 순서와 링크 이름은 T07과 같다.
+- [x] 지원 브라우저(Chromium)에서 Home·Projects 목록의 카드를 누르면 카드 제목이 상세 제목으로 이어지는 전환이 보이고, 상세의 「一覧へ戻る」·이전·다음·뒤로 가기도 전환된다. Home ↔ About·Contact 이동에는 전환이 없다. 한 페이지에 같은 `view-transition-name`이 두 번 없다(콘솔 경고 없음).
+- [x] `prefers-reduced-motion: reduce` 에뮬레이션에서 디코딩·틸트·떠오름·페이지 전환이 모두 꺼지고, 최종 상태와 기존 경계 색 표시만 보인다(경계 색 전환은 T06 규칙대로 꺼짐).
+- [x] JavaScript를 끄면 Home·Projects·상세가 T07과 같은 화면이며 모든 링크가 동작한다.
+- [x] 클라이언트 JS: Home·Projects 목록이 받는 새 스크립트 크기(압축 전, 압축 후)를 PR에 적는다. 두 효과 합계가 압축 전 4KB 이하다. About·Contact·상세가 받는 JS는 T07과 같다. React island를 쓰지 않는다.
+- [x] 새 의존성이 없다(`package.json`, `pnpm-lock.yaml` 변경 없음).
+- [x] cross-document View Transitions 브라우저 지원 범위를 공식 자료로 확인해 `docs/DESIGN.md`에 출처와 함께 적는다. 이 환경에서 확인하지 못한 브라우저(Firefox·Safari 실기 등)는 PR에 미확인으로 적는다.
+- [x] PR 본문에 최신 커밋 기준 캡처가 있다: Home ja 라이트 1280px(디코딩 재생 중 1장, 끝난 뒤 1장), Projects 목록 ja 다크 1280px(카드 틸트 중), en 라이트 375px Home(끝난 상태). 가능하면 카드 → 상세 전환을 짧은 GIF나 연속 캡처로 남긴다.
+- [x] `docs/DESIGN.md` §5·§7, `docs/ARCHITECTURE.md` §2가 갱신되어 있다.
 - [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
-- [ ] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
+- [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
 

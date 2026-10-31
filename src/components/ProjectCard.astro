@@ -1,5 +1,6 @@
 ---
-// 프로젝트 카드. 카드 전체가 상세 페이지 링크다(docs/DESIGN.md §3 컨셉 2, 틸트·전환 애니메이션은 단계 5).
+// 프로젝트 카드. 카드 전체가 상세 페이지 링크다(docs/DESIGN.md §3 컨셉 2, §5 프로젝트 카드).
+// 마우스를 쓰면 기울고(src/scripts/card-tilt.ts), 제목은 상세 h1과 같은 view-transition-name으로 이어진다.
 // 링크는 제목 안의 <a> 하나이고, ::after를 카드 전체로 늘려 어디를 눌러도 상세로 간다.
 // 카드 전체를 <a>로 감싸면 링크 이름이 카드 전문이 되어 길어지기 때문이다.
 // 정보는 모두 펼쳐 보인다(정보를 숨기는 효과 금지). 정보 순서는 期間 → 担当工程 → 役割 → 成果 → 技術.
@@ -23,7 +24,10 @@ const href = localizeProjectPath(locale, project.slug);
 ---
 
 <article class:list={['project-card card', `project-card--${variant}`]}>
-  <h3 class="project-card__title">
+  <h3
+    class="project-card__title"
+    style={`view-transition-name: project-title-${project.slug}`}
+  >
     <a class="project-card__link" href={href}>
       <Phrases text={project.title} />
     </a>
@@ -82,17 +86,37 @@ const href = localizeProjectPath(locale, project.slug);
   </p>
 </article>
 
+<script>
+  import '../scripts/card-tilt';
+</script>
+
 <style>
   .project-card {
     position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
-    transition: border-color var(--duration-base) var(--ease-standard);
+    transition:
+      border-color var(--duration-base) var(--ease-standard),
+      transform var(--duration-base) var(--ease-standard);
   }
 
   .project-card:hover {
     border-color: var(--color-accent);
+  }
+
+  /* 틸트(src/scripts/card-tilt.ts가 --tilt-x·--tilt-y와 is-tilting을 넣는다). 포인터를 따라갈 때는 짧게 전환한다. */
+  .project-card.is-tilting {
+    transform: perspective(800px) rotateX(var(--tilt-x, 0deg))
+      rotateY(var(--tilt-y, 0deg)) translateY(-4px);
+    transition:
+      border-color var(--duration-base) var(--ease-standard),
+      transform var(--duration-fast) linear;
+  }
+
+  /* 키보드 포커스는 기울기 없이 떠오르기만 한다. */
+  .project-card:has(.project-card__link:focus-visible) {
+    transform: translateY(-4px);
   }
 
   .project-card__link {
@@ -185,6 +209,11 @@ const href = localizeProjectPath(locale, project.slug);
   @media (prefers-reduced-motion: reduce) {
     .project-card {
       transition: none;
+    }
+
+    .project-card.is-tilting,
+    .project-card:has(.project-card__link:focus-visible) {
+      transform: none;
     }
   }
 </style>

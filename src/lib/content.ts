@@ -88,6 +88,8 @@ const HOME_SKILLS = { min: 3, max: 6 };
 const PRIMARY_SKILLS = { min: 2, max: 4, perCategory: 2 };
 // docs/CONTENT.md "자격증 표기 규칙"
 const MAX_STUDYING_CERTIFICATIONS = 1;
+// 프로젝트 slug(파일 이름). URL과 CSS 식별자(view-transition-name)에 그대로 쓴다.
+const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 const isLocale = (value: string): value is Locale =>
   (locales as string[]).includes(value);
@@ -217,6 +219,13 @@ async function loadContent() {
     if (!isLocale(locale) || !slug) {
       errors.push(
         `프로젝트: projects/${entry.id}.yaml — 언어 폴더(${locales.join(', ')}) 안에 있어야 한다`,
+      );
+      continue;
+    }
+    // slug는 URL과 view-transition-name(project-title-<slug>, CSS 식별자)에 쓴다.
+    if (!SLUG_PATTERN.test(slug)) {
+      errors.push(
+        `프로젝트: projects/${entry.id}.yaml — 파일 이름(slug)은 영문 소문자·숫자와 하이픈만 쓴다 (예: order-api)`,
       );
       continue;
     }
