@@ -1,0 +1,9 @@
+.phrases {
+  word-break: keep-all;
+  /* 문절 하나가 줄보다 길면 문절 안에서라도 줄을 바꿔 가로 넘침을 막는다. */
+  overflow-wrap: anywhere;
+}
+
+.phrase:not(:last-child)::after {
+  content: '\200B';
+}

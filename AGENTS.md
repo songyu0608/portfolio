@@ -51,7 +51,7 @@ Claude 전용 메모는 `CLAUDE.md`에 있지만, 규칙은 여기만 고친다.
 
 - 화면: React + TypeScript (strict). 화면 컴포넌트(`src/components/**/*.tsx`, 스타일은 CSS Modules)는 `client:*` 없이 빌드 때 HTML로만 렌더한다
 - 페이지 구성·정적 빌드: Astro(Vite 기반), 정적 출력 기본. 라우팅, 콘텐츠 조회, `<head>`, 페이지 스크립트는 `.astro`(`src/pages/`, `src/layouts/`)가 맡는다
-- 위 두 줄은 2026-10-31 결정(`docs/ARCHITECTURE.md` A11)이며 T12(`docs/tasks/T12-react-components.md`)에서 전환한다. 전환 전 화면 컴포넌트는 `.astro`다
+- 위 두 줄은 2026-10-31 결정(`docs/ARCHITECTURE.md` A11)이며 T12(`docs/tasks/T12-react-components.md`)에서 전환했다. 역할 분담·CSS Modules 규칙은 `docs/ARCHITECTURE.md` §2 "화면 컴포넌트와 스타일"
 - 인터랙션: 기본은 `<script>`(TS 모듈)·CSS. 브라우저에서 실행하는 React는 상태가 많은 명령 팔레트·터미널(T10)뿐이고, 열 때 동적 import한다(island 아님). Motion / GSAP은 현재 쓰지 않는다
 - 호스팅: Cloudflare Workers 정적 자산 (무료 플랜). 동적 기능(연락 폼, 회사별 비공개 페이지)은 단계 8에서 Workers 함수로 추가
 - i18n: Astro 내장 i18n 라우팅 (`/ja`, `/en`)

@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T12 지시서)
+마지막 갱신: 2026-10-31 (T12 구현)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 6 품질 — T11 완료, T12 지시서 작성 |
-| 진행 중인 작업 | T12 React 중심 전환 지시서 리뷰(`docs/tasks/T12-react-components.md`) |
-| 다음 작업 | T12 React 전환 → T13 SEO → T14 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 6 품질 — T11 완료, T12 구현 |
+| 진행 중인 작업 | T12 React 중심 전환 구현 PR 리뷰(`docs/tasks/T12-react-components.md`) |
+| 다음 작업 | T13 SEO → T14 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -107,7 +107,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T09 | 스크롤 경력 타임라인 (인터랙션 컨셉 5) | 5 | T08 | claude | done | `docs/tasks/T09-career-timeline.md` — 지시서 [PR #27](https://github.com/songyu0608/portfolio/pull/27), 구현 [PR #28](https://github.com/songyu0608/portfolio/pull/28) |
 | T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | done | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30), 구현 [PR #31](https://github.com/songyu0608/portfolio/pull/31) |
 | T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | done | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33), 구현 [PR #34](https://github.com/songyu0608/portfolio/pull/34) |
-| T12 | React 중심 전환 (화면 컴포넌트 React + TypeScript, CSS Modules, 소개 문서) | 6 | T11 | - | todo | `docs/tasks/T12-react-components.md` |
+| T12 | React 중심 전환 (화면 컴포넌트 React + TypeScript, CSS Modules, 소개 문서) | 6 | T11 | claude | review | `docs/tasks/T12-react-components.md` — 지시서 [PR #36](https://github.com/songyu0608/portfolio/pull/36) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T13 SEO(canonical·hreflang·OG·sitemap·robots·favicon·404) → T14 접근성 점검·수정 → 단계 7~8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -116,7 +116,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 - [ ] 커스텀 도메인 구입 여부와 도메인 이름 (단계 8 전, 메일 발송 설정에 필요할 가능성 높음)
 - [ ] 콘텐츠 원고 (`docs/CONTENT.md` 체크리스트). 단계 4는 임시 문구로 진행하고, 단계 8 배포 전에 교체한다
 - [x] 패키지 매니저 확정: pnpm 11.25.0 (T01)
-- [ ] React 중심 전환(A안, 2026-10-31 사용자 결정): Astro는 라우팅·빌드 틀로 두고, 화면 컴포넌트(`src/components/*.astro` 12개 + `src/components/pages/*.astro` 5개 = 17개. 처음 적은 18개는 오기)를 React(`.tsx`, 빌드 때 HTML로만 렌더하고 브라우저 JS는 늘리지 않음)로 바꾼다. 저장소·사이트의 소개(README, 기술 스택 표기)는 「React + TypeScript」를 중심에 두고 Astro는 정적 빌드 도구로 함께 적는다. 빌드는 Vite 기반이다(Astro가 Vite로 빌드하며, T11 글꼴 통합도 Vite 플러그인). 디코딩·틸트 같은 작은 효과는 지금처럼 가벼운 스크립트로 두는 것이 권고안이다(React로 바꾸면 그 페이지가 React 본체 gzip 약 66KB를 받음). 세부(스타일 방식, 남길 `.astro` 파일)는 `docs/tasks/T12-react-components.md`에서 정했고, `AGENTS.md` §5·§7과 `docs/ARCHITECTURE.md` A1·A2·A11은 T12 지시서 PR에서 갱신했다. 순서: T12 React 전환 → T13 SEO → T14 접근성(사용자 결정).
+- [x] React 중심 전환(A안, 2026-10-31 사용자 결정): Astro는 라우팅·빌드 틀로 두고, 화면 컴포넌트(`src/components/*.astro` 12개 + `src/components/pages/*.astro` 5개 = 17개. 처음 적은 18개는 오기)를 React(`.tsx`, 빌드 때 HTML로만 렌더하고 브라우저 JS는 늘리지 않음)로 바꾼다. 저장소·사이트의 소개(README, 기술 스택 표기)는 「React + TypeScript」를 중심에 두고 Astro는 정적 빌드 도구로 함께 적는다. 빌드는 Vite 기반이다(Astro가 Vite로 빌드하며, T11 글꼴 통합도 Vite 플러그인). 디코딩·틸트 같은 작은 효과는 지금처럼 가벼운 스크립트로 두는 것이 권고안이다(React로 바꾸면 그 페이지가 React 본체 gzip 약 66KB를 받음). 세부(스타일 방식, 남길 `.astro` 파일)는 `docs/tasks/T12-react-components.md`에서 정했고, `AGENTS.md` §5·§7과 `docs/ARCHITECTURE.md` A1·A2·A11은 T12 지시서 PR에서 갱신했다. 순서: T12 React 전환 → T13 SEO → T14 접근성(사용자 결정). → T12: 화면 컴포넌트 17개를 React(`.tsx`) + CSS Modules로 바꿨다. 콘텐츠 조회·`<head>`·페이지 스크립트는 `BaseLayout`과 페이지 진입점 `src/layouts/*Layout.astro`가 맡는다. main과 비교해 전체 페이지 캡처 45장·18페이지 접근성 트리가 같고, 페이지가 받는 JS는 같으며(헤더 스크립트 +6B), HTML·CSS는 모두 줄었다(`docs/ARCHITECTURE.md` §2 "화면 컴포넌트와 스타일").
   - 고른 이유: 일본 채용 공고에서 React 수요가 크다. 페이지 JS(약 2KB), T11 결과, View Transitions, Cloudflare 배포를 그대로 유지한다. React로 쓴 화면 코드는 나중에 Next.js로 옮길 때 대부분 그대로 쓸 수 있다.
   - 검토 후 고르지 않은 안 — Next.js 정적 출력(`output: 'export'`, 한때 이 방향을 골랐다): 화면·기능은 같게 만들 수 있고 Cloudflare에서 무료로 배포된다. 그러나 첫 로드 JS가 약 2KB → 약 136KB(gzip, Next.js 16.4.3 빈 페이지 실측, `noModule` 폴리필 제외)로 늘고, `next/link` 클라이언트 이동에서는 CSS 문서 간 View Transitions가 동작하지 않으며, T11 글꼴 통합(Vite 플러그인)과 content collections(A9) 대체 로더를 다시 만들어야 한다. 서버 기능(SSR·ISR·Server Actions·middleware 등)은 정적 출력에서 쓸 수 없어([공식 문서](https://nextjs.org/docs/app/guides/static-exports)) Next.js를 쓰는 이점이 작다.
   - 다른 메이저 프레임워크(React Router v7, Nuxt, SvelteKit)도 정적 출력은 되지만, 페이지 전체를 브라우저에서 다시 연결(hydration)하므로 프레임워크 본체 JS를 보낸다(크기는 측정하지 않음). Nuxt·SvelteKit은 React가 아니다.
@@ -147,7 +147,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 ### T03에서 이월한 항목
 
 - [x] T04: Home 히어로 등 긴 일본어 제목은 Firefox·Safari(`auto-phrase` 미지원)에서 단어 중간에서 끊길 수 있다(T03 확인 화면 h1: 「読みやすさを、設計/する。」). 문절 단위 `<wbr>` 또는 `inline-block` span을 검토한다. BudouX(새 의존성)는 사용자 확인 후에만 도입한다. 근거: `docs/DESIGN.md` §2 타이포그래피. → T04: 콘텐츠에 문절 배열로 쓰고 `keep-all` + CSS 생성 U+200B로 문절 사이에서만 줄바꿈. `<wbr>`·`inline-block`은 Chromium 접근성 이름에 공백이 생겨 쓰지 않음. 결과는 `docs/DESIGN.md` §2.
-- [ ] 단계 7 또는 Firefox·WebKit을 쓸 수 있는 환경: `auto-phrase` 미지원 브라우저의 실제 줄바꿈과 T03 헤더 배치(320px·1280px)를 확인한다. T04 문절 처리(`Phrases.astro`)가 같은 위치에서 줄을 바꾸는지, 실제 스크린 리더(VoiceOver, NVDA)가 문절 사이에서 끊어 읽지 않는지도 함께 확인한다.
+- [ ] 단계 7 또는 Firefox·WebKit을 쓸 수 있는 환경: `auto-phrase` 미지원 브라우저의 실제 줄바꿈과 T03 헤더 배치(320px·1280px)를 확인한다. T04 문절 처리(`Phrases.tsx`, T12 전 `Phrases.astro`)가 같은 위치에서 줄을 바꾸는지, 실제 스크린 리더(VoiceOver, NVDA)가 문절 사이에서 끊어 읽지 않는지도 함께 확인한다.
 - [x] `@astrojs/react` 통합 때문에 어느 페이지도 참조하지 않는 React 클라이언트 번들(`dist/_astro/client.*.js`, 220,749B)이 T01부터 빌드 결과에 생성된다. 페이지가 받는 JS에는 영향이 없다. → 2026-10-30 사용자 결정: 단계 5 인터랙션(A2)에서 React를 쓰므로 통합을 그대로 둔다. 단계 6 성능 점검 때 번들이 페이지에서 참조되지 않는지만 다시 확인한다. → T10: React·ReactDOM 청크는 명령 팔레트를 처음 열 때 받는 청크로 쓰인다. 참조되지 않는 파일은 Astro React 렌더러 진입 파일(약 1.8KB)뿐이다(`docs/ARCHITECTURE.md` §2).
 
 ### T04 지시서 작성 시 추가한 항목
@@ -171,6 +171,12 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 - [x] 단계 6(T11): Home의 CLS가 Chromium 1280px에서 0.32~0.37이다(T07 main도 같음, 2026-10-31 측정). 원인은 IBM Plex Sans JP 글꼴 교체 때 히어로 줄바꿈이 바뀌어 아래 내용이 약 35px 올라가는 것이다. 글꼴 로딩 방식(`font-display`, preload, 대체 글꼴 크기 맞춤 등)을 단계 6에서 정한다. → T11: 일본어 페이지에서 가나 범위(400·700) 2개 preload로 Home 1280px CLS 0.298 → 0.001(Playwright 지연 150ms·1.6Mbps), Lighthouse 모든 측정 페이지 0.017 이하. 3G 수준 이하에서는 Home CLS 약 0.3이 남으며, 2026-10-31 사용자 결정으로 그대로 둔다(`docs/DESIGN.md` §2 한계).
 - [ ] 원고 반영 후: Home 한 줄 소개 길이가 바뀌면 Home CLS를 다시 잰다(T11 측정 방법, `docs/tasks/T11-performance.md`). 지금 값은 임시 문구가 `max-width: 34em`에 거의 꽉 차는 길이라 생긴 것이다.
+
+### T12 교차 리뷰에서 이월한 항목
+
+- [ ] 단계 7: 화면 회귀 검사에 CSS 순서를 지키는 대표 페이지를 넣는다. 페이지 레이아웃(`src/layouts/*Layout.astro`)이 `BaseLayout`을 화면 컴포넌트보다 먼저 import해야 CSS Modules 규칙이 같은 명시도의 전역 클래스를 이긴다. 순서가 바뀌면 About·Projects에서 `.tag-list`·`.project-grid`의 `margin: 0`이 모듈의 `margin-top`을 이겨 화면이 48px 짧아진다(`docs/ARCHITECTURE.md` §2 "화면 컴포넌트와 스타일").
+- [ ] 화면 컴포넌트의 이식성을 높일 때(다른 React 환경으로 옮기기 등): `PhaseList.tsx`가 런타임 import하는 `PHASES`를 Astro 전용 `src/content.config.ts`에서 프레임워크에 독립적인 파일로 옮긴다. `astro:i18n`을 쓰는 `src/i18n/paths.ts`도 이때 바꾼다. 지금은 빌드 때 HTML로만 렌더해 문제가 없어 그대로 둔다.
+- 근거: [PR #37](https://github.com/songyu0608/portfolio/pull/37) ChatGPT(Codex) 교차 리뷰 개선 제안(머지 차단 아님).
 
 ### T05 지시서 작성 시 추가한 항목
 
@@ -225,3 +231,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | 호스팅은 Cloudflare 유지, Vercel은 검토 후 쓰지 않음. 단계 8 API는 Workers 함수(§7) | 사용자 결정 |
 | 2026-10-31 | 단계 6 순서 변경: React 중심 전환을 T12로 넣고 SEO는 T13, 접근성은 T14로 미룸(마크업 점검을 전환 뒤에 한 번만 하기 위해) | 사용자 결정 |
 | 2026-10-31 | T12 지시서 작성: 화면 컴포넌트 17개를 React(`.tsx`, `client:*` 없이 빌드 때 HTML로만)로 바꾼다. 스타일은 CSS Modules(기본안), 콘텐츠 조회·`<head>`·페이지 스크립트는 `.astro`(`BaseLayout`, 새 페이지 레이아웃)에 두고 라우트 파일은 한 줄 유지(A8). 화면(캡처 픽셀 차이 0)·접근성 트리·페이지 JS는 main과 같게. 소개(README)는 React + TypeScript 중심. ARCHITECTURE A1을 `superseded`로 바꾸고 A11 추가, AGENTS §5·§7 갱신 | T12 지시서 (`docs/ARCHITECTURE.md` A11) |
+| 2026-10-31 | T12 구현 담당 claude. 구현: 페이지 진입점 이름은 기본안대로 `src/layouts/*Layout.astro`, 여러 페이지가 쓰는 카드 틸트 `<script>`는 `src/layouts/scripts/CardTiltScript.astro` 한 곳에 둠(레이아웃마다 import하면 공유 청크 외부 파일이 생김), 페이지 진입점은 `BaseLayout`을 화면 컴포넌트보다 먼저 import(전역 CSS를 앞에 둬 CSS Modules 규칙이 이기게) | 사용자 결정(담당), T12 구현 (`docs/ARCHITECTURE.md` §2) |

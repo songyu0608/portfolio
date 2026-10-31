@@ -1,0 +1,58 @@
+.intro {
+  padding-top: var(--space-12);
+}
+
+.profile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.name {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.role {
+  color: var(--color-text-muted);
+}
+
+.resumes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.icon {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.section {
+  margin-top: var(--space-16);
+}
+
+.description {
+  margin-top: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+}
+
+.body {
+  margin-top: var(--space-6);
+}
+
+@media (min-width: 40rem) {
+  .intro {
+    padding-top: var(--space-16);
+  }
+}

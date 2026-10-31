@@ -1,0 +1,35 @@
+.root ul {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.root li {
+  display: flex;
+  align-items: center;
+}
+
+.root li + li::before {
+  width: 1px;
+  height: 1em;
+  background: var(--color-border);
+  content: '';
+}
+
+.root a,
+.root span {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--space-2);
+  font-size: var(--font-size-small);
+}
+
+.root span {
+  color: var(--color-text);
+  font-weight: 700;
+}

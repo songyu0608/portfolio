@@ -4,9 +4,9 @@
 | --- | --- |
 | 단계 | 6 |
 | 선행 작업 | T11 (PR #34) |
-| 담당 | 미배정 |
-| 상태 | todo |
-| 브랜치 | `<agent>/T12-react-components` |
+| 담당 | claude |
+| 상태 | review |
+| 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T12-react-components`) |
 
 ## 목표
 
@@ -174,32 +174,36 @@
 
 ## 완료 조건
 
-- [ ] `src/components/` 아래에 `.astro` 파일이 없고, `.astro`는 `src/pages/**`와 `src/layouts/**`에만 있다. 라우트 파일은 언어(와 상세 props)만 넘긴다.
-- [ ] 어느 HTML에도 `<astro-island`·`<astro-slot`·`<astro-static-slot`이 없고, 소스에 `client:` 지시어가 없다. `data-astro-cid-` 속성은 `BaseLayout`의 요소(body·main·skip-link 등)에만 남는다.
-- [ ] 화면이 main과 같다. Playwright Chromium, `reducedMotion: 'reduce'`, 글꼴 로드 후 전체 페이지 캡처 45장의 픽셀 차이가 0이다.
+- [x] `src/components/` 아래에 `.astro` 파일이 없고, `.astro`는 `src/pages/**`와 `src/layouts/**`에만 있다. 라우트 파일은 언어(와 상세 props)만 넘긴다.
+- [x] 어느 HTML에도 `<astro-island`·`<astro-slot`·`<astro-static-slot`이 없고, 소스에 `client:` 지시어가 없다. `data-astro-cid-` 속성은 `BaseLayout`의 요소(body·main·skip-link 등)에만 남는다.
+- [x] 화면이 main과 같다. Playwright Chromium, `reducedMotion: 'reduce'`, 글꼴 로드 후 전체 페이지 캡처 45장의 픽셀 차이가 0이다.
   - 40장: Home·About·Projects·상세(`order-api`)·Contact × ja·en × 라이트·다크 × 1280px·375px
   - 5장: JS를 끈 상태(`javaScriptEnabled: false`) ja 라이트 1280px, 5페이지
   - 차이가 있으면 차이 영역 캡처와 원인을 PR에 적고, 고칠 수 없으면 사용자 확인을 받는다.
-- [ ] 접근성 트리가 main과 같다. 18페이지 모두 `page.locator('body').ariaSnapshot()` 결과가 main과 글자 단위로 같다. 역할, 이름, 텍스트, 공백이 대상이다.
-- [ ] 페이지가 받는 JS가 main과 같다.
+  - 결과: 45장 모두 PNG 바이트가 같다(차이 0).
+- [x] 접근성 트리가 main과 같다. 18페이지 모두 `page.locator('body').ariaSnapshot()` 결과가 main과 글자 단위로 같다. 역할, 이름, 텍스트, 공백이 대상이다.
+- [x] 페이지가 받는 JS가 main과 같다.
   - 외부 JS는 모든 페이지에서 헤더 스크립트 1개(압축 전 4KB 이하)다.
   - 페이지별 인라인 모듈 합계 크기는 main보다 크지 않다.
   - 스크립트는 범위 5의 페이지에만 들어간다.
   - 테마 첫 적용 인라인 스크립트는 바뀌지 않는다.
-- [ ] 첫 로드에 React 관련 파일(`mount.*.js`, React·ReactDOM 청크, React 렌더러 진입 파일)·`command-ui.*.css`·`commands.json`을 받지 않는다(모든 페이지 종류, Network로 확인). 팔레트를 처음 열 때 받는 파일 목록이 main과 같고, 크기 합계가 main보다 크지 않다. `dist/{ja,en}/commands.json`이 main과 바이트 단위로 같다.
-- [ ] 페이지별 HTML 크기와 CSS 합계(외부 + 인라인 `<style>`)가 main보다 크지 않다. 커지면 늘어난 양과 이유를 PR에 적는다.
-- [ ] 인터랙션이 그대로 동작한다: Home 디코딩(재생·reduced-motion에서 안 함), 카드 틸트(Home·Projects, 포인터·reduced-motion), 카드 → 상세 View Transitions(제목 이름 연결), About 경력 타임라인 스크롤 강조, 명령 팔레트·터미널(⌘K / Ctrl+K·헤더 버튼·언어 전환·테마 명령), 테마 버튼(`aria-pressed`, 저장, 시스템 설정 따르기), 메일 복사(완료·실패 표시, `role="status"`), 언어 전환 링크, 본문 바로가기, 현재 위치 표시(`aria-current`). JS를 끄면 팔레트 버튼·복사 버튼이 숨고 나머지 정보는 모두 보인다.
-- [ ] T11 결과를 유지한다.
+  - 결과: 헤더 스크립트 3,531B → 3,537B(+6B, `[data-theme-toggle]` 선택자). 인라인 모듈 합계는 Home 2,644B → 2,640B, Projects 1,133B → 1,129B, Contact 579B → 565B.
+- [x] 첫 로드에 React 관련 파일(`mount.*.js`, React·ReactDOM 청크, React 렌더러 진입 파일)·`command-ui.*.css`·`commands.json`을 받지 않는다(모든 페이지 종류, Network로 확인). 팔레트를 처음 열 때 받는 파일 목록이 main과 같고, 크기 합계가 main보다 크지 않다. `dist/{ja,en}/commands.json`이 main과 바이트 단위로 같다.
+- [x] 페이지별 HTML 크기와 CSS 합계(외부 + 인라인 `<style>`)가 main보다 크지 않다. 커지면 늘어난 양과 이유를 PR에 적는다.
+  - 결과: 6페이지 모두 HTML(인라인 `<style>` 제외)과 CSS 합계가 줄었다. 페이지 CSS가 외부 파일에서 인라인 `<style>`로 바뀐 페이지(About·상세)는 인라인 `<style>`을 포함한 HTML 파일 크기만 보면 커진다.
+- [x] 인터랙션이 그대로 동작한다: Home 디코딩(재생·reduced-motion에서 안 함), 카드 틸트(Home·Projects, 포인터·reduced-motion), 카드 → 상세 View Transitions(제목 이름 연결), About 경력 타임라인 스크롤 강조, 명령 팔레트·터미널(⌘K / Ctrl+K·헤더 버튼·언어 전환·테마 명령), 테마 버튼(`aria-pressed`, 저장, 시스템 설정 따르기), 메일 복사(완료·실패 표시, `role="status"`), 언어 전환 링크, 본문 바로가기, 현재 위치 표시(`aria-current`). JS를 끄면 팔레트 버튼·복사 버튼이 숨고 나머지 정보는 모두 보인다.
+- [x] T11 결과를 유지한다.
   - 글꼴 누락 검사가 빌드에서 통과하고(누락 0), `@font-face`가 71개 이하다(늘면 이유).
   - T11 측정 방법의 Playwright CLS: 6페이지 × 1280px·375px 모두 0.1 이하다.
   - Lighthouse 3회 중앙값(`/ja/`, `/ja/projects/`, 모바일·데스크톱): Performance 모바일 90·데스크톱 95 이상, CLS 0.1 이하, TBT 0ms.
-- [ ] 빌드 로그에 React 경고(`key`, 알 수 없는 DOM 속성 등)가 없다.
-- [ ] `pnpm lint`에서 규칙을 끄지 않는다. 꼭 필요한 예외는 그 줄에만 이유를 적은 주석으로 둔다.
-- [ ] 새 의존성이 없다(`package.json` 의존성 항목, `pnpm-lock.yaml` 변경 없음).
-- [ ] 문서가 갱신되어 있다: `README.md`(React + TypeScript 중심, 최신 상태), `docs/ARCHITECTURE.md` §2·A11 비고, `docs/DESIGN.md` 경로·표현, `AGENTS.md` §5·§7(구현과 다르면), `docs/PLAN.md` §7.
-- [ ] PR 본문에 main과 구현 후의 출력 표(위 "현재 출력"과 같은 열), 캡처 비교 결과(장수·차이 0), 접근성 트리 비교 결과, 대표 캡처 3장(Home ja 라이트 1280px, Projects en 다크 375px, Contact ja 라이트 1280px)이 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
-- [ ] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
+  - 결과: 누락 0, `@font-face` 71개. CLS 최대 0.058(375px `/en/`, main과 같음). Lighthouse 중앙값 `/ja/` 모바일 100·데스크톱 100, `/ja/projects/` 모바일 99·데스크톱 100, CLS 0.017 이하, TBT 0ms.
+- [x] 빌드 로그에 React 경고(`key`, 알 수 없는 DOM 속성 등)가 없다.
+- [x] `pnpm lint`에서 규칙을 끄지 않는다. 꼭 필요한 예외는 그 줄에만 이유를 적은 주석으로 둔다.
+- [x] 새 의존성이 없다(`package.json` 의존성 항목, `pnpm-lock.yaml` 변경 없음).
+- [x] 문서가 갱신되어 있다: `README.md`(React + TypeScript 중심, 최신 상태), `docs/ARCHITECTURE.md` §2·A11 비고, `docs/DESIGN.md` 경로·표현, `AGENTS.md` §5·§7(구현과 다르면), `docs/PLAN.md` §7.
+- [x] PR 본문에 main과 구현 후의 출력 표(위 "현재 출력"과 같은 열), 캡처 비교 결과(장수·차이 0), 접근성 트리 비교 결과, 대표 캡처 3장(Home ja 라이트 1280px, Projects en 다크 375px, Contact ja 라이트 1280px)이 있다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
+- [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
 

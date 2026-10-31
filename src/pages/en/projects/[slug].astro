@@ -1,6 +1,6 @@
 ---
 // 프로젝트 상세. 프로젝트마다 /en/projects/<slug>/ 페이지를 만든다.
-import ProjectDetailPage from '../../../components/pages/ProjectDetailPage.astro';
+import ProjectDetailLayout from '../../../layouts/ProjectDetailLayout.astro';
 import { getProjectPages, type ProjectPage } from '../../../lib/content';
 
 export async function getStaticPaths() {
@@ -16,4 +16,4 @@ type Props = ProjectPage;
 const page = Astro.props;
 ---
 
-<ProjectDetailPage locale="en" {...page} />
+<ProjectDetailLayout locale="en" {...page} />

@@ -1,0 +1,57 @@
+.root {
+  display: none;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--color-text-muted);
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+:global(html.js) .root {
+  display: inline-flex;
+}
+
+.root:hover {
+  background: var(--color-surface);
+}
+
+.icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+/* 적용 중인 테마의 아이콘만 보인다. 우선순위는 tokens.css와 같다(data-theme > 시스템 설정). */
+.iconDark,
+:global(:root[data-theme='dark']) .iconLight {
+  display: none;
+}
+
+:global(:root[data-theme='dark']) .iconDark {
+  display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(:root:not([data-theme])) .iconLight {
+    display: none;
+  }
+
+  :global(:root:not([data-theme])) .iconDark {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}
