@@ -5,7 +5,7 @@
 | 단계 | 5 |
 | 선행 작업 | T08 (PR #25) |
 | 담당 | claude |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-n27zgi` (실행 환경이 지정한 이름. 원칙상 이름은 `<agent>/T09-career-timeline`) |
 
 ## 목표
