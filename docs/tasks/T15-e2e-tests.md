@@ -5,7 +5,7 @@
 | 단계 | 7 |
 | 선행 작업 | T14 (PR #43) |
 | 담당 | claude |
-| 상태 | in-progress |
+| 상태 | review |
 | 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T15-e2e-tests`) |
 
 ## 목표
@@ -213,20 +213,23 @@
 
 ## 완료 조건
 
-- [ ] `pnpm test`가 CI(ubuntu-latest)에서 Chromium·WebKit·Firefox 모두 통과한다.
+- [x] `pnpm test`가 CI(ubuntu-latest)에서 Chromium·WebKit·Firefox 모두 통과한다.
   - 로컬은 실행 가능한 브라우저로 확인한다. 결과와 환경을 PR에 적는다.
-- [ ] 범위 2의 2-1~2-10이 모두 있다. PR에 "파일 · 테스트 · 브라우저 · 폭" 표를 싣는다.
-- [ ] axe 위반 0(범위 2-7 조건). 실행된 axe 버전과 규칙 ID가 테스트 결과에 남는다.
-- [ ] 범위 3의 결함 주입 6건이 모두 해당 테스트를 실패시킨다(PR 표, 결함은 커밋하지 않음).
-- [ ] 이월 항목 결과를 PR 표로 남긴다. 본문 바로가기와 터미널 출력 포커스가 브라우저별로 어땠는지, 범위 4 수정 여부를 적는다.
-- [ ] 테스트에 페이지 경로 목록과 화면 문구가 하드코딩되어 있지 않다. 예외(예: 없는 경로 `/ja/xyz/`)는 이유를 주석으로 남긴다.
-- [ ] `skip`·`fixme`·`only`가 없고 `retries`는 0이다.
-- [ ] 사이트 빌드 결과(`dist/`)가 main과 같다(범위 4 수정이 없을 때). 테스트 코드는 빌드에 들어가지 않는다.
-- [ ] 새 의존성은 `@playwright/test`·`@axe-core/playwright` 2개뿐이다. `pnpm-lock.yaml` 변경이 이 둘과 하위 의존성뿐이다.
-- [ ] CI E2E 단계에 걸린 시간을 PR에 적는다(목표 10분 이하).
-- [ ] 문서가 갱신되어 있다: `docs/ARCHITECTURE.md` "테스트", `AGENTS.md` §6, `README.md`, `docs/DESIGN.md` §11, `docs/PLAN.md`(진행 상태·표·결정 기록·§8)
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm test`와 GitHub CI가 통과한다.
-- [ ] 비밀 값 미포함. 테스트 결과물(`playwright-report/`, `test-results/`)은 커밋하지 않는다(`.gitignore`에 이미 있음).
+- [x] 범위 2의 2-1~2-10이 모두 있다. PR에 "파일 · 테스트 · 브라우저 · 폭" 표를 싣는다.
+- [x] axe 위반 0(범위 2-7 조건). 실행된 axe 버전과 규칙 ID가 테스트 결과에 남는다.
+- [x] 범위 3의 결함 주입 6건이 모두 해당 테스트를 실패시킨다(PR 표, 결함은 커밋하지 않음).
+  - 구현 결과: `BaseLayout` import 순서(2번째)는 현재 Astro 빌드에서 `dist/`가 바뀌지 않아 결함 자체가 생기지 않았다. 같은 증상(전역 `margin: 0`이 모듈 여백을 이김)을 넣어 2-9가 실패하는 것으로 대신 확인했다.
+- [x] 이월 항목 결과를 PR 표로 남긴다. 본문 바로가기와 터미널 출력 포커스가 브라우저별로 어땠는지, 범위 4 수정 여부를 적는다.
+- [x] 테스트에 페이지 경로 목록과 화면 문구가 하드코딩되어 있지 않다. 예외(예: 없는 경로 `/ja/xyz/`)는 이유를 주석으로 남긴다.
+- [x] `skip`·`fixme`·`only`가 없고 `retries`는 0이다.
+- [x] 사이트 빌드 결과(`dist/`)가 main과 같다(범위 4 수정이 없을 때). 테스트 코드는 빌드에 들어가지 않는다.
+  - 구현 결과: 범위 4 수정(`main` `tabindex`, `main:focus`)과 테스트가 찾은 결함 수정(상세 担当工程 5칸 그리드 1024px부터, 사용자 결정)만 다르다.
+- [x] 새 의존성은 `@playwright/test`·`@axe-core/playwright` 2개뿐이다. `pnpm-lock.yaml` 변경이 이 둘과 하위 의존성뿐이다.
+  - 구현 결과: 타입 체크용 `@types/node` 24.19.2를 따로 승인받아 더했다(2026-10-31 사용자 결정). lockfile에는 이 셋과 하위 의존성, 그리고 `vite`(선택적 peer `@types/node`)와 이를 쓰는 `astro`·`@astrojs/react`·`@vitejs/plugin-react`의 해석 키에 `@types/node`가 붙은 변경만 있다.
+- [x] CI E2E 단계에 걸린 시간을 PR에 적는다(목표 10분 이하).
+- [x] 문서가 갱신되어 있다: `docs/ARCHITECTURE.md` "테스트", `AGENTS.md` §6, `README.md`, `docs/DESIGN.md` §11, `docs/PLAN.md`(진행 상태·표·결정 기록·§8)
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm test`와 GitHub CI가 통과한다.
+- [x] 비밀 값 미포함. 테스트 결과물(`playwright-report/`, `test-results/`)은 커밋하지 않는다(`.gitignore`에 이미 있음).
 
 ## 확인 방법
 

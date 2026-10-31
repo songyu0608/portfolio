@@ -8,9 +8,9 @@
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 7 테스트 — T15 구현 |
-| 진행 중인 작업 | T15 E2E 테스트 구현(담당 claude, `docs/tasks/T15-e2e-tests.md`) |
-| 다음 작업 | T15 구현 → T16 Lighthouse CI → 단계 8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 7 테스트 — T15 리뷰 |
+| 진행 중인 작업 | T15 E2E 테스트 PR #46 리뷰(담당 claude, `docs/tasks/T15-e2e-tests.md`). Codex 교차 리뷰 → 사용자 merge |
+| 다음 작업 | T15 merge → T16 Lighthouse CI 지시서 → 단계 8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -110,7 +110,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T12 | React 중심 전환 (화면 컴포넌트 React + TypeScript, CSS Modules, 소개 문서) | 6 | T11 | claude | done | `docs/tasks/T12-react-components.md` — 지시서 [PR #36](https://github.com/songyu0608/portfolio/pull/36), 구현 [PR #37](https://github.com/songyu0608/portfolio/pull/37) |
 | T13 | SEO (canonical·hreflang·OG·sitemap·robots·favicon·404) | 6 | T12 | claude | done | `docs/tasks/T13-seo.md` — 지시서 [PR #39](https://github.com/songyu0608/portfolio/pull/39), 구현 [PR #40](https://github.com/songyu0608/portfolio/pull/40) |
 | T14 | 접근성 점검·수정 (WCAG 2.2 AA 자동·수동 점검, 강제 색상 모드, 터미널 출력 스크롤) | 6 | T13 | claude | done | `docs/tasks/T14-accessibility.md` — 지시서 [PR #42](https://github.com/songyu0608/portfolio/pull/42), 구현 [PR #43](https://github.com/songyu0608/portfolio/pull/43) |
-| T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | in-progress | `docs/tasks/T15-e2e-tests.md` |
+| T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | review | `docs/tasks/T15-e2e-tests.md` |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T16 Lighthouse CI(단계 7), 단계 8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -150,7 +150,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 ### T03에서 이월한 항목
 
 - [x] T04: Home 히어로 등 긴 일본어 제목은 Firefox·Safari(`auto-phrase` 미지원)에서 단어 중간에서 끊길 수 있다(T03 확인 화면 h1: 「読みやすさを、設計/する。」). 문절 단위 `<wbr>` 또는 `inline-block` span을 검토한다. BudouX(새 의존성)는 사용자 확인 후에만 도입한다. 근거: `docs/DESIGN.md` §2 타이포그래피. → T04: 콘텐츠에 문절 배열로 쓰고 `keep-all` + CSS 생성 U+200B로 문절 사이에서만 줄바꿈. `<wbr>`·`inline-block`은 Chromium 접근성 이름에 공백이 생겨 쓰지 않음. 결과는 `docs/DESIGN.md` §2.
-- [ ] 단계 7 또는 Firefox·WebKit을 쓸 수 있는 환경: `auto-phrase` 미지원 브라우저의 실제 줄바꿈과 T03 헤더 배치(320px·1280px)를 확인한다. T04 문절 처리(`Phrases.tsx`, T12 전 `Phrases.astro`)가 같은 위치에서 줄을 바꾸는지, 실제 스크린 리더(VoiceOver, NVDA)가 문절 사이에서 끊어 읽지 않는지도 함께 확인한다.
+- [ ] 단계 7 또는 Firefox·WebKit을 쓸 수 있는 환경: `auto-phrase` 미지원 브라우저의 실제 줄바꿈과 T03 헤더 배치(320px·1280px)를 확인한다. T04 문절 처리(`Phrases.tsx`, T12 전 `Phrases.astro`)가 같은 위치에서 줄을 바꾸는지, 실제 스크린 리더(VoiceOver, NVDA)가 문절 사이에서 끊어 읽지 않는지도 함께 확인한다. → T15: 320px 가로 넘침 0과 1280px 헤더 한 줄은 WebKit·Firefox 엔진에서도 확인했다(`tests/e2e/layout.spec.ts`). 문절 줄바꿈 위치(엔진마다 달라 사람이 캡처로 본다)와 스크린 리더는 남는다.
 - [x] `@astrojs/react` 통합 때문에 어느 페이지도 참조하지 않는 React 클라이언트 번들(`dist/_astro/client.*.js`, 220,749B)이 T01부터 빌드 결과에 생성된다. 페이지가 받는 JS에는 영향이 없다. → 2026-10-30 사용자 결정: 단계 5 인터랙션(A2)에서 React를 쓰므로 통합을 그대로 둔다. 단계 6 성능 점검 때 번들이 페이지에서 참조되지 않는지만 다시 확인한다. → T10: React·ReactDOM 청크는 명령 팔레트를 처음 열 때 받는 청크로 쓰인다. 참조되지 않는 파일은 Astro React 렌더러 진입 파일(약 1.8KB)뿐이다(`docs/ARCHITECTURE.md` §2).
 
 ### T04 지시서 작성 시 추가한 항목
@@ -168,7 +168,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 ### T10 구현 시 발견한 항목
 
 - [x] 헤더 스크립트(테마 버튼 + 팔레트 런처)가 압축 전 약 3.5KB로 지시서의 처음 기준 "런처 1.5KB 이하"를 넘었다(약 1.7KB는 Vite 동적 import 도우미, `vite.build.modulePreload: false`는 Astro 설정에 밀려 미적용). 2026-10-31 사용자 결정으로 기준을 "헤더 스크립트 1개, 압축 전 4KB 이하"로 바꿨다. 단계 6 성능 점검에서 Lighthouse로 영향만 확인한다(T11 범위 4). → T11: TBT 0ms, "사용하지 않는 JavaScript" 진단 없음. `astro:build:setup`에서 `modulePreload: false`를 넣어도 도우미가 남고 팔레트 첫 열기가 직렬 로드가 되어 그대로 둔다(`docs/ARCHITECTURE.md` §2).
-- [ ] Firefox·Safari 실기, 실제 IME(일본어 입력 확정 Enter), 실제 스크린 리더(VoiceOver, NVDA)로 팔레트·터미널을 확인한다(단계 7 또는 해당 환경). 이 환경에서는 Chromium만 확인했다.
+- [ ] Firefox·Safari 실기, 실제 IME(일본어 입력 확정 Enter), 실제 스크린 리더(VoiceOver, NVDA)로 팔레트·터미널을 확인한다(단계 7 또는 해당 환경). 이 환경에서는 Chromium만 확인했다. → T15: WebKit·Firefox 엔진(Playwright)에서 팔레트·터미널 동작을 확인했다(`tests/e2e/command-ui.spec.ts`). Safari·Firefox 실기, 실제 IME, 스크린 리더는 남는다.
 
 ### T08 구현 시 발견한 항목
 
@@ -177,7 +177,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 ### T12 교차 리뷰에서 이월한 항목
 
-- [ ] 단계 7: 화면 회귀 검사에 CSS 순서를 지키는 대표 페이지를 넣는다. 페이지 레이아웃(`src/layouts/*Layout.astro`)이 `BaseLayout`을 화면 컴포넌트보다 먼저 import해야 CSS Modules 규칙이 같은 명시도의 전역 클래스를 이긴다. 순서가 바뀌면 About·Projects에서 `.tag-list`·`.project-grid`의 `margin: 0`이 모듈의 `margin-top`을 이겨 화면이 48px 짧아진다(`docs/ARCHITECTURE.md` §2 "화면 컴포넌트와 스타일").
+- [x] 단계 7: 화면 회귀 검사에 CSS 순서를 지키는 대표 페이지를 넣는다. 페이지 레이아웃(`src/layouts/*Layout.astro`)이 `BaseLayout`을 화면 컴포넌트보다 먼저 import해야 CSS Modules 규칙이 같은 명시도의 전역 클래스를 이긴다. 순서가 바뀌면 About·Projects에서 `.tag-list`·`.project-grid`의 `margin: 0`이 모듈의 `margin-top`을 이겨 화면이 48px 짧아진다(`docs/ARCHITECTURE.md` §2 "화면 컴포넌트와 스타일"). → T15: `tests/e2e/layout.chromium.spec.ts` "CSS 순서 회귀"가 About 기술 스택 첫 `.tag-list`와 Projects `.project-grid`의 위 여백을 간격 토큰 값과 비교한다. 현재 Astro 빌드는 import 순서를 바꿔도 `dist/`가 같아 이 결함이 재현되지 않았고, 같은 증상(전역 `margin: 0`이 이김)을 넣어 테스트가 실패하는 것을 확인했다.
 - [ ] 화면 컴포넌트의 이식성을 높일 때(다른 React 환경으로 옮기기 등): `PhaseList.tsx`가 런타임 import하는 `PHASES`를 Astro 전용 `src/content.config.ts`에서 프레임워크에 독립적인 파일로 옮긴다. `astro:i18n`을 쓰는 `src/i18n/paths.ts`도 이때 바꾼다. 지금은 빌드 때 HTML로만 렌더해 문제가 없어 그대로 둔다.
 - 근거: [PR #37](https://github.com/songyu0608/portfolio/pull/37) ChatGPT(Codex) 교차 리뷰 개선 제안(머지 차단 아님).
 
@@ -193,8 +193,9 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 ### T14 구현 시 추가한 항목 (단계 7)
 
-- [ ] axe 자동 검사를 E2E에 넣는다. 조건은 `docs/DESIGN.md` §11 "점검 도구와 조건"과 같다(19페이지 × 라이트·다크 × 1280·375px, 팔레트·터미널 열린 상태). `@axe-core/playwright` 등 의존성 추가는 사용자 확인 뒤에 한다. T14는 실행 환경의 axe-core 4.14.0을 페이지에 넣어 쟀다.
-- [ ] WebKit·Firefox에서 확인한다: 본문 바로가기 뒤 다음 Tab 위치(`main`에 `tabindex="-1"`이 필요한지), 터미널 출력 영역 포커스·키 스크롤, 강제 색상(Windows 고대비)의 실제 색. 결과에 따라 `main` `tabindex`를 정한다.
+- [x] axe 자동 검사를 E2E에 넣는다. 조건은 `docs/DESIGN.md` §11 "점검 도구와 조건"과 같다(19페이지 × 라이트·다크 × 1280·375px, 팔레트·터미널 열린 상태). `@axe-core/playwright` 등 의존성 추가는 사용자 확인 뒤에 한다. T14는 실행 환경의 axe-core 4.14.0을 페이지에 넣어 쟀다. → T15: `@axe-core/playwright` 4.14.0(사용자 승인)으로 `tests/e2e/a11y.spec.ts`(세 브라우저)·`a11y.chromium.spec.ts`. WebKit·Firefox는 1280px·팔레트·터미널 라이트로 줄였다(T15 지시서 메모).
+- [x] WebKit·Firefox에서 확인한다: 본문 바로가기 뒤 다음 Tab 위치(`main`에 `tabindex="-1"`이 필요한지), 터미널 출력 영역 포커스·키 스크롤, 강제 색상(Windows 고대비)의 실제 색. 결과에 따라 `main` `tabindex`를 정한다. → T15(Playwright WebKit·Firefox, CI): 터미널 출력 포커스·키 스크롤은 두 엔진 통과. 본문 바로가기는 Firefox 상세 페이지에서 다음 Tab이 `main` 첫 링크를 건너뛰어 `main`에 `tabindex="-1"`(포커스 표시 없음)을 두었다(`docs/DESIGN.md` §4). 강제 색상 에뮬레이션은 두 엔진에서도 켜져 `forced-colors.spec.ts`를 세 브라우저로 돌린다. Windows 고대비 실제 색은 아래 항목으로 남긴다.
+- [ ] Windows 고대비 테마의 실제 색으로 강제 색상 화면(주력 태그 채움, 포커스 표시)을 확인한다. Playwright 강제 색상 에뮬레이션은 실제 테마 색과 다를 수 있다.
 - [ ] 원고 반영 뒤 axe·키보드·리플로·텍스트 간격 점검을 다시 한다. 문구 길이가 바뀌면 결과가 달라질 수 있다.
 - 근거: `docs/tasks/T14-accessibility.md` "단계 7로 넘기는 일", `docs/DESIGN.md` §11.
 
@@ -262,3 +263,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | T15 지시서 작성: 새 devDependencies `@playwright/test` 1.64.1·`@axe-core/playwright` 4.14.0(사용자 결정 A안으로 승인), `pnpm test` = `playwright test`(빌드 결과를 `pnpm preview`로 띄움), 페이지 목록은 sitemap에서·문구는 하드코딩하지 않음, CI에 3개 브라우저 E2E 추가(브라우저 캐시 없음, 목표 10분 이하). 본문 바로가기 `main` `tabindex`는 WebKit·Firefox 결과로 정한다 | T15 지시서 |
 | 2026-10-31 | T15 구현 담당 claude. 테스트가 찾은 결함: 프로젝트 상세 担当工程 5칸 그리드가 640~719px에서 영어 공정 이름을 잘랐다(텍스트 간격을 넓히면 799px까지). 5칸 그리드를 기존 전환점 1024px부터로 옮기고 그 아래는 내용 폭 칸 줄바꿈(`docs/DESIGN.md` §7 担当工程) | 사용자 결정 |
 | 2026-10-31 | T15: 테스트·`playwright.config.ts`의 타입 체크(`pnpm check`)에 `@types/node` 24.19.2를 devDependency로 추가(지시서의 새 의존성 2개 밖이라 따로 승인) | 사용자 결정 |
+| 2026-10-31 | T15: 본문 바로가기 대상 `<main id="main">`에 `tabindex="-1"`을 두고 그 포커스는 표시하지 않는다(`main:focus { outline: none }`). Firefox(Playwright, CI)에서 상세 페이지의 다음 Tab이 `main` 첫 링크를 건너뛰었다. T14의 "`tabindex` 없음"을 지시서 범위 4 규칙대로 바꿨다(`docs/DESIGN.md` §4 본문 바로가기) | T15 지시서 |
