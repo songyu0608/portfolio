@@ -221,7 +221,7 @@ export function welcomeLines(data: CommandData): Line[] {
   ];
 }
 
-/** 이동 안내. 이동이 늦거나 막혀도 누를 수 있게 목적지를 링크로 둔다. */
+/** 이동 안내. 목적지는 다른 출력과 같은 모양의 링크로 표시한다(바로 이동하므로 조작 대상은 아님). */
 const navigateLine = (data: CommandData, href: string) =>
   line('muted', `${data.text.terminal.navigate} `, { text: href, href });
 
