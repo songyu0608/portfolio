@@ -1,0 +1,15 @@
+---
+// 404 페이지 진입점(라우트 src/pages/404.astro → dist/404.html, T13). 일본어 레이아웃으로 감싸고
+// 본문(src/components/pages/NotFoundPage.tsx)에 영어 안내를 함께 둔다. noindex라 canonical·hreflang이 없다.
+// 헤더의 언어 전환은 언어 접두어가 없는 경로라 영어 Home(/en/)으로 간다(src/i18n/paths.ts switchLocalePath).
+import { ui } from '../i18n/ui';
+// BaseLayout(전역 CSS)을 화면 컴포넌트보다 먼저 import한다(같은 명시도에서 CSS Modules 규칙이 이기도록).
+import BaseLayout from './BaseLayout.astro';
+import NotFoundPage from '../components/pages/NotFoundPage';
+
+const { title, description } = ui.ja.notFound;
+---
+
+<BaseLayout locale="ja" title={title} description={description} noindex>
+  <NotFoundPage />
+</BaseLayout>

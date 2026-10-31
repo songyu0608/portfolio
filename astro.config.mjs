@@ -2,8 +2,29 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import fontSubset from './scripts/font-subset.mjs';
 
+// 사이트의 절대 주소. canonical·hreflang·OG·sitemap·robots의 절대 URL은 모두 이 값에서 만든다(T13).
+// 도메인을 정하기 전(단계 8)까지는 예약 도메인 .example의 임시 값이며, 빌드할 때 경고가 나온다.
+const site = 'https://portfolio.example';
+
+/** site가 임시 값이면 빌드 로그에 경고한다. 배포 전 확인 항목이다(docs/PLAN.md §8). */
+function sitePlaceholderWarning() {
+  return {
+    name: 'portfolio:site-placeholder',
+    hooks: {
+      'astro:build:done': ({ logger }) => {
+        if (new URL(site).hostname.endsWith('.example')) {
+          logger.warn(
+            `site is a placeholder (${site}). Replace it before deploying.`,
+          );
+        }
+      },
+    },
+  };
+}
+
 export default defineConfig({
   output: 'static',
+  site,
   trailingSlash: 'always',
   integrations: [
     react(),
@@ -17,6 +38,7 @@ export default defineConfig({
       ],
       preloadChars: { ja: 'あ' },
     }),
+    sitePlaceholderWarning(),
   ],
   i18n: {
     defaultLocale: 'ja',

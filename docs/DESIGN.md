@@ -497,3 +497,30 @@
 ### 모션
 
 열 때 불투명도 0 → 1, `translateY(-8px)` → 0, 200ms(`--duration-base`, `--ease-standard`). 닫을 때는 효과 없음. 헤더 버튼 배경 전환 120ms. `prefers-reduced-motion: reduce`에서는 모두 끄고 기능은 같다.
+
+## 10. 파비콘·공유 이미지·404 (T13)
+
+파비콘과 공유 이미지의 원본·만드는 방법은 `scripts/brand/README.md`, `<head>` 태그는 `docs/ARCHITECTURE.md` §2 "SEO". 만든 파일(`public/`)은 커밋한다.
+
+### 파비콘
+
+- 모양: 64×64 viewBox에 모서리 반경 14의 accent(`#0F62FE`) 둥근 사각형, 그 위에 on-accent(흰색) 소문자 `c`(사이트 이름 `choi`). `c`는 글자가 아니라 선(두께 9, 둥근 끝, 오른쪽이 열린 호)으로 그려 글꼴에 기대지 않는다. 16px에서도 모양이 남게 선을 굵게 했다.
+- 라이트·다크 같은 모양·색이다(SVG 안에 `prefers-color-scheme`을 두지 않음). 색 사각형이라 탭 바탕이 밝든 어둡든 구분된다.
+- 대비: on-accent / accent 5.00:1(§2 표와 같은 조합).
+- 파일: `favicon.svg`(원본, SVG를 쓰는 브라우저), `favicon.ico`(16·32·48px PNG를 묶음. `/favicon.ico` 요청과 SVG를 받지 않는 Google 검색용), `apple-touch-icon.png`(180×180, accent 바탕을 꽉 채운 불투명 정사각형. iOS가 모서리를 둥글게 자른다).
+
+### 공유 이미지 (`public/og/<locale>.png`)
+
+- 1200×630 PNG, 언어별 1장(ja 약 21KB, en 약 27KB). 라이트 테마 색과 IBM Plex Sans JP를 쓴다.
+- 배치: background(`#F7F9FC`) 바탕, 왼쪽에 프로필 이름(88px/700, text) → 24px 아래 문구 「ポートフォリオ」 / `Portfolio`(44px/400, text-muted), 오른쪽에 파비콘 모양 200px, 아래 가장자리에 16px accent 띠. 좌우 여백 104px, 세로 가운데 정렬.
+- 대비: 이름 text / background 17.25:1, 문구 text-muted / background 6.63:1(§2). accent 띠·파비콘 모양은 장식이다.
+- 넣지 않는 것: 직함·한 줄 소개 등 원고에서 바뀔 문구(원고 반영 때 다시 만들지 않기 위해), 다크 테마판, 페이지별 이미지.
+- 대체 텍스트(`og:image:alt`)는 이미지 글자와 같다(프로필 이름 + 문구).
+
+### 404 (`src/components/pages/NotFoundPage.tsx`)
+
+- 한 페이지(`dist/404.html`)에 일본어 안내 뒤에 영어 안내를 둔다. 헤더·푸터·테마·명령 팔레트는 다른 페이지와 같고, 헤더 언어 전환은 `/en/`로 간다.
+- 각 언어 구역: 제목(일본어 h1 「ページが見つかりません」, 영어 h2 "Page not found", 두 제목 모두 `--font-size-h2`로 같은 크기) → 12px 아래 설명 한 줄(text-muted) → 24px 아래 Home 버튼(일본어 「ホームへ戻る」 = 주 버튼 `/ja/`, 영어 "Back to home" = 테두리 버튼 `/en/`). 구역 너비는 40em까지.
+- 영어 구역은 `lang="en"`이고, 위 48px 여백 뒤 border 구분선 + 48px 여백으로 나눈다. 두 구역 모두 `section` + `aria-labelledby`(제목)라 접근성 트리에 이름 있는 영역 2개가 나온다.
+- 새 색 조합은 없다(제목·설명은 text·text-muted / background, 버튼은 전역 `.button`·`.button--primary`로 §2 표와 같음). JS 없이도 모두 읽히고 링크가 동작한다.
+- 모션: 전역 `.button`의 기존 hover 효과만 있다.

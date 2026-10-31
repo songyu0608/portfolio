@@ -7,6 +7,9 @@ const ja = {
     // 헤더·푸터·<title>에 쓰는 사이트 이름. Home 히어로의 이름은 프로필 콘텐츠
     // (src/content/profile/*.yaml의 name)이며 별개 값이다(docs/ARCHITECTURE.md §2).
     name: 'choi',
+    // 공유 이미지(public/og/<locale>.png)에 프로필 이름과 함께 쓰는 문구. 이미지는 scripts/brand/가
+    // 이 값과 프로필 이름으로 만들고, og:image:alt도 같은 두 값으로 만든다. 바꾸면 이미지를 다시 만든다.
+    ogImageLabel: 'ポートフォリオ',
   },
   skipLink: '本文へ移動',
   nav: {
@@ -33,6 +36,13 @@ const ja = {
       name: '連絡先',
       description: 'メール、GitHub などの連絡方法を掲載しています。',
     },
+  },
+  // 404 페이지. 일본어·영어 안내를 한 페이지에 함께 보여준다(docs/DESIGN.md §10).
+  notFound: {
+    title: 'ページが見つかりません',
+    description:
+      'URL が間違っているか、ページが移動または削除された可能性があります。',
+    home: 'ホームへ戻る',
   },
   home: {
     actions: {
@@ -201,6 +211,7 @@ export type UiText = typeof ja;
 const en: UiText = {
   site: {
     name: 'choi',
+    ogImageLabel: 'Portfolio',
   },
   skipLink: 'Skip to main content',
   nav: {
@@ -226,6 +237,12 @@ const en: UiText = {
       name: 'Contact',
       description: 'Ways to get in touch, including email and GitHub.',
     },
+  },
+  notFound: {
+    title: 'Page not found',
+    description:
+      'The URL may be incorrect, or the page may have been moved or removed.',
+    home: 'Back to home',
   },
   home: {
     actions: {

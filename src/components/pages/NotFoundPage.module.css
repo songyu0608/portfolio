@@ -1,0 +1,24 @@
+.section {
+  max-width: 40em;
+  padding-top: var(--space-12);
+}
+
+/* 두 번째 언어 안내는 구분선으로 나눈다. */
+.section + .section {
+  margin-top: var(--space-12);
+  border-top: 1px solid var(--color-border);
+}
+
+/* h1·h2 모두 같은 크기로 보여 두 언어 안내의 무게를 맞춘다. */
+.title {
+  font-size: var(--font-size-h2);
+}
+
+.description {
+  margin-top: var(--space-3);
+  color: var(--color-text-muted);
+}
+
+.action {
+  margin-top: var(--space-6);
+}
