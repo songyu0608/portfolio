@@ -108,7 +108,7 @@
 
 ## 4. 공통 레이아웃 (T03)
 
-모든 페이지는 `src/layouts/BaseLayout.astro`를 쓴다. 구성 순서: 본문 바로가기 → 헤더(사이트 이름, 주 내비게이션, 명령 팔레트 버튼, 언어 전환, 테마 버튼) → `<main id="main">` → 푸터. 키보드 포커스도 이 순서로 이동한다.
+모든 페이지는 `src/layouts/BaseLayout.astro`를 쓴다. 구성 순서: 본문 바로가기 → 헤더(사이트 이름, 주 내비게이션, 명령 팔레트 버튼, 언어 전환, 테마 버튼) → `<main id="main" tabindex="-1">` → 푸터. 키보드 포커스도 이 순서로 이동한다.
 
 ### 헤더
 
@@ -148,6 +148,8 @@
 ### 본문 바로가기·푸터
 
 - 본문 바로가기는 평소 화면 위로 숨겨 두고, 포커스를 받으면 왼쪽 위에 `accent` 배경 버튼 모양으로 나타난다.
+- 바로가기를 누르면 `main`(`tabindex="-1"`)이 포커스를 받고, 다음 Tab은 `main` 안 첫 요소로 간다(T15). `main`의 포커스는 표시하지 않는다(`main:focus { outline: none }`). `main`은 조작 대상이 아니고 다음 Tab부터 정상 포커스 표시가 보이기 때문이다.
+  - 이유: `tabindex`가 없을 때 Firefox(Playwright Firefox, T15 CI)는 프로젝트 상세에서 다음 Tab이 `main` 첫 링크(「← プロジェクト一覧」)를 건너뛰고 아래쪽 이전·다음 프로젝트 링크로 갔다. Chromium·WebKit과 Firefox의 다른 페이지는 `tabindex` 없이도 `main` 안 첫 요소로 갔다.
 - 푸터: 연락 링크 목록(「メール」 → `contact.yaml`의 `links` 순서. 텍스트 링크 14px, text-muted, 밑줄, 높이 44px)과 저작권 표기(「© 빌드 연도 사이트 이름」). 640px 미만은 연락 링크가 위·저작권이 아래, 이상은 왼쪽 저작권·오른쪽 연락 링크다(T07). DOM 순서는 연락 링크가 먼저이고 640px 이상에서 `row-reverse`로 배치한다. 목록 이름은 「連絡先」/`Contact`. 값이 임시이면 서비스 이름 뒤에 「（仮）」 표식을 붙인다. 위 구분선은 장식이다.
 
 ### 대비 (헤더·푸터, T03에서 Chromium 계산 색으로 측정)
@@ -360,14 +362,15 @@
 | 폭 | 배치 |
 | --- | --- |
 | 640px 미만 | 위 여백 24px. 개요 상자: 期間 전체 폭, 役割·チーム 2칸, 担当工程 칸은 줄바꿈으로 흐름. 절 번호는 h2 위. 지표 칸 1열. 技術 라벨은 값 위. 이전·다음 1열 |
-| 640px 이상 | 위 여백 32px. 개요 상자: 期間·役割·チーム 3칸 한 줄, 担当工程 5칸 같은 폭 그리드. 절 번호는 왼쪽 열(72px, 열 간격 16px). 지표 칸 2열. 技術 라벨 열 9rem. 이전·다음 2열(다음은 오른쪽 칸, 오른쪽 정렬) |
+| 640px 이상 | 위 여백 32px. 개요 상자: 期間·役割·チーム 3칸 한 줄, 担当工程은 1024px부터 5칸 같은 폭 그리드(그 아래는 내용 폭 칸 줄바꿈, T15). 절 번호는 왼쪽 열(72px, 열 간격 16px). 지표 칸 2열. 技術 라벨 열 9rem. 이전·다음 2열(다음은 오른쪽 칸, 오른쪽 정렬) |
 
 ### 担当工程 (`src/components/PhaseList.tsx`)
 
 - 다섯 공정(要件定義・設計・開発・テスト・運用 / `Requirements`·`Design`·`Development`·`Testing`·`Operations`)을 `src/content.config.ts`의 `PHASES` 순서로 모두 보여 주는 `<ol>`이다. 콘텐츠 파일의 `phases` 순서와 무관하다(조회 함수가 정렬).
 - 맡은 공정: accent로 채운 칸, on-accent 글자 700, 앞에 체크 아이콘(인라인 SVG, `aria-hidden`). 맡지 않은 공정: 1px 점선 text-muted 테두리, text-muted 글자. 모서리 8px.
 - 색만으로 구분하지 않는다. 채움·체크·점선 모양에 더해 칸마다 시각적으로 숨긴 상태 텍스트(「（担当）」「（担当外）」/` (handled)`·` (not handled)`)가 있어 접근성 트리에서 「要件定義 （担当）」처럼 읽힌다.
-- 크기: 카드는 12px 칸(위아래 2px, 좌우 8px, 간격 4px)이 줄바꿈으로 흐른다. 상세는 14px 칸(위아래 8px)이고 640px 이상에서 5칸 같은 폭 그리드(간격 8px)다.
+- 크기: 카드는 12px 칸(위아래 2px, 좌우 8px, 간격 4px)이 줄바꿈으로 흐른다. 상세는 14px 칸(위아래 8px)이고 1024px 이상에서 5칸 같은 폭 그리드(간격 8px)다. 그 아래는 내용 폭 칸(좌우 12px)이 줄바꿈으로 흐른다.
+  - T15(2026-10-31 사용자 결정): 처음에는 640px부터 5칸이었으나 640~719px에서 영어 공정 이름(Requirements·Development)이 칸 밖으로 잘리고, 텍스트 간격(1.4.12)을 넓히면 799px까지 넘쳤다. 기존 전환점만 쓰도록 1024px로 옮겼다.
 
 ### 대비 (Projects)
 
@@ -542,7 +545,9 @@
 | reduced-motion | 디코딩·틸트·카드 → 상세 전환·타임라인·팔레트 열림 | 모두 꺼진다(§3 공통 구현 규칙) |
 | 구조 | 18페이지·404 | h1 1개, 제목 단계 건너뜀 없음, 같은 종류 랜드마크는 이름, `lang` 바름, 페이지 제목이 언어 안에서 겹치지 않음 |
 
-강제 색상은 Chromium 에뮬레이션이라 Windows 고대비 테마의 실제 색과 다를 수 있다.
+강제 색상은 Playwright 에뮬레이션이라 Windows 고대비 테마의 실제 색과 다를 수 있다. T14는 Chromium에서, T15 E2E는 Chromium·WebKit·Firefox에서 에뮬레이션된다(`matchMedia('(forced-colors: active)')`가 켜짐)는 것을 확인하고 돌린다.
+
+자동화(T15, `tests/e2e/`, `pnpm test`): 자동 검사 → `a11y.spec.ts`(세 브라우저 1280px, 팔레트·터미널 라이트)·`a11y.chromium.spec.ts`(375px, 팔레트·터미널 다크·375px), 키보드 → `keyboard.spec.ts`·`command-ui.spec.ts`(라이트, 세 브라우저. 본문 바로가기 뒤 `main` 포커스도 확인), 화면 크기·글자 → `layout.spec.ts`(320·640px 넘침, 세 브라우저)·`layout.chromium.spec.ts`(텍스트 간격), 강제 색상 → `forced-colors.spec.ts`(Home·About 주력 태그, 세 브라우저, 실제 그린 픽셀로 판정), reduced-motion → `motion.chromium.spec.ts`(`no-preference`에서 동작하는지도 확인), 구조 → `pages.spec.ts`·`aria.chromium.spec.ts`. Lighthouse는 T16. 키보드의 다크·강제 색상 조건과 팔레트·터미널의 강제 색상은 자동화하지 않았다.
 
 ### 포커스
 
@@ -576,8 +581,15 @@
 
 ### 이 환경에서 확인하지 못한 것
 
-이 환경에는 Chromium만 있어 아래는 단계 7 또는 해당 환경에서 확인한다(`docs/PLAN.md` §8 T03·T10·T14 항목).
+T14 작성 환경에는 Chromium만 있었다. WebKit·Firefox 엔진은 T15 E2E(CI)에서 확인했다.
 
-- 실제 스크린 리더(VoiceOver, NVDA, TalkBack)
-- Firefox·Safari(WebKit): 본문 바로가기 뒤 다음 Tab 위치, 터미널 출력 포커스, 강제 색상(Windows 고대비) 실제 색
-- 실제 IME 입력(팔레트·터미널)
+- WebKit·Firefox(Playwright, Linux) 결과(T15)
+  - 본문 바로가기: WebKit은 그대로 통과했다. Firefox는 상세 페이지에서 다음 Tab이 `main` 첫 링크를 건너뛰어 `main`에 `tabindex="-1"`을 두었다(§4 본문 바로가기).
+  - 터미널 출력 포커스·키 스크롤, 키보드 Tab 순서·역순·포커스 표시·가림: 두 엔진 모두 통과
+  - 강제 색상 에뮬레이션: 두 엔진 모두 켜지고 주력 태그 채움이 그려졌다.
+  - axe(1280px 라이트·다크, 팔레트·터미널 라이트): 두 엔진 모두 위반 0
+- 아래는 아직 확인하지 못했다. 해당 환경에서 확인한다(`docs/PLAN.md` §8 T03·T10·T14 항목).
+  - 실제 스크린 리더(VoiceOver, NVDA, TalkBack)
+  - Safari·iOS 실기. Playwright WebKit은 엔진 확인이지 Safari 설정까지 같지는 않다(예: macOS Safari는 기본 설정에서 Tab이 링크를 건너뛴다고 알려져 있으나 공식 문서는 확인하지 못했다).
+  - Windows 고대비 테마의 실제 색
+  - 실제 IME 입력(팔레트·터미널)

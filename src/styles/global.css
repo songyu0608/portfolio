@@ -63,6 +63,12 @@ a {
   outline-offset: 3px;
 }
 
+/* 본문 바로가기가 포커스를 옮기는 main(tabindex="-1")은 조작 대상이 아니므로 표시하지 않는다.
+   다음 Tab부터 정상 포커스 표시가 보인다(docs/DESIGN.md §4 본문 바로가기). */
+main:focus {
+  outline: none;
+}
+
 .container {
   width: min(calc(100% - 2 * var(--space-4)), var(--content-max));
   margin-inline: auto;

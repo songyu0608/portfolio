@@ -1,0 +1,94 @@
+- link "Skip to main content":
+    - /url: '#main'
+- banner:
+    - link "choi":
+        - /url: /en/
+    - navigation "Main":
+        - list:
+            - listitem:
+                - link "About":
+                    - /url: /en/about/
+            - listitem:
+                - link "Projects":
+                    - /url: /en/projects/
+            - listitem:
+                - link "Contact":
+                    - /url: /en/contact/
+    - button "Open command palette"
+    - navigation "Language":
+        - list:
+            - listitem:
+                - link "日本語":
+                    - /url: /ja/projects/order-api/
+            - listitem: English
+    - button "Dark mode"
+- main:
+    - link "All projects":
+        - /url: /en/projects/
+    - paragraph: Featured projects
+    - heading "Order processing API redesign (placeholder)" [level=1]
+    - paragraph: A one-sentence summary of the performance issues in Company A's order processing API and how it was redesigned. (placeholder)
+    - term: Period
+    - definition: 20XX.XX – 20XX.XX
+    - term: Role
+    - definition: Design and implementation lead (placeholder)
+    - term: Team
+    - definition: X people (placeholder)
+    - term: Phases
+    - definition:
+        - list:
+            - listitem: Requirements (handled)
+            - listitem: Design (handled)
+            - listitem: Development (handled)
+            - listitem: Testing (handled)
+            - listitem: Operations (not handled)
+    - term: Tech
+    - definition:
+        - list:
+            - listitem: Java (placeholder)
+            - listitem: Spring Boot (placeholder)
+            - listitem: PostgreSQL (placeholder)
+            - listitem: Kafka (placeholder)
+    - region "Challenge":
+        - heading "Challenge" [level=2]
+        - paragraph: Describes how the order processing API slowed down at peak and caused failed orders through timeouts, along with the scale (request volume, data size). (placeholder)
+        - list:
+            - listitem: XX req/s at peak, p99 latency XX ms (placeholder)
+            - listitem: Chained synchronous calls passed external service delays straight through (placeholder)
+    - region "Design":
+        - heading "Design" [level=2]
+        - paragraph: Describes the chosen architecture and why, the alternatives considered, and the scope I owned. (placeholder)
+        - list:
+            - listitem: Kept order confirmation synchronous and moved inventory and notifications to an asynchronous message queue (placeholder)
+            - listitem: 'Alternative: caching only — rejected because the write load would remain (placeholder)'
+    - region "Results":
+        - heading "Results" [level=2]
+        - list:
+            - listitem: p99 latency (placeholder) XX ms → XX ms
+            - listitem: Peak error rate (placeholder) XX% lower
+        - paragraph: Notes on how the numbers were measured and what changed in operations. (placeholder)
+    - region "Tech":
+        - heading "Tech" [level=2]
+        - term: Language / framework
+        - definition: Java (placeholder) / Spring Boot (placeholder)
+        - term: Data
+        - definition: PostgreSQL (placeholder) / Kafka (placeholder)
+        - term: Why these
+        - definition: Chosen for the team's existing experience and easy event reprocessing (placeholder)
+    - navigation "More projects":
+        - link "Previous project Reworking monitoring and alert settings (placeholder)":
+            - /url: /en/projects/alerting/
+        - link "Next project Shared data integration platform (placeholder)":
+            - /url: /en/projects/data-platform/
+- contentinfo:
+    - list "Contact":
+        - listitem:
+            - link "Email":
+                - /url: mailto:songyu0608@gmail.com
+        - listitem:
+            - link "GitHub":
+                - /url: https://github.com/songyu0608
+        - listitem:
+            - link "LinkedIn":
+                - /url: https://www.linkedin.com/in/songyu0608
+    - paragraph: /© \d+ choi/

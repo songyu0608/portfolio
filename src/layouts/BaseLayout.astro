@@ -104,7 +104,7 @@ const ogImageAlt = `${profile.name} ${text.site.ogImageLabel}`;
       {text.skipLink}
     </a>
     <SiteHeader locale={locale} pathname={pathname} />
-    <main id="main">
+    <main id="main" tabindex="-1">
       <slot />
     </main>
     <SiteFooter locale={locale} email={email} links={links} />

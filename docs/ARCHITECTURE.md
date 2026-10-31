@@ -18,7 +18,7 @@ Cloudflare Workers (정적 자산)
 - 기본은 완전 정적. 서버 실행이 필요한 경로만 Workers 함수로 처리한다.
 - 단계 7까지는 Workers 함수가 없어도 사이트가 완성되어야 한다.
 
-## 2. 디렉터리 구조 (T13 기준)
+## 2. 디렉터리 구조 (T15 기준)
 
 ```text
 .
@@ -72,16 +72,22 @@ Cloudflare Workers (정적 자산)
 │     └─ en/ (ja와 같은 구성)
 ├─ scripts/font-subset.mjs    ← 빌드 통합: Fontsource CSS를 쓰는 글자의 범위로 줄이기, 가나 범위 preload 목록(`virtual:font-preloads`), 빌드 후 글자 누락 검사(T11)
 ├─ scripts/brand/             ← 파비콘·공유 이미지 원본(favicon은 public/favicon.svg, 공유 이미지는 og.html)과 만드는 스크립트(T13, 손으로 실행, README.md)
+├─ tests/e2e/                 ← E2E 테스트(T15, Playwright Test, 아래 "테스트")
+│  ├─ *.spec.ts               ← 세 브라우저(Chromium·WebKit·Firefox)에서 도는 테스트
+│  ├─ *.chromium.spec.ts      ← Chromium에서만 도는 테스트(SEO·접근성 트리·reduced-motion·텍스트 간격 등)
+│  ├─ support/                ← 페이지 목록·문구(site.ts), 팔레트·터미널 열기, axe, 레이아웃 도우미
+│  └─ __snapshots__/          ← 접근성 트리 기준 파일(aria.chromium.spec.ts, 커밋)
+├─ playwright.config.ts        ← 브라우저 3개, 미리보기 서버, CI 설정, 스냅샷 위치(T15)
 ├─ astro.config.mjs            ← 정적 출력, site(절대 주소, 임시 값이면 빌드 경고), React, i18n, 글꼴 통합
 ├─ tsconfig.json               ← Astro strict + React JSX
 ├─ eslint.config.mjs            ← JS, TypeScript, Astro, React, Hooks
 ├─ .prettierrc.json / .prettierignore / .editorconfig
 ├─ package.json / pnpm-lock.yaml / pnpm-workspace.yaml
 ├─ .nvmrc / .npmrc              ← Node 버전 및 엔진 검사
-└─ .github/workflows/ci.yml      ← 포맷 → lint → 타입 → 빌드
+└─ .github/workflows/ci.yml      ← 포맷 → lint → 타입 → 빌드 → E2E(T15)
 ```
 
-`tests/`는 단계 7, Workers 함수는 단계 8에 추가한다.
+Lighthouse CI는 T16, Workers 함수는 단계 8에 추가한다.
 
 ### 글꼴 로딩 (T11 결정)
 
@@ -98,6 +104,7 @@ Cloudflare Workers (정적 자산)
 - 스타일은 컴포넌트와 같은 이름의 CSS Modules(`*.module.css`)다. 클래스 이름은 짧은 camelCase이고 Vite가 파일마다 `_name_hash_n` 형태로 바꾼다. 전역 클래스(`global.css`의 `container`·`card`·`button`·`tag`·`tag-list`·`project-grid`·`sr-only` 등)는 문자열 그대로 쓰고, 여러 클래스는 `src/lib/cx.ts`로 합친다. 스크립트가 붙이는 상태 클래스(`is-tilting`, `is-decoding`)와 만드는 요소(`decode-overlay`), 문서 상태(`html.js`, `:root[data-theme]`)는 `:global(...)`로 쓴다. `@keyframes` 이름도 바뀌므로 쓰는 파일 안에 둔다.
 - 스크립트는 클래스가 아니라 `data-*` 속성으로 요소를 찾는다: `[data-tilt]`(카드 틸트), `[data-decode]`(디코딩), `[data-theme-toggle]`(테마 버튼), `[data-command-palette]`(팔레트 버튼), `[data-copy]`·`[data-copy-text]`·`[data-copy-status]`(메일 복사).
 - CSS 순서: CSS Modules 클래스는 선택자 하나라서 Astro scoped style(`.x[data-astro-cid-…]`, 클래스 + 속성)보다 명시도가 낮다. 같은 요소에 전역 클래스와 함께 쓰는 곳(예: `project-grid` + 페이지의 `.body`의 `margin-top`)은 CSS 순서로 결과가 정해지므로, 페이지 진입점은 `BaseLayout`을 화면 컴포넌트보다 먼저 import해 전역 CSS가 앞에 오게 한다(T12 구현 중 Projects·About에서 순서가 바뀌어 `margin-top`이 사라진 것을 캡처 비교로 찾음).
+  - T15 확인(2026-10-31, Astro 7.4.4): 지금 빌드는 레이아웃 6개 모두 import 순서를 바꿔도 `dist/`가 같다. 전역 CSS(`BaseLayout.*.css`)가 항상 먼저 오고 페이지 CSS는 인라인 `<style>`(또는 `inlineStylesheets: 'never'`에서도 뒤의 `<link>`)로 붙는다. 그래도 규칙은 유지하고, 결과(About 첫 `.tag-list` 위 여백 12px, Projects `.project-grid` 24px)는 E2E(`tests/e2e/layout.chromium.spec.ts`)가 지킨다.
 - 페이지 스크립트: 디코딩은 `HomeLayout`, 카드 틸트는 `scripts/CardTiltScript.astro`(Home·Projects가 함께 씀), 메일 복사는 `ContactLayout`이 `<script>`로 넣는다. 같은 모듈을 두 레이아웃의 `<script>`에서 각각 import하면 Vite가 공유 청크(외부 파일)로 떼어 내 페이지가 받는 JS 파일이 늘어나므로, 여러 페이지가 쓰는 스크립트는 `<script>` 하나를 가진 작은 `.astro`에 둔다.
 - 검증 방법(T12): main과 같은 Playwright 조건으로 전체 페이지 캡처 45장과 18페이지 `ariaSnapshot()`을 비교해 모두 같았다(`docs/tasks/T12-react-components.md` "확인 방법").
 
@@ -122,7 +129,23 @@ Cloudflare Workers (정적 자산)
 - **sitemap·robots**: `src/pages/sitemap.xml.ts`·`robots.txt.ts` 엔드포인트가 빌드 때 정적 파일이 된다(`commands.json.ts`와 같은 방식, 새 의존성 없음). sitemap은 18페이지(`pagePaths` × 언어 + `getProjectPages`)의 `<loc>`와 `<head>`와 같은 함수로 만든 `xhtml:link` 3개를 가진다. 루트 이동 페이지·404·`commands.json`과 `lastmod`(정확한 수정일을 낼 방법이 없음)는 넣지 않는다. robots는 전체 허용과 `Sitemap:` 한 줄이며, 누구나 읽으므로 비공개 경로를 적지 않는다.
 - **404**: `src/pages/404.astro` → `dist/404.html` 하나다. `NotFoundLayout`(`BaseLayout` `locale="ja"` + `noindex`)과 `NotFoundPage`가 일본어 안내(h1) 뒤에 영어 안내(`lang="en"`, h2)를 함께 그린다. 없는 경로마다 같은 파일이 나가므로 링크는 절대 경로만 쓴다. 언어별 404를 두지 않는 이유: Astro는 언어 폴더 아래 404를 `ja/404/index.html`로 출력해 Cloudflare가 찾는 `ja/404.html`을 바로 만들 수 없고, 그 동작은 배포 전에는 확인할 수 없다(`docs/tasks/T13-seo.md` 메모). `pnpm preview`는 끝 슬래시가 있는 없는 경로에 이 파일을 404 상태로 보낸다. Cloudflare에서는 `not_found_handling = "404-page"`가 필요하다(단계 8).
 - **파비콘·공유 이미지**: `public/`에 커밋한 파일이다. 원본과 만드는 스크립트는 `scripts/brand/`(README.md)이며, 실행 환경의 Playwright Chromium으로 그린다. 빌드에서는 만들지 않는다(빌드에 브라우저가 필요해지고 새 의존성이 생기므로). 모양은 `docs/DESIGN.md` §10.
-- **검증 방법(T13)**: `dist/**/*.html`(루트 이동·404 제외)을 읽어 canonical·`og:url` = `site` + 경로, hreflang 3개(자기 포함, x-default = ja)가 짝 페이지와 같음, OG 속성이 하나씩, 파비콘 링크 3개, sitemap `<loc>` = 페이지 목록·`xhtml:link` = `<head>` 묶음, 404의 `noindex`와 canonical·hreflang·`og:url` 없음을 확인했다. 단계 7 E2E로 옮길 수 있다.
+- **검증 방법(T13)**: `dist/**/*.html`(루트 이동·404 제외)을 읽어 canonical·`og:url` = `site` + 경로, hreflang 3개(자기 포함, x-default = ja)가 짝 페이지와 같음, OG 속성이 하나씩, 파비콘 링크 3개, sitemap `<loc>` = 페이지 목록·`xhtml:link` = `<head>` 묶음, 404의 `noindex`와 canonical·hreflang·`og:url` 없음을 확인했다. T15에서 E2E(`tests/e2e/seo.chromium.spec.ts`)로 옮겼다. sitemap 완전성은 sitemap과 독립된 `dist/{ja,en}/**/index.html` 목록과 비교한다.
+
+### 테스트 (T15 결정)
+
+- **도구**: Playwright Test(`@playwright/test`)와 `@axe-core/playwright`(axe-core 4.14). 설정은 루트 `playwright.config.ts`, 테스트는 `tests/e2e/`다. Node 타입(`@types/node`, 2026-10-31 사용자 승인)은 테스트·설정 파일의 `pnpm check`에 쓴다.
+- **실행**: `pnpm build` 뒤 `pnpm test`(= `playwright test`). 테스트가 빌드하지 않으므로 소스를 바꾸면 먼저 빌드한다. `webServer`가 `astro preview --port 4329 --ignore-lock`으로 `dist/`를 띄운다. `--ignore-lock`은 Astro가 AI 에이전트 실행을 감지하면 미리보기를 백그라운드로 돌리고 잠금 파일로 두 번째 실행을 막는 동작을 끈다(Astro 7.4.4 `cli/preview` 코드 확인). 로컬은 이미 떠 있는 4329 서버를 다시 쓴다(`reuseExistingServer: !CI`).
+- **브라우저**: `projects` 3개(`chromium`·`webkit`·`firefox`, `devices`의 데스크톱 프리셋). 처음 한 번 `pnpm exec playwright install --with-deps chromium webkit firefox`(`--with-deps`는 Linux만). 파일 이름이 `*.chromium.spec.ts`면 WebKit·Firefox 프로젝트의 `testIgnore`로 빠진다(`skip`을 쓰지 않는다).
+  - 브라우저를 내려받을 수 없는 환경: 환경 변수 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`에 Chromium 실행 파일 경로를 주면 `launchOptions.executablePath`로 쓴다. 이때는 `--project=chromium`만 돌린다. 예: `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/opt/pw-browsers/chromium pnpm test --project=chromium`
+- **설정**: `retries: 0`(흔들리는 테스트는 재시도로 가리지 않고 고친다), CI에서 `workers: 1`·`forbidOnly`, `reducedMotion: 'reduce'` 기본(장식 효과 검사만 `no-preference`도 돈다), 실패 시 trace, reporter `list` + `html`(`playwright-report/`, 커밋하지 않음).
+- **하드코딩하지 않는 것**
+  - 페이지 목록: 빌드 결과 `dist/sitemap.xml`의 `<loc>`(18개) + `/404.html`. 테스트를 페이지마다 나누려면 테스트를 모을 때 목록이 필요해, 미리보기 서버 대신 같은 파일을 동기로 읽는다. sitemap 자체는 `dist/{ja,en}/**/index.html` 목록과 비교한다.
+  - 문구: `src/i18n/ui.ts`를 import하거나 role로 찾는다. 콘텐츠 값(프로젝트 slug·제목, 메일 주소 등)은 빌드 결과 `dist/<locale>/commands.json`에서 읽는다. `src/i18n/paths.ts`는 `astro:i18n`을 써서 테스트에서 import하지 않는다. 짝 페이지 경로는 언어 접두어만 바꾼다.
+  - 예외(주석으로 이유를 적음): 없는 경로 `/ja/no-such-page/`, 팔레트 빈 결과 검색어, 터미널 없는 명령, CSS 순서 회귀의 기대값(간격 토큰과 main에서 잰 px).
+- **화면 회귀**: 픽셀 캡처(`toHaveScreenshot`)는 쓰지 않는다. 기준 이미지가 OS·브라우저 빌드마다 달라 Linux CI와 Windows 노트북이 같은 기준을 쓸 수 없기 때문이다(2026-10-31 사용자 결정 A안). 대신 접근성 트리(`toMatchAriaSnapshot`, Chromium)와 레이아웃 값(가로 넘침, 헤더 한 줄, 텍스트 간격 잘림, CSS 순서 여백)을 본다.
+- **접근성 트리 기준 파일**: `tests/e2e/__snapshots__/aria.chromium.spec.ts/<경로>.aria.yml`(19개). 위치 규칙(`expect.toMatchAriaSnapshot.pathTemplate`)에 플랫폼·프로젝트 이름이 없어 Linux CI와 Windows가 같은 파일을 쓴다. 원고·화면을 바꾸면 `pnpm test --project=chromium --update-snapshots`로 갱신하고 PR에서 diff를 리뷰한다(문구가 들어 있어 원고 반영 때 바뀌는 것은 의도된 diff).
+- **CI**: 빌드 뒤 브라우저 설치(캐시하지 않음, Playwright 공식 권장) → `pnpm test` → 취소되지 않았으면 `playwright-report/`를 artifact(7일)로 올린다. 실패하면 PR의 `check` 작업 artifact에서 HTML 보고서를 받아 `pnpm exec playwright show-report <폴더>`로 연다.
+- 무엇을 어느 파일이 보는지는 `docs/tasks/T15-e2e-tests.md` 범위 2와 T15 PR의 "파일 · 테스트 · 브라우저 · 폭" 표.
 
 ### 페이지 파일 방식 (T03 결정, T12 갱신)
 
@@ -184,6 +207,7 @@ T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는
 | A10 | 글꼴은 Fontsource 자체 호스팅 + 빌드 통합으로 쓰는 글자의 범위만 남기고, 일본어 페이지는 가나 범위만 preload | 첫 렌더 전 CSS를 약 1/7로 줄이고(렌더 차단 예상 절감 930ms → 180ms) 글꼴 교체에 따른 Home CLS를 0.1 이하로. 새 의존성·외부 요청 없음, 원고가 바뀌면 자동으로 다시 계산 | Astro Fonts API(빌드 때 외부 API, HTML 인라인, 범위 수동), 글꼴 파일 재서브셋(새 도구 필요), `font-display: optional`(첫 방문 글꼴이 달라짐, 사용자 결정 필요) | accepted (T11) |
 | A11 | 화면은 React + TypeScript, 페이지 구성·정적 빌드는 Astro(Vite 기반). 화면 컴포넌트(`src/components/**/*.tsx`)는 `client:*` 없이 빌드 때 HTML로만 렌더하고, 콘텐츠 조회·`<head>`·페이지 스크립트는 `.astro`(레이아웃·라우트)가 맡는다. 브라우저에서 실행하는 React는 A2대로 컨셉 3·4뿐 | 일본 채용 공고에서 React 수요가 크다(`docs/PLAN.md` §7). 정적 출력과 페이지 JS(헤더 스크립트 + 페이지 스크립트), T11 글꼴 통합(A10), content collections(A9), 문서 간 View Transitions, Cloudflare 정적 배포(A3)를 그대로 유지 | Astro 컴포넌트 유지(A1), Next.js 정적 출력(첫 로드 JS 약 136KB gzip, `next/link` 이동에서 문서 간 View Transitions 미동작, 글꼴 통합·콘텐츠 로더 재작성), React Router v7·Nuxt·SvelteKit(hydration으로 프레임워크 본체 JS를 보냄) | accepted (2026-10-31 사용자 결정, T12에서 전환. 스타일은 CSS Modules, §2 "화면 컴포넌트와 스타일") |
 | A12 | SEO: 절대 URL은 `astro.config.mjs`의 `site` 한 곳에서 `src/lib/seo.ts`로 만든다(도메인 결정 전에는 임시 값 + 빌드 경고). sitemap·robots는 엔드포인트, 404는 ja·en 안내를 함께 보여주는 `dist/404.html` 하나, 파비콘·공유 이미지는 `scripts/brand/`에서 만들어 커밋 | 도메인을 정할 때(단계 8) 값 하나만 바꾸면 된다. hreflang 묶음을 `<head>`와 sitemap이 같은 함수로 만들어 어긋나지 않는다. 새 의존성·빌드 시간 증가 없음. Astro는 언어 폴더 아래 404를 `ja/404/index.html`로 출력해 언어별 `404.html`을 바로 만들 수 없다 | `@astrojs/sitemap`(새 의존성, 기능 비교 안 함), 언어별 404(빌드 후 파일 이동 필요, 단계 8에 재검토), 빌드 때 공유 이미지 생성(satori 등 새 의존성), 페이지별 공유 이미지(원고 반영 뒤 검토) | accepted (T13, §2 "SEO") |
+| A13 | E2E는 Playwright Test로 Chromium·WebKit·Firefox 3개 브라우저에서 기능·키보드·axe를 돌리고, 화면 회귀는 픽셀 캡처 대신 접근성 트리(`toMatchAriaSnapshot`)·레이아웃 값으로 본다. 페이지 목록은 sitemap, 문구는 `ui.ts`·`commands.json`에서 가져온다 | 지시서마다 손으로 하던 확인을 PR마다 자동으로. 원고 반영 뒤 같은 테스트로 다시 확인(접근성 트리 기준만 갱신). OS에 따라 달라지는 기준 이미지가 없어 Windows에서도 같은 기준을 쓴다. Public 저장소라 CI 시간 비용 없음 | 픽셀 캡처 비교(기준 이미지를 Linux에서만 만들 수 있어 Windows는 Docker 필요), Chromium만(WebKit·Firefox 이월 항목이 남음) | accepted (2026-10-31 사용자 결정, T15, §2 "테스트") |
 
 직접 의존성은 정확한 버전으로 통일하고, 간접 의존성은 lockfile로 고정한다. CI는 `pnpm install --frozen-lockfile`을 사용한다. pnpm 버전은 `packageManager`로 고정한다.
 

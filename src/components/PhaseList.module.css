@@ -50,7 +50,9 @@
   height: 14px;
 }
 
-@media (min-width: 40rem) {
+/* 5칸 같은 폭 그리드는 1024px부터다. 640~1023px에서는 영어 공정 이름(Requirements 등)이 칸에 들어가지 않아
+   잘리고, 텍스트 간격(WCAG 1.4.12)을 넓히면 더 넘친다(T15 E2E에서 발견). 그 폭에서는 375px처럼 내용 폭 칸이 줄바꿈한다. */
+@media (min-width: 64rem) {
   .detail {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));

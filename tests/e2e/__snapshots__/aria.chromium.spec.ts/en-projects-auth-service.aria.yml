@@ -1,0 +1,89 @@
+- link "Skip to main content":
+    - /url: '#main'
+- banner:
+    - link "choi":
+        - /url: /en/
+    - navigation "Main":
+        - list:
+            - listitem:
+                - link "About":
+                    - /url: /en/about/
+            - listitem:
+                - link "Projects":
+                    - /url: /en/projects/
+            - listitem:
+                - link "Contact":
+                    - /url: /en/contact/
+    - button "Open command palette"
+    - navigation "Language":
+        - list:
+            - listitem:
+                - link "日本語":
+                    - /url: /ja/projects/auth-service/
+            - listitem: English
+    - button "Dark mode"
+- main:
+    - link "All projects":
+        - /url: /en/projects/
+    - paragraph: Featured projects
+    - heading "Extracting the auth service with zero downtime (placeholder)" [level=1]
+    - paragraph: A one-sentence summary of splitting authentication out of Company C's monolith and migrating it without downtime. (placeholder)
+    - term: Period
+    - definition: 20XX.XX – 20XX.XX
+    - term: Role
+    - definition: Design and migration planning (placeholder)
+    - term: Team
+    - definition: X people (placeholder)
+    - term: Phases
+    - definition:
+        - list:
+            - listitem: Requirements (handled)
+            - listitem: Design (handled)
+            - listitem: Development (not handled)
+            - listitem: Testing (not handled)
+            - listitem: Operations (handled)
+    - term: Tech
+    - definition:
+        - list:
+            - listitem: Go (placeholder)
+            - listitem: Redis (placeholder)
+            - listitem: Kubernetes (placeholder)
+    - region "Challenge":
+        - heading "Challenge" [level=2]
+        - paragraph: Describes how authentication built into the monolith widened the impact of changes and incidents, along with its usage scale. (placeholder)
+        - list:
+            - listitem: XX M requests per month, X connected services (placeholder)
+    - region "Design":
+        - heading "Design" [level=2]
+        - paragraph: Describes the structure of the extracted auth service and the migration plan that kept the service running. (placeholder)
+        - list:
+            - listitem: Ran old and new authentication side by side and shifted traffic in stages (placeholder)
+            - listitem: Prepared rollback steps in advance and checked each stage (placeholder)
+    - region "Results":
+        - heading "Results" [level=2]
+        - list:
+            - listitem: Downtime during migration (placeholder) X min
+            - listitem: Auth-related incidents (placeholder) X → X per month
+    - region "Tech":
+        - heading "Tech" [level=2]
+        - term: Language
+        - definition: Go (placeholder)
+        - term: Data / platform
+        - definition: Redis (placeholder) / Kubernetes (placeholder)
+    - navigation "More projects":
+        - link "Previous project Shared data integration platform (placeholder)":
+            - /url: /en/projects/data-platform/
+        - link "Next project API cleanup for the internal admin console (placeholder)":
+            - /url: /en/projects/admin-api/
+- contentinfo:
+    - list "Contact":
+        - listitem:
+            - link "Email":
+                - /url: mailto:songyu0608@gmail.com
+        - listitem:
+            - link "GitHub":
+                - /url: https://github.com/songyu0608
+        - listitem:
+            - link "LinkedIn":
+                - /url: https://www.linkedin.com/in/songyu0608
+    - paragraph: /© \d+ choi/

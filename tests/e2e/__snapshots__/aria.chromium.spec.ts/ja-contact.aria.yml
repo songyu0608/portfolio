@@ -1,0 +1,60 @@
+- link "本文へ移動":
+    - /url: '#main'
+- banner:
+    - link "choi":
+        - /url: /ja/
+    - navigation "メイン":
+        - list:
+            - listitem:
+                - link "経歴":
+                    - /url: /ja/about/
+            - listitem:
+                - link "プロジェクト":
+                    - /url: /ja/projects/
+            - listitem:
+                - link "連絡先":
+                    - /url: /ja/contact/
+    - button "コマンドパレットを開く"
+    - navigation "言語":
+        - list:
+            - listitem: 日本語
+            - listitem:
+                - link "English":
+                    - /url: /en/contact/
+    - button "ダークモード"
+- main:
+    - region "連絡先":
+        - heading "連絡先" [level=1]
+        - paragraph: 転職やお仕事のご相談は、メールでご連絡ください。〇 営業日以内に返信します。（仮）
+    - region "連絡方法":
+        - heading "連絡方法" [level=2]
+        - list:
+            - listitem:
+                - text: メール
+                - paragraph:
+                    - link "songyu0608@gmail.com":
+                        - /url: mailto:songyu0608@gmail.com
+                - button "メールアドレスをコピー"
+                - status
+            - listitem:
+                - text: GitHub
+                - paragraph:
+                    - link "github.com/songyu0608":
+                        - /url: https://github.com/songyu0608
+            - listitem:
+                - text: LinkedIn
+                - paragraph:
+                    - link "www.linkedin.com/in/songyu0608":
+                        - /url: https://www.linkedin.com/in/songyu0608
+- contentinfo:
+    - list "連絡先":
+        - listitem:
+            - link "メール":
+                - /url: mailto:songyu0608@gmail.com
+        - listitem:
+            - link "GitHub":
+                - /url: https://github.com/songyu0608
+        - listitem:
+            - link "LinkedIn":
+                - /url: https://www.linkedin.com/in/songyu0608
+    - paragraph: /© \d+ choi/

@@ -1,0 +1,60 @@
+- link "Skip to main content":
+    - /url: '#main'
+- banner:
+    - link "choi":
+        - /url: /en/
+    - navigation "Main":
+        - list:
+            - listitem:
+                - link "About":
+                    - /url: /en/about/
+            - listitem:
+                - link "Projects":
+                    - /url: /en/projects/
+            - listitem:
+                - link "Contact":
+                    - /url: /en/contact/
+    - button "Open command palette"
+    - navigation "Language":
+        - list:
+            - listitem:
+                - link "日本語":
+                    - /url: /ja/contact/
+            - listitem: English
+    - button "Dark mode"
+- main:
+    - region "Contact":
+        - heading "Contact" [level=1]
+        - paragraph: For job opportunities or project inquiries, please contact me by email. I usually reply within X business days. (placeholder)
+    - region "Contact methods":
+        - heading "Contact methods" [level=2]
+        - list:
+            - listitem:
+                - text: Email
+                - paragraph:
+                    - link "songyu0608@gmail.com":
+                        - /url: mailto:songyu0608@gmail.com
+                - button "Copy email address"
+                - status
+            - listitem:
+                - text: GitHub
+                - paragraph:
+                    - link "github.com/songyu0608":
+                        - /url: https://github.com/songyu0608
+            - listitem:
+                - text: LinkedIn
+                - paragraph:
+                    - link "www.linkedin.com/in/songyu0608":
+                        - /url: https://www.linkedin.com/in/songyu0608
+- contentinfo:
+    - list "Contact":
+        - listitem:
+            - link "Email":
+                - /url: mailto:songyu0608@gmail.com
+        - listitem:
+            - link "GitHub":
+                - /url: https://github.com/songyu0608
+        - listitem:
+            - link "LinkedIn":
+                - /url: https://www.linkedin.com/in/songyu0608
+    - paragraph: /© \d+ choi/

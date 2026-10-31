@@ -1,0 +1,79 @@
+- link "本文へ移動":
+    - /url: '#main'
+- banner:
+    - link "choi":
+        - /url: /ja/
+    - navigation "メイン":
+        - list:
+            - listitem:
+                - link "経歴":
+                    - /url: /ja/about/
+            - listitem:
+                - link "プロジェクト":
+                    - /url: /ja/projects/
+            - listitem:
+                - link "連絡先":
+                    - /url: /ja/contact/
+    - button "コマンドパレットを開く"
+    - navigation "言語":
+        - list:
+            - listitem: 日本語
+            - listitem:
+                - link "English":
+                    - /url: /en/projects/alerting/
+    - button "ダークモード"
+- main:
+    - link "プロジェクト一覧":
+        - /url: /ja/projects/
+    - heading "監視・アラート設定の見直し（仮）" [level=1]
+    - paragraph: B社で誤検知の多かったアラート設定を見直した取り組みを一文で要約します。（仮）
+    - term: 期間
+    - definition: 20XX.XX – 20XX.XX
+    - term: 役割
+    - definition: 運用改善（仮）
+    - term: 担当工程
+    - definition:
+        - list:
+            - listitem: 要件定義 （担当外）
+            - listitem: 設計 （担当）
+            - listitem: 開発 （担当外）
+            - listitem: テスト （担当外）
+            - listitem: 運用 （担当）
+    - term: 技術
+    - definition:
+        - list:
+            - listitem: Datadog（仮）
+            - listitem: AWS（仮）
+    - region "課題":
+        - heading "課題" [level=2]
+        - paragraph: 誤検知の多いアラートが本当の障害の見落としにつながっていた状況を説明します。（仮）
+    - region "設計":
+        - heading "設計" [level=2]
+        - paragraph: アラートの基準と通知先を見直した方針と、自分が担った範囲を書きます。（仮）
+        - list:
+            - listitem: サービスごとに重要度を決め、通知先を分ける（仮）
+    - region "結果":
+        - heading "結果" [level=2]
+        - list:
+            - listitem: 誤検知アラート（仮） 月 〇〇 件 → 〇 件
+    - region "技術":
+        - heading "技術" [level=2]
+        - term: 監視・基盤
+        - definition: Datadog（仮） / AWS（仮）
+    - navigation "ほかのプロジェクト":
+        - link "前のプロジェクト 社内向け管理画面のAPI 整備（仮）":
+            - /url: /ja/projects/admin-api/
+        - link "次のプロジェクト 注文処理 API の再設計（仮）":
+            - /url: /ja/projects/order-api/
+- contentinfo:
+    - list "連絡先":
+        - listitem:
+            - link "メール":
+                - /url: mailto:songyu0608@gmail.com
+        - listitem:
+            - link "GitHub":
+                - /url: https://github.com/songyu0608
+        - listitem:
+            - link "LinkedIn":
+                - /url: https://www.linkedin.com/in/songyu0608
+    - paragraph: /© \d+ choi/

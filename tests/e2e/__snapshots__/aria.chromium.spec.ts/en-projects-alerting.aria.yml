@@ -1,0 +1,79 @@
+- link "Skip to main content":
+    - /url: '#main'
+- banner:
+    - link "choi":
+        - /url: /en/
+    - navigation "Main":
+        - list:
+            - listitem:
+                - link "About":
+                    - /url: /en/about/
+            - listitem:
+                - link "Projects":
+                    - /url: /en/projects/
+            - listitem:
+                - link "Contact":
+                    - /url: /en/contact/
+    - button "Open command palette"
+    - navigation "Language":
+        - list:
+            - listitem:
+                - link "日本語":
+                    - /url: /ja/projects/alerting/
+            - listitem: English
+    - button "Dark mode"
+- main:
+    - link "All projects":
+        - /url: /en/projects/
+    - heading "Reworking monitoring and alert settings (placeholder)" [level=1]
+    - paragraph: A one-sentence summary of reworking Company B's alert settings, which produced many false alarms. (placeholder)
+    - term: Period
+    - definition: 20XX.XX – 20XX.XX
+    - term: Role
+    - definition: Operations improvement (placeholder)
+    - term: Phases
+    - definition:
+        - list:
+            - listitem: Requirements (not handled)
+            - listitem: Design (handled)
+            - listitem: Development (not handled)
+            - listitem: Testing (not handled)
+            - listitem: Operations (handled)
+    - term: Tech
+    - definition:
+        - list:
+            - listitem: Datadog (placeholder)
+            - listitem: AWS (placeholder)
+    - region "Challenge":
+        - heading "Challenge" [level=2]
+        - paragraph: Describes how frequent false alerts led to real incidents being missed. (placeholder)
+    - region "Design":
+        - heading "Design" [level=2]
+        - paragraph: Describes the new alert thresholds and routing policy, and the scope I owned. (placeholder)
+        - list:
+            - listitem: Set a severity per service and split notification targets (placeholder)
+    - region "Results":
+        - heading "Results" [level=2]
+        - list:
+            - listitem: False alerts (placeholder) XX → X per month
+    - region "Tech":
+        - heading "Tech" [level=2]
+        - term: Monitoring / platform
+        - definition: Datadog (placeholder) / AWS (placeholder)
+    - navigation "More projects":
+        - link "Previous project API cleanup for the internal admin console (placeholder)":
+            - /url: /en/projects/admin-api/
+        - link "Next project Order processing API redesign (placeholder)":
+            - /url: /en/projects/order-api/
+- contentinfo:
+    - list "Contact":
+        - listitem:
+            - link "Email":
+                - /url: mailto:songyu0608@gmail.com
+        - listitem:
+            - link "GitHub":
+                - /url: https://github.com/songyu0608
+        - listitem:
+            - link "LinkedIn":
+                - /url: https://www.linkedin.com/in/songyu0608
+    - paragraph: /© \d+ choi/

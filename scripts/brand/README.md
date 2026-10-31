@@ -25,6 +25,6 @@ node scripts/brand/build.mjs
 ```
 
 - Node 24가 필요하다. `src/i18n/ui.ts`를 Node의 타입 제거(type stripping)로 바로 읽기 때문이다.
-- Playwright(Chromium)가 필요하다. Playwright는 아직 프로젝트 의존성이 아니다. 단계 7(E2E)에서 devDependency로 들어오면 그것을 쓴다. 그 전에는 `require('playwright')`로 찾을 수 있는 곳에 설치되어 있어야 한다. 예: `npm i -g playwright` 후 `NODE_PATH`에 전역 `node_modules`를 넣고 `npx playwright install chromium`.
+- Playwright(Chromium)가 필요하다. E2E 테스트(T15)와 같은 프로젝트 의존성 `@playwright/test`를 쓰므로 `pnpm install` 뒤 브라우저만 한 번 설치한다: `pnpm exec playwright install chromium`(Linux는 `--with-deps`를 붙인다).
 - 공유 이미지의 대체 텍스트(`og:image:alt`)는 `BaseLayout`이 같은 두 값(프로필 이름 + `site.ogImageLabel`)으로 만든다. 이미지 글자를 바꾸면 alt도 함께 바뀐다.
 - 직함·한 줄 소개처럼 원고에서 바뀔 문구는 이미지에 넣지 않는다(`docs/tasks/T13-seo.md`).
