@@ -5,7 +5,7 @@
 | 단계 | 4 |
 | 선행 작업 | T06 (PR #19) |
 | 담당 | claude |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-0wqbsm` (실행 환경이 지정한 이름. 원칙상 이름은 `<agent>/T07-contact`) |
 
 ## 목표
@@ -122,7 +122,7 @@
 - [x] `prefers-reduced-motion: reduce`에서 새로 추가한 전환 효과가 꺼진다(복사 상태 문구 전환 자체는 유지).
 - [x] PR 본문에 최신 커밋 기준 캡처가 있다: Contact ja 라이트 1280px(전체)·ja 다크 375px(전체, 복사 후 상태)·en 라이트 1280px·en 다크 320px, Home ja 라이트 1280px 푸터 부분 이상.
 - [x] `docs/DESIGN.md` §4·§5·§8, `docs/ARCHITECTURE.md` §2, `docs/CONTENT.md` 수집 현황이 갱신되어 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다. (로컬 4개 통과, GitHub CI는 PR에서 확인)
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다. (PR #22 CI 통과)
 - [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
