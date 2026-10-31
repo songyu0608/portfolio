@@ -4,9 +4,9 @@
 | --- | --- |
 | 단계 | 6 |
 | 선행 작업 | T10 (PR #31) |
-| 담당 | 미배정 |
-| 상태 | todo |
-| 브랜치 | `<agent>/T11-performance` (실행 환경이 이름을 정하면 그 이름을 쓰고 PR 제목에 `T11`을 넣는다) |
+| 담당 | claude |
+| 상태 | in-progress |
+| 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T11-performance`) |
 
 ## 목표
 
@@ -130,21 +130,22 @@ Lighthouse 12.6.1(`npx`로 실행, 의존성 아님, `pnpm preview` 대상), 페
 
 ## 완료 조건
 
-- [ ] PR 본문에 main 기준값과 구현 후 값을 같은 표로 비교한다: 공통 CSS 크기(압축 전·gzip), `@font-face` 개수, 페이지별 받는 글꼴 파일 수·크기, 페이지별 CLS(1280px·375px), Lighthouse 모바일·데스크톱 Performance·FCP·LCP·CLS·TBT(각 3회 중앙값). 측정 환경·명령·Lighthouse 버전을 적는다.
-- [ ] 첫 렌더 전에 받는 CSS에 실제로 쓰는 글자를 포함하지 않는 `@font-face`가 없다. 공통 CSS(글꼴 CSS가 HTML 인라인이면 HTML 증가분 포함)가 압축 전 100KB 이하다.
-- [ ] 글자 누락 검사 결과, 빌드 결과와 디코딩 임의 글자 목록에 쓰인 글자 중 남긴 범위가 덮지 않는 글자가 0개다(원래 글꼴에 없는 글자는 목록으로 제외). 검사 방법이 문서(`docs/ARCHITECTURE.md` 또는 `AGENTS.md` §6)에 있어 원고 반영 때 다시 실행할 수 있다.
-- [ ] 페이지별 받는 글꼴 파일 수·크기가 main보다 늘지 않는다.
-- [ ] 측정한 모든 페이지(`/ja/`, `/en/`, `/ja/about/`, `/ja/projects/`, 프로젝트 상세 1개, `/ja/contact/`)에서 CLS가 0.1 이하다: Playwright 1280px·375px, Lighthouse 모바일·데스크톱 중앙값 모두. 범위 3-4로 사용자 결정이 필요하면 PR에서 묻고, 결정에 따라 적용한 뒤 이 조건을 확인한다.
-- [ ] Lighthouse Performance 중앙값이 측정한 모든 페이지에서 모바일 90 이상, 데스크톱 95 이상이고 main보다 낮아지지 않는다. 못 미치는 페이지는 원인(진단 항목)과 이 범위에서 고치지 않은 이유를 PR에 적는다. "렌더 차단 리소스" 진단의 예상 절감이 main보다 줄어든다.
-- [ ] 화면이 T10과 같다: 글꼴(IBM Plex Sans JP·Mono)이 적용된 뒤의 Home·About·Projects·상세·Contact가 ja·en, 라이트·다크에서 main과 같아 보인다(캡처 비교). 디코딩·틸트·전환·타임라인·팔레트·터미널이 그대로 동작한다.
-- [ ] 글꼴 요청을 막으면(개발자 도구 Network 요청 차단) 대체 글꼴로 모든 본문을 읽을 수 있고 가로 스크롤이 생기지 않는다(320px·1280px).
-- [ ] 첫 로드에 React 관련 파일·`command-ui.*.css`·`commands.json`을 받지 않는다. 헤더 스크립트가 압축 전 4KB 이하이고 페이지가 받는 JS 파일 수가 T10과 같다. Vite 도우미 처리 결과(없앴는지, 못 없앤 이유)를 PR에 적는다.
-- [ ] 디코딩이 Home LCP에 주는 영향을 PR에 적는다.
-- [ ] 새 의존성이 없다(`package.json` 의존성 항목, `pnpm-lock.yaml` 변경 없음).
-- [ ] PR 본문에 최신 커밋 기준 캡처가 있다: Home ja 라이트 1280px, Home en 다크 375px, About ja 라이트 1280px(글꼴 적용 후). 가능하면 `/ja/` 1280px 느린 연결 로딩을 연속 캡처나 Performance 패널 Layout Shift 구간 캡처로 남긴다.
-- [ ] `docs/DESIGN.md` §2·§5, `docs/ARCHITECTURE.md` §2(필요하면 §3), `docs/PLAN.md` §8 이월 항목이 갱신되어 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
-- [ ] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
+- [x] PR 본문에 main 기준값과 구현 후 값을 같은 표로 비교한다: 공통 CSS 크기(압축 전·gzip), `@font-face` 개수, 페이지별 받는 글꼴 파일 수·크기, 페이지별 CLS(1280px·375px), Lighthouse 모바일·데스크톱 Performance·FCP·LCP·CLS·TBT(각 3회 중앙값). 측정 환경·명령·Lighthouse 버전을 적는다.
+- [x] 첫 렌더 전에 받는 CSS에 실제로 쓰는 글자를 포함하지 않는 `@font-face`가 없다. 공통 CSS(글꼴 CSS가 HTML 인라인이면 HTML 증가분 포함)가 압축 전 100KB 이하다.
+  - 판정 기준(구현): "쓰는 글자"는 `src/` 아래 텍스트 파일에 나오는 글자이며 주석도 포함한다. 화면 문구의 `//`를 주석으로 오인해 지우지 않기 위해서다(Codex 리뷰 PR #34). 그래서 주석에만 나오는 ⌘(U+2318, `src/scripts/command-launcher.ts`·`src/components/CommandButton.astro`)를 덮는 범위 2개(Fontsource 범위 58의 400·700, CSS 약 1.6KB)는 화면에 나오지 않는데도 의도적으로 남긴다. 빌드 결과에 ⌘가 없어 이 범위의 글꼴 파일은 받지 않는다. 공통 CSS는 52,819B로 100KB 이하다.
+- [x] 글자 누락 검사 결과, 빌드 결과와 디코딩 임의 글자 목록에 쓰인 글자 중 남긴 범위가 덮지 않는 글자가 0개다(원래 글꼴에 없는 글자는 목록으로 제외). 검사 방법이 문서(`docs/ARCHITECTURE.md` 또는 `AGENTS.md` §6)에 있어 원고 반영 때 다시 실행할 수 있다.
+- [x] 페이지별 받는 글꼴 파일 수·크기가 main보다 늘지 않는다.
+- [x] 측정한 모든 페이지(`/ja/`, `/en/`, `/ja/about/`, `/ja/projects/`, 프로젝트 상세 1개, `/ja/contact/`)에서 CLS가 0.1 이하다: Playwright 1280px·375px, Lighthouse 모바일·데스크톱 중앙값 모두. 범위 3-4로 사용자 결정이 필요하면 PR에서 묻고, 결정에 따라 적용한 뒤 이 조건을 확인한다.
+- [x] Lighthouse Performance 중앙값이 측정한 모든 페이지에서 모바일 90 이상, 데스크톱 95 이상이고 main보다 낮아지지 않는다. 못 미치는 페이지는 원인(진단 항목)과 이 범위에서 고치지 않은 이유를 PR에 적는다. "렌더 차단 리소스" 진단의 예상 절감이 main보다 줄어든다.
+- [x] 화면이 T10과 같다: 글꼴(IBM Plex Sans JP·Mono)이 적용된 뒤의 Home·About·Projects·상세·Contact가 ja·en, 라이트·다크에서 main과 같아 보인다(캡처 비교). 디코딩·틸트·전환·타임라인·팔레트·터미널이 그대로 동작한다.
+- [x] 글꼴 요청을 막으면(개발자 도구 Network 요청 차단) 대체 글꼴로 모든 본문을 읽을 수 있고 가로 스크롤이 생기지 않는다(320px·1280px).
+- [x] 첫 로드에 React 관련 파일·`command-ui.*.css`·`commands.json`을 받지 않는다. 헤더 스크립트가 압축 전 4KB 이하이고 페이지가 받는 JS 파일 수가 T10과 같다. Vite 도우미 처리 결과(없앴는지, 못 없앤 이유)를 PR에 적는다.
+- [x] 디코딩이 Home LCP에 주는 영향을 PR에 적는다.
+- [x] 새 의존성이 없다(`package.json` 의존성 항목, `pnpm-lock.yaml` 변경 없음).
+- [x] PR 본문에 최신 커밋 기준 캡처가 있다: Home ja 라이트 1280px, Home en 다크 375px, About ja 라이트 1280px(글꼴 적용 후). 가능하면 `/ja/` 1280px 느린 연결 로딩을 연속 캡처나 Performance 패널 Layout Shift 구간 캡처로 남긴다.
+- [x] `docs/DESIGN.md` §2·§5, `docs/ARCHITECTURE.md` §2(필요하면 §3), `docs/PLAN.md` §8 이월 항목이 갱신되어 있다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
+- [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
 

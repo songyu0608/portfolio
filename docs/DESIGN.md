@@ -48,7 +48,10 @@
 ### 타이포그래피
 
 - 본문·제목: IBM Plex Sans JP 400/700. 코드·보조 라벨: IBM Plex Mono 400. [IBM Plex](https://github.com/IBM/plex)는 SIL OFL 라이선스다.
-- 웹에서는 Fontsource 패키지의 문자 범위별 서브셋을 자체 호스팅하고 `font-display: swap`을 사용한다. 외부 글꼴 도메인 요청은 없다. 일본어 대체 글꼴은 Hiragino Sans, Yu Gothic UI, Meiryo 순서다. 글꼴 요청이 실패해도 본문을 읽을 수 있어야 한다.
+- 웹에서는 Fontsource 패키지(`@fontsource/ibm-plex-sans-jp` 400·700, `@fontsource/ibm-plex-mono` 400)의 문자 범위별 서브셋을 자체 호스팅하고 `font-display: swap`을 사용한다. 외부 글꼴 도메인 요청은 없다. 일본어 대체 글꼴은 Hiragino Sans, Yu Gothic UI, Meiryo 순서다. 글꼴 요청이 실패해도 본문을 읽을 수 있어야 한다.
+- 글꼴 로딩(T11): 빌드 통합 `scripts/font-subset.mjs`가 Fontsource CSS에서 `src/` 아래 텍스트 파일에 나오는 글자(주석 포함. 화면 문구의 `//` 등을 주석으로 오인해 지우지 않도록 주석을 가리지 않는다)를 포함하는 `@font-face`만 남긴다. 글꼴 파일은 바꾸지 않는다. 2026-10-31 빌드 기준 251개 중 71개가 남고 공통 CSS는 357,926B(gzip 172,802B)에서 52,819B(gzip 10,369B)가 되었다. 빌드 결과(HTML·JSON·JS 전체)에 쓰인 글자 중 남긴 범위가 덮지 않는 글자가 있으면 빌드가 실패한다. 코드에서 문자 범위를 나타내는 글자(정규식 등)는 화면 글자로 세지 않도록 코드 포인트(`\u{...}`)로 쓴다.
+- 일본어 페이지는 히라가나 「あ」를 덮는 범위(가나·문장부호, 현재 Fontsource 번호 119)의 400·700 두 파일을 `<link rel="preload">`로 받는다. 영어 페이지는 preload하지 않는다. 이유: IBM Plex Sans JP의 가나가 대체 글꼴보다 조금 좁아(Linux Chromium의 대체 글꼴 기준 약 4%), 글꼴이 바뀔 때 Home 한 줄 소개의 줄 수가 바뀌어 아래 내용이 약 35px 올라갔다(CLS 약 0.3). 결과(T11 측정): Lighthouse 모바일·데스크톱(3회 중앙값)과 Playwright 1280px·375px(지연 150ms·1.6Mbps)에서 측정한 모든 페이지의 CLS가 0.1 이하다. 라틴 범위까지 preload하면 파일 4개가 대역을 나눠 늦게 도착해 Home CLS가 오히려 커졌다(약 0.36).
+- 한계: 3G 수준(지연 300ms·700kbps) 이하에서는 가나 글꼴이 첫 렌더 뒤에 도착해 Home CLS 약 0.3이 남는다(T10 main과 같은 수준. 같은 조건에서 잰 About·Projects·상세·Contact 일본어 페이지는 0.02 이하). 대체 글꼴 메트릭 맞춤(`size-adjust` 등)은 위 측정 조건에서 목표에 닿아 적용하지 않았다. 실제 대체 글꼴(Hiragino Sans, Yu Gothic UI, Meiryo)의 폭은 작업 환경에 없어 확인하지 못했다. 이 한계는 그대로 두고(2026-10-31 사용자 결정, `font-display: optional`·한 줄 소개 최소 높이는 쓰지 않음), 원고 반영 때 한 줄 소개 길이가 바뀌면 다시 잰다.
 - 본문 16px. 줄높이 일본어 1.8, 영어 1.65. 작은 글자 14px, 라벨 12px. 제목은 h1 32~52px, h2 24~32px, h3 18px이며 제목 줄높이는 1.2다. 일본어 제목은 `word-break: auto-phrase`로 문절 단위 줄바꿈을 한다(지원하지 않는 브라우저는 기본 줄바꿈). 한 줄을 넘을 수 있는 일본어 콘텐츠 문구는 아래 T04 방식으로 문절을 나눈다. 본문 최대 줄 길이는 `66ch`다.
 - `word-break: auto-phrase` 지원 현황(2026-10-30 확인, [web-features](https://web-platform-dx.github.io/web-features-explorer/features/word-break-auto-phrase)·[MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/word-break)): Chrome·Edge 119 이상만 지원(Baseline "Limited availability"). Firefox·Safari(iOS 포함)는 미지원이며 `word-break: normal`과 같은 기본 줄바꿈으로 표시된다.
   - T03 확인(Chromium, 320px·375px·1280px): 사이트 이름(`choi`)과 준비 페이지 제목(経歴·プロジェクト·連絡先)은 한 줄이라 차이가 없다. Home 확인 화면 h1 「読みやすさを、設計する。」는 auto-phrase에서 「読みやすさを、/設計する。」, 기본 줄바꿈에서는 375px·1280px에서 「読みやすさを、設計/する。」로 단어 중간에서 끊긴다.
@@ -225,7 +228,8 @@
 - Home을 열 때마다 1회, 약 1초(1000ms) 재생한다. 앞에서부터 글자가 확정되고(ease-out), 확정되지 않은 글자는 50ms마다 임의 글자로 바뀐다. 헤더 언어 전환은 다른 언어의 Home으로 이동하므로 그때 다시 재생된다. 다른 페이지에는 없다.
 - 임의 글자: 글자·숫자만 바꾸며 폭을 유지한다. 전각 문자(가나·한자·한글·전각 영숫자)는 전각 가타카나, 반각 문자(영숫자·반각 가나)는 영문 대문자·숫자. 공백·구두점·괄호는 그대로이고 글자 수는 바뀌지 않는다.
 - 접근성: 최종 문구 문단은 그대로 두고 글자색만 투명하게 한 뒤(`.is-decoding`), 문단 안의 내용(문절 span 포함)을 복제한 장식용 겹침 요소(`.decode-overlay`, `aria-hidden="true"`, `pointer-events: none`, `user-select: none`)에 임의 글자를 그린다. 접근성 트리·복사·HTML에는 처음부터 최종 문구만 있다. 재생이 끝나면 겹침 요소를 지운다.
-- 겹침 요소는 문단 위 절대 위치(`inset: 0`, 넘침은 자름)라 문단 크기가 바뀌지 않는다. Chromium에서 Home의 CLS는 T07 main과 같다(2026-10-31 측정 0.32~0.37. 이 값은 디코딩과 무관한 기존 글꼴 교체 때문이며 단계 6에서 다룬다).
+- 겹침 요소는 문단 위 절대 위치(`inset: 0`, 넘침은 자름)라 문단 크기가 바뀌지 않는다. T08 시점 Home의 CLS 0.32~0.37은 디코딩과 무관한 글꼴 교체 때문이었고, T11 가나 글꼴 preload로 0.1 이하가 되었다(§2 타이포그래피).
+- LCP(T11 측정): 모바일 폭(412px)에서는 한 줄 소개가 LCP 요소라, 재생이 끝나 최종 문구가 보이는 시점이 LCP가 된다(Playwright, 지연 150ms·1.6Mbps, 5회 중앙값: 재생 약 1.59s, reduced-motion으로 재생하지 않으면 약 0.66s). 1280px에서는 h1이 LCP 요소라 차이가 없다. Lighthouse 모바일 LCP는 1.2~1.7s(3회 중앙값 1.67s)로 Core Web Vitals "좋음" 기준 2.5s 안이다. 동작은 바꾸지 않았다.
 - JS가 없거나 `prefers-reduced-motion: reduce`이거나 탭이 숨겨진 채 열리면 재생하지 않는다. 재생 중 탭이 숨겨지면 바로 최종 상태로 끝낸다.
 
 ### 카드 틸트 (컨셉 2, T08)

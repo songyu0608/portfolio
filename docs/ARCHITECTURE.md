@@ -18,7 +18,7 @@ Cloudflare Workers (정적 자산)
 - 기본은 완전 정적. 서버 실행이 필요한 경로만 Workers 함수로 처리한다.
 - 단계 7까지는 Workers 함수가 없어도 사이트가 완성되어야 한다.
 
-## 2. 디렉터리 구조 (T10 기준)
+## 2. 디렉터리 구조 (T11 기준)
 
 ```text
 .
@@ -38,7 +38,7 @@ Cloudflare Workers (정적 자산)
 │  ├─ i18n/
 │  │  ├─ ui.ts                  ← UI 문구(일본어 기준 타입, 영어 키 누락·초과 시 타입 오류)
 │  │  └─ paths.ts               ← 페이지·프로젝트 상세 경로, 언어 전환 경로 변환(astro:i18n 사용)
-│  ├─ layouts/BaseLayout.astro  ← 문서 골격, 전역 CSS·글꼴 로드, 테마 첫 적용 인라인 스크립트
+│  ├─ layouts/BaseLayout.astro  ← 문서 골격, 전역 CSS·글꼴 로드·글꼴 preload, 테마 첫 적용 인라인 스크립트
 │  ├─ components/
 │  │  ├─ SiteHeader.astro / SiteFooter.astro / LanguageSwitch.astro / ThemeToggle.astro / CommandButton.astro
 │  │  ├─ SkillTag.astro / ProjectCard.astro ← 여러 페이지가 쓰는 기술 태그·프로젝트 카드
@@ -58,7 +58,8 @@ Cloudflare Workers (정적 자산)
 │     ├─ ja/projects/[slug].astro ← 프로젝트 상세(getStaticPaths)
 │     ├─ ja/commands.json.ts     ← 팔레트·터미널 데이터 엔드포인트(빌드 시 정적 JSON, T10)
 │     └─ en/ (ja와 같은 구성)
-├─ astro.config.mjs            ← 정적 출력, React, i18n
+├─ scripts/font-subset.mjs    ← 빌드 통합: Fontsource CSS를 쓰는 글자의 범위로 줄이기, 가나 범위 preload 목록(`virtual:font-preloads`), 빌드 후 글자 누락 검사(T11)
+├─ astro.config.mjs            ← 정적 출력, React, i18n, 글꼴 통합
 ├─ tsconfig.json               ← Astro strict + React JSX
 ├─ eslint.config.mjs            ← JS, TypeScript, Astro, React, Hooks
 ├─ .prettierrc.json / .prettierignore / .editorconfig
@@ -68,6 +69,13 @@ Cloudflare Workers (정적 자산)
 ```
 
 `tests/`는 단계 7, Workers 함수는 단계 8에 추가한다.
+
+### 글꼴 로딩 (T11 결정)
+
+- `BaseLayout.astro`는 Fontsource CSS 3개(`@fontsource/ibm-plex-sans-jp/400.css`·`700.css`, `@fontsource/ibm-plex-mono/400.css`)를 그대로 import하고, `scripts/font-subset.mjs`(Astro 통합, `astro.config.mjs`에 등록)의 Vite 플러그인이 이 CSS를 변환할 때 `src/` 아래 텍스트 파일(`.astro`·`.ts`·`.tsx`·`.mjs`·YAML·Markdown·JSON·CSS)에 나오는 글자와 `unicode-range`가 겹치는 `@font-face`만 남긴다. 결과 CSS는 Vite가 처리하므로 파일 이름의 해시가 내용에 따라 바뀐다. `pnpm dev`에서도 같은 변환이 일어난다(콘텐츠를 바꾼 뒤에는 개발 서버를 다시 시작해야 반영된다).
+- 같은 통합의 `astro:build:done` 훅이 `dist/`의 HTML·JSON·JS에 쓰인 글자를 다시 모아, 원래 Fontsource 범위로는 덮이지만 남긴 범위가 덮지 않는 글자가 있으면 빌드를 실패시킨다. 원래 범위로도 덮이지 않는 글자(글꼴에 없는 글자)는 HTML 주석·인라인 스크립트·스타일을 뺀 HTML·JSON에 나오는 것만 빌드 로그에 정보로 출력한다. 주석은 모으는 쪽과 검사하는 쪽 모두 지우지 않는다. 화면 문구의 ` // `를 주석으로 지우면 그 뒤 글자가 범위 선정과 검사에서 함께 빠지기 때문이다(Codex 리뷰 PR #34). 주석까지 세어 늘어나는 범위는 주석에만 나오는 ⌘(U+2318)를 덮는 2개(400·700, CSS 약 1.6KB)다. 빌드 결과에 없는 글자라 그 글꼴 파일은 받지 않는다. 2026-10-31 빌드는 `@font-face 71/251개 유지, 빌드 결과의 글자 530종 검사`이고 글꼴에 없는 글자는 0종이다.
+- preload 목록은 가상 모듈 `virtual:font-preloads`(타입은 통합이 `injectTypes`로 생성)가 언어별 URL 배열로 준다. `astro.config.mjs`의 `preloadChars`(`{ ja: 'あ' }`)에 적은 글자를 덮는 범위의 woff2를 `?url`로 import하므로, CSS가 참조하는 것과 같은 해시 파일 이름이 된다. 범위가 겹치면 브라우저와 같이 나중에 정의된 규칙을 고른다. 파일 이름·번호를 손으로 적지 않는다.
+- Astro 내장 Fonts API를 쓰지 않은 이유(2026-10-31, Astro 7.4.4·unifont 1.0.3 코드 확인): Fontsource provider가 빌드 때 `api.fontsource.org`를 호출하고, `subsets`·`unicodeRange`는 손으로 적는 값이라 쓰는 글자에 맞춰 범위를 고르지 못하며, `<Font />`가 `@font-face`를 각 HTML에 인라인으로 넣는다.
 
 ### 페이지 파일 방식 (T03 결정)
 
@@ -109,7 +117,7 @@ Cloudflare Workers (정적 자산)
 
 T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는 검사 도구의 지원 범위에 맞춰 6.0.3을 사용한다. 직접 의존성과 lockfile로 설치 버전을 기록한다. pnpm이 생성한 `pnpm-workspace.yaml`에는 이번 Astro 설치에 필요한 특정 버전의 release-age 예외만 기록한다.
 
-`output: 'static'` 빌드는 `dist/{ja,en}/index.html`, `dist/{ja,en}/{about,projects,contact}/index.html`(T03), 프로젝트 상세 `dist/{ja,en}/projects/<slug>/index.html`(T06), 루트 redirect HTML을 생성한다. React hydration은 없으며 서버 어댑터도 필요하지 않다. 페이지가 받는 JS는 테마 첫 적용 인라인 스크립트와 헤더 스크립트 1개(T10부터 외부 모듈, 아래)이고, Contact 페이지만 메일 복사 스크립트 1개(인라인 모듈, 약 0.6KB)를 더 받는다(T07). T08부터 Home은 디코딩(약 1.4KB)과 카드 틸트(약 1.1KB), Projects 목록은 카드 틸트 스크립트를 더 받는다(모두 인라인 모듈, 압축 전 크기). 카드 → 상세 전환과 About 경력 타임라인의 스크롤 강조(T09)는 CSS만 쓰며 About이 받는 JS는 T08과 같다. 다만 T09로 About 페이지 CSS가 Astro 인라인 기준(4KB)을 넘어 `_astro/AboutPage.*.css` 파일(압축 전 약 4.7KB)로 분리된다. T10부터 모든 페이지는 헤더 스크립트(`_astro/SiteHeader.*.js`, 테마 버튼 처리 + 명령 팔레트 런처, 압축 전 약 3.5KB·gzip 약 1.6KB)를 외부 모듈로 받는다. main(T09)의 테마 버튼 인라인 모듈(약 0.8KB)을 대신하므로 늘어난 양은 압축 전 약 2.7KB다. 이 중 약 1.7KB는 동적 import의 의존 파일을 미리 불러오는 Vite 도우미 코드다. `vite.build.modulePreload: false`로 없애려 했으나 Astro 빌드 설정이 우선해 적용되지 않았다(2026-10-31 확인). 팔레트를 처음 열 때만 `mount.*.js`(약 11KB, gzip 약 4KB), React·ReactDOM 청크 `client.*.js`(약 219KB, gzip 약 66KB), `command-ui.*.css`(약 5.6KB, gzip 약 1.4KB), `commands.json`(ja 약 4.2KB, gzip 약 1.8KB)을 받고, 다시 열 때는 받지 않는다(크기는 압축 전 기준. 모두 2026-10-31 빌드 측정). T01부터 "어느 페이지도 참조하지 않는 React 클라이언트 번들"로 남아 있던 React는 이제 팔레트 청크로 쓰인다. 참조되지 않는 파일은 Astro React 렌더러 진입 파일(`client.*.js` 중 약 1.8KB 쪽)뿐이며, `@astrojs/react` 통합(JSX 설정)은 유지한다(2026-10-30 사용자 결정, PLAN §8). `dist/`를 Workers 정적 자산 디렉터리로 지정할 수 있음을 [공식 문서](https://developers.cloudflare.com/workers/static-assets/binding/)와 출력 구조로 확인한다. 실제 배포·HTTP redirect 정책은 단계 8에서 검증한다.
+`output: 'static'` 빌드는 `dist/{ja,en}/index.html`, `dist/{ja,en}/{about,projects,contact}/index.html`(T03), 프로젝트 상세 `dist/{ja,en}/projects/<slug>/index.html`(T06), 루트 redirect HTML을 생성한다. React hydration은 없으며 서버 어댑터도 필요하지 않다. 모든 페이지는 공통 CSS `_astro/BaseLayout.*.css`를 `<head>`에서 받는다. T11부터 글꼴 `@font-face`를 쓰는 글자의 범위로 줄여 압축 전 52,819B(gzip 10,369B)다(T10까지 357,926B, 이 절의 "글꼴 로딩"). 일본어 페이지는 가나 범위 글꼴 2개를 preload한다. 페이지가 받는 JS는 테마 첫 적용 인라인 스크립트와 헤더 스크립트 1개(T10부터 외부 모듈, 아래)이고, Contact 페이지만 메일 복사 스크립트 1개(인라인 모듈, 약 0.6KB)를 더 받는다(T07). T08부터 Home은 디코딩(약 1.4KB)과 카드 틸트(약 1.1KB), Projects 목록은 카드 틸트 스크립트를 더 받는다(모두 인라인 모듈, 압축 전 크기). 카드 → 상세 전환과 About 경력 타임라인의 스크롤 강조(T09)는 CSS만 쓰며 About이 받는 JS는 T08과 같다. 다만 T09로 About 페이지 CSS가 Astro 인라인 기준(4KB)을 넘어 `_astro/AboutPage.*.css` 파일(압축 전 약 4.7KB)로 분리된다. T10부터 모든 페이지는 헤더 스크립트(`_astro/SiteHeader.*.js`, 테마 버튼 처리 + 명령 팔레트 런처, 압축 전 약 3.5KB·gzip 약 1.6KB)를 외부 모듈로 받는다. main(T09)의 테마 버튼 인라인 모듈(약 0.8KB)을 대신하므로 늘어난 양은 압축 전 약 2.7KB다. 이 중 약 1.7KB는 동적 import의 의존 파일을 미리 불러오는 Vite 도우미 코드다. `vite.build.modulePreload: false`로 없애려 했으나 Astro 빌드 설정이 우선해 적용되지 않았다(2026-10-31 확인). T11에서 `astro:build:setup` 훅으로 client 환경 설정에 `modulePreload: false`를 넣어 보았으나 의존 파일 목록(약 150B)만 빠지고 도우미 함수는 남았고, 팔레트를 처음 열 때 React 청크를 미리 받지 않아 `mount.*.js` 다음에 직렬로 받게 되므로 적용하지 않았다. 헤더 스크립트는 압축 전 3,531B·gzip 1,625B이고 Lighthouse의 "사용하지 않는 JavaScript" 진단에 나오지 않으며 TBT는 모든 페이지에서 0ms다(2026-10-31 확인). 팔레트를 처음 열 때만 `mount.*.js`(약 11KB, gzip 약 4KB), React·ReactDOM 청크 `client.*.js`(약 219KB, gzip 약 66KB), `command-ui.*.css`(약 5.6KB, gzip 약 1.4KB), `commands.json`(ja 약 4.2KB, gzip 약 1.8KB)을 받고, 다시 열 때는 받지 않는다(크기는 압축 전 기준. 모두 2026-10-31 빌드 측정). T01부터 "어느 페이지도 참조하지 않는 React 클라이언트 번들"로 남아 있던 React는 이제 팔레트 청크로 쓰인다. 참조되지 않는 파일은 Astro React 렌더러 진입 파일(`client.*.js` 중 약 1.8KB 쪽)뿐이며, `@astrojs/react` 통합(JSX 설정)은 유지한다(2026-10-30 사용자 결정, PLAN §8). `dist/`를 Workers 정적 자산 디렉터리로 지정할 수 있음을 [공식 문서](https://developers.cloudflare.com/workers/static-assets/binding/)와 출력 구조로 확인한다. 실제 배포·HTTP redirect 정책은 단계 8에서 검증한다.
 
 ## 3. 기술 결정 기록 (ADR 요약)
 
@@ -126,6 +134,7 @@ T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는
 | A7 | 패키지 매니저 pnpm 11.25.0 | T01 작업 환경에 설치된 버전으로 로컬·clean clone·CI 검증 완료. pnpm 12와 비교 평가해 선택한 것은 아니며, 업그레이드는 별도 검증 후 진행 | npm, pnpm 12 (미평가) | accepted (T01) |
 | A8 | 언어별 페이지 파일 + 공유 화면 컴포넌트, UI 문구는 `src/i18n/ui.ts`(일본어 기준 타입) | URL과 파일 경로가 대응하고 T01 구조를 이음. 영어 문구 누락을 타입 검사로 막음 | 동적 경로 `[locale]` + `getStaticPaths` | accepted (T03) |
 | A9 | 콘텐츠는 YAML content collections + 조회 함수에서 여러 항목 규칙 검사 | 스키마로 필드 누락·오타를, 조회 함수로 개수·언어 짝 규칙을 빌드 시점에 막음. 원고 반영 시 콘텐츠 파일만 바꿈 | 커스텀 loader에서 검사, TypeScript 상수 파일 | accepted (T04) |
+| A10 | 글꼴은 Fontsource 자체 호스팅 + 빌드 통합으로 쓰는 글자의 범위만 남기고, 일본어 페이지는 가나 범위만 preload | 첫 렌더 전 CSS를 약 1/7로 줄이고(렌더 차단 예상 절감 930ms → 180ms) 글꼴 교체에 따른 Home CLS를 0.1 이하로. 새 의존성·외부 요청 없음, 원고가 바뀌면 자동으로 다시 계산 | Astro Fonts API(빌드 때 외부 API, HTML 인라인, 범위 수동), 글꼴 파일 재서브셋(새 도구 필요), `font-display: optional`(첫 방문 글꼴이 달라짐, 사용자 결정 필요) | accepted (T11) |
 
 직접 의존성은 정확한 버전으로 통일하고, 간접 의존성은 lockfile로 고정한다. CI는 `pnpm install --frozen-lockfile`을 사용한다. pnpm 버전은 `packageManager`로 고정한다.
 
