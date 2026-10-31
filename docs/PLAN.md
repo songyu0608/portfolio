@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T12 완료)
+마지막 갱신: 2026-10-31 (T13 지시서)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 6 품질 — T11·T12 완료 |
-| 진행 중인 작업 | 없음. 다음은 T13 SEO 지시서 작성 |
-| 다음 작업 | T13 SEO → T14 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 6 품질 — T11·T12 완료, T13 지시서 |
+| 진행 중인 작업 | T13 SEO 지시서 PR 리뷰(`docs/tasks/T13-seo.md`) |
+| 다음 작업 | T13 구현 → T14 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -108,8 +108,9 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | done | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30), 구현 [PR #31](https://github.com/songyu0608/portfolio/pull/31) |
 | T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | done | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33), 구현 [PR #34](https://github.com/songyu0608/portfolio/pull/34) |
 | T12 | React 중심 전환 (화면 컴포넌트 React + TypeScript, CSS Modules, 소개 문서) | 6 | T11 | claude | done | `docs/tasks/T12-react-components.md` — 지시서 [PR #36](https://github.com/songyu0608/portfolio/pull/36), 구현 [PR #37](https://github.com/songyu0608/portfolio/pull/37) |
+| T13 | SEO (canonical·hreflang·OG·sitemap·robots·favicon·404) | 6 | T12 | - | todo | `docs/tasks/T13-seo.md` |
 
-이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T13 SEO(canonical·hreflang·OG·sitemap·robots·favicon·404) → T14 접근성 점검·수정 → 단계 7~8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
+이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T14 접근성 점검·수정 → 단계 7~8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
 ## 7. 미결 사항
 
@@ -232,3 +233,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | 단계 6 순서 변경: React 중심 전환을 T12로 넣고 SEO는 T13, 접근성은 T14로 미룸(마크업 점검을 전환 뒤에 한 번만 하기 위해) | 사용자 결정 |
 | 2026-10-31 | T12 지시서 작성: 화면 컴포넌트 17개를 React(`.tsx`, `client:*` 없이 빌드 때 HTML로만)로 바꾼다. 스타일은 CSS Modules(기본안), 콘텐츠 조회·`<head>`·페이지 스크립트는 `.astro`(`BaseLayout`, 새 페이지 레이아웃)에 두고 라우트 파일은 한 줄 유지(A8). 화면(캡처 픽셀 차이 0)·접근성 트리·페이지 JS는 main과 같게. 소개(README)는 React + TypeScript 중심. ARCHITECTURE A1을 `superseded`로 바꾸고 A11 추가, AGENTS §5·§7 갱신 | T12 지시서 (`docs/ARCHITECTURE.md` A11) |
 | 2026-10-31 | T12 구현 담당 claude. 구현: 페이지 진입점 이름은 기본안대로 `src/layouts/*Layout.astro`, 여러 페이지가 쓰는 카드 틸트 `<script>`는 `src/layouts/scripts/CardTiltScript.astro` 한 곳에 둠(레이아웃마다 import하면 공유 청크 외부 파일이 생김), 페이지 진입점은 `BaseLayout`을 화면 컴포넌트보다 먼저 import(전역 CSS를 앞에 둬 CSS Modules 규칙이 이기게) | 사용자 결정(담당), T12 구현 (`docs/ARCHITECTURE.md` §2) |
+| 2026-10-31 | T13 지시서 작성: 절대 URL은 Astro `site` 한 곳에서 만들고 도메인 결정 전에는 임시 값(`https://portfolio.example`, 빌드 경고)을 둔다. 모든 페이지에 canonical·hreflang(ja·en·x-default = ja)·OG·X 카드·파비콘, sitemap·robots는 새 의존성 없이 엔드포인트로, 공유 이미지는 언어별 1장(1200×630, 원고에서 바뀔 문구 없음), 404는 이중 언어 페이지 하나. 기존 화면·접근성 트리·페이지 JS는 main과 같게 | T13 지시서 |
