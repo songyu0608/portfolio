@@ -161,7 +161,8 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 ### T08 구현 시 발견한 항목
 
-- [x] 단계 6(T11): Home의 CLS가 Chromium 1280px에서 0.32~0.37이다(T07 main도 같음, 2026-10-31 측정). 원인은 IBM Plex Sans JP 글꼴 교체 때 히어로 줄바꿈이 바뀌어 아래 내용이 약 35px 올라가는 것이다. 글꼴 로딩 방식(`font-display`, preload, 대체 글꼴 크기 맞춤 등)을 단계 6에서 정한다. → T11: 일본어 페이지에서 가나 범위(400·700) 2개 preload로 Home 1280px CLS 0.298 → 0.001(Playwright 지연 150ms·1.6Mbps), Lighthouse 모든 측정 페이지 0.017 이하. 3G 수준 이하에서는 Home CLS 약 0.3이 남는다(`docs/DESIGN.md` §2 한계).
+- [x] 단계 6(T11): Home의 CLS가 Chromium 1280px에서 0.32~0.37이다(T07 main도 같음, 2026-10-31 측정). 원인은 IBM Plex Sans JP 글꼴 교체 때 히어로 줄바꿈이 바뀌어 아래 내용이 약 35px 올라가는 것이다. 글꼴 로딩 방식(`font-display`, preload, 대체 글꼴 크기 맞춤 등)을 단계 6에서 정한다. → T11: 일본어 페이지에서 가나 범위(400·700) 2개 preload로 Home 1280px CLS 0.298 → 0.001(Playwright 지연 150ms·1.6Mbps), Lighthouse 모든 측정 페이지 0.017 이하. 3G 수준 이하에서는 Home CLS 약 0.3이 남으며, 2026-10-31 사용자 결정으로 그대로 둔다(`docs/DESIGN.md` §2 한계).
+- [ ] 원고 반영 후: Home 한 줄 소개 길이가 바뀌면 Home CLS를 다시 잰다(T11 측정 방법, `docs/tasks/T11-performance.md`). 지금 값은 임시 문구가 `max-width: 34em`에 거의 꽉 차는 길이라 생긴 것이다.
 
 ### T05 지시서 작성 시 추가한 항목
 
@@ -210,3 +211,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | T10 PR #31 merge 완료 반영, 단계 5 완료(CI 통과, Codex 교차 리뷰: 수정 필요 2건 중 헤더 스크립트 크기는 사용자 결정으로 기준을 "헤더 스크립트 1개, 압축 전 4KB 이하"로 변경, 터미널 이동 안내는 링크 출력 + `open`·`lang` 바로 이동으로 지시서 명확화, IME 변환 중 ↑↓ 무시 제안 반영 후 재검증 통과). 팔레트·터미널 UI 문구는 기본안(사용자 확인 전) | 사용자 결정(크기 기준), T10 완료 |
 | 2026-10-31 | 단계 6을 지시서 3개로 나눔: T11 = 성능, T12 = SEO, T13 = 접근성(이 순서). T11 지시서 작성: 첫 렌더 전 글꼴 CSS를 실제 쓰는 글자의 `unicode-range`만 남기고(글꼴 파일 재서브셋·새 의존성 없음), CLS 0.1 이하를 목표로 preload → 대체 글꼴 메트릭 맞춤 순서로 적용. `font-display: optional`·히어로 최소 높이는 사용자 결정 후에만 | 사용자 결정(나눔), T11 지시서 |
 | 2026-10-31 | T11 구현 담당 claude. 구현: 글꼴 CSS는 Astro Fonts API 대신 빌드 통합 `scripts/font-subset.mjs`(Fonts API는 빌드 때 외부 API 호출·HTML 인라인·범위 수동), 일본어 페이지 가나 범위 preload만(라틴 포함 시 CLS 악화), 대체 글꼴 메트릭 맞춤은 목표 달성으로 생략. 디코딩 정규식의 범위 글자를 코드 포인트로 바꿈(`src/scripts/hero-decode.ts`, 동작 같음) | 사용자 결정(담당), T11 구현 (`docs/ARCHITECTURE.md` A10) |
+| 2026-10-31 | 3G 수준 이하에서 남는 Home CLS(약 0.3)는 그대로 둔다. `font-display: optional`·한 줄 소개 최소 높이는 쓰지 않고, 원고 반영 때 다시 잰다 | 사용자 결정(T11 범위 3-4) |
