@@ -1,0 +1,86 @@
+- link "Skip to main content":
+    - /url: '#main'
+- banner:
+    - link "choi":
+        - /url: /en/
+    - navigation "Main":
+        - list:
+            - listitem:
+                - link "About":
+                    - /url: /en/about/
+            - listitem:
+                - link "Projects":
+                    - /url: /en/projects/
+            - listitem:
+                - link "Contact":
+                    - /url: /en/contact/
+    - button "Open command palette"
+    - navigation "Language":
+        - list:
+            - listitem:
+                - link "日本語":
+                    - /url: /ja/projects/data-platform/
+            - listitem: English
+    - button "Dark mode"
+- main:
+    - link "All projects":
+        - /url: /en/projects/
+    - paragraph: Featured projects
+    - heading "Shared data integration platform (placeholder)" [level=1]
+    - paragraph: A one-sentence summary of consolidating Company B's per-team data integrations into a shared platform. (placeholder)
+    - term: Period
+    - definition: 20XX.XX – 20XX.XX
+    - term: Role
+    - definition: Backend development (placeholder)
+    - term: Phases
+    - definition:
+        - list:
+            - listitem: Requirements (not handled)
+            - listitem: Design (handled)
+            - listitem: Development (handled)
+            - listitem: Testing (handled)
+            - listitem: Operations (handled)
+    - term: Tech
+    - definition:
+        - list:
+            - listitem: Python (placeholder)
+            - listitem: AWS (placeholder)
+            - listitem: Terraform (placeholder)
+    - region "Challenge":
+        - heading "Challenge" [level=2]
+        - paragraph: Describes how per-team data integrations had multiplied and made incidents and changes slow, along with the number of integrations and data volume. (placeholder)
+        - list:
+            - listitem: XX integration jobs, XX GB of data per day (placeholder)
+    - region "Design":
+        - heading "Design" [level=2]
+        - paragraph: Describes the shared platform's structure, how existing integrations were moved over in stages, and the scope I owned. (placeholder)
+        - list:
+            - listitem: Unified integrations under shared job definitions and monitoring (placeholder)
+    - region "Results":
+        - heading "Results" [level=2]
+        - list:
+            - listitem: Daily batch time (placeholder) XX% shorter
+        - paragraph: Notes on what changed in operations, such as incident handling and support requests. (placeholder)
+    - region "Tech":
+        - heading "Tech" [level=2]
+        - term: Language
+        - definition: Python (placeholder)
+        - term: Infrastructure
+        - definition: AWS (placeholder) / Terraform (placeholder)
+    - navigation "More projects":
+        - link "Previous project Order processing API redesign (placeholder)":
+            - /url: /en/projects/order-api/
+        - link "Next project Extracting the auth service with zero downtime (placeholder)":
+            - /url: /en/projects/auth-service/
+- contentinfo:
+    - list "Contact":
+        - listitem:
+            - link "Email":
+                - /url: mailto:songyu0608@gmail.com
+        - listitem:
+            - link "GitHub":
+                - /url: https://github.com/songyu0608
+        - listitem:
+            - link "LinkedIn":
+                - /url: https://www.linkedin.com/in/songyu0608
+    - paragraph: /© \d+ choi/

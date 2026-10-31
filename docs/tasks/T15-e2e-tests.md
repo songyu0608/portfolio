@@ -4,9 +4,9 @@
 | --- | --- |
 | 단계 | 7 |
 | 선행 작업 | T14 (PR #43) |
-| 담당 | 미배정 |
-| 상태 | todo |
-| 브랜치 | `<agent>/T15-e2e-tests` |
+| 담당 | claude |
+| 상태 | in-progress |
+| 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T15-e2e-tests`) |
 
 ## 목표
 

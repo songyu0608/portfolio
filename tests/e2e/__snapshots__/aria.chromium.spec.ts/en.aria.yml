@@ -1,0 +1,146 @@
+- link "Skip to main content":
+    - /url: '#main'
+- banner:
+    - link "choi":
+        - /url: /en/
+    - navigation "Main":
+        - list:
+            - listitem:
+                - link "About":
+                    - /url: /en/about/
+            - listitem:
+                - link "Projects":
+                    - /url: /en/projects/
+            - listitem:
+                - link "Contact":
+                    - /url: /en/contact/
+    - button "Open command palette"
+    - navigation "Language":
+        - list:
+            - listitem:
+                - link "日本語":
+                    - /url: /ja/
+            - listitem: English
+    - button "Dark mode"
+- main:
+    - region "choi seonggyu":
+        - heading "choi seonggyu" [level=1]
+        - paragraph: Backend Engineer (placeholder)
+        - paragraph: I design and run backend systems that keep working, from architecture to operations. (placeholder)
+        - link "View projects":
+            - /url: /en/projects/
+        - link "Get in touch":
+            - /url: /en/contact/
+    - region "Core skills":
+        - heading "Core skills" [level=2]
+        - paragraph: Filled tags mark core technologies.
+        - list:
+            - listitem: 'Core: Java (placeholder)'
+            - listitem: 'Core: Spring Boot (placeholder)'
+            - listitem: 'Core: PostgreSQL (placeholder)'
+            - listitem: AWS (placeholder)
+            - listitem: Redis (placeholder)
+    - region "Featured projects":
+        - heading "Featured projects" [level=2]
+        - list:
+            - listitem:
+                - article:
+                    - heading "Order processing API redesign (placeholder)" [level=3]:
+                        - link "Order processing API redesign (placeholder)":
+                            - /url: /en/projects/order-api/
+                    - paragraph: A one-sentence summary of the performance issues in Company A's order processing API and how it was redesigned. (placeholder)
+                    - term: Period
+                    - definition: 20XX.XX – 20XX.XX
+                    - term: Phases
+                    - definition:
+                        - list:
+                            - listitem: Requirements (handled)
+                            - listitem: Design (handled)
+                            - listitem: Development (handled)
+                            - listitem: Testing (handled)
+                            - listitem: Operations (not handled)
+                    - term: Role
+                    - definition: Design and implementation lead (placeholder)
+                    - term: Results
+                    - definition:
+                        - list:
+                            - listitem: p99 latency XX ms → XX ms (placeholder)
+                            - listitem: Peak error rate reduced by XX% (placeholder)
+                    - term: Tech
+                    - definition:
+                        - list:
+                            - listitem: Java (placeholder)
+                            - listitem: Spring Boot (placeholder)
+                            - listitem: PostgreSQL (placeholder)
+                            - listitem: Kafka (placeholder)
+            - listitem:
+                - article:
+                    - heading "Shared data integration platform (placeholder)" [level=3]:
+                        - link "Shared data integration platform (placeholder)":
+                            - /url: /en/projects/data-platform/
+                    - paragraph: A one-sentence summary of consolidating Company B's per-team data integrations into a shared platform. (placeholder)
+                    - term: Period
+                    - definition: 20XX.XX – 20XX.XX
+                    - term: Phases
+                    - definition:
+                        - list:
+                            - listitem: Requirements (not handled)
+                            - listitem: Design (handled)
+                            - listitem: Development (handled)
+                            - listitem: Testing (handled)
+                            - listitem: Operations (handled)
+                    - term: Role
+                    - definition: Backend development (placeholder)
+                    - term: Results
+                    - definition:
+                        - list:
+                            - listitem: Daily batch time reduced by XX% (placeholder)
+                    - term: Tech
+                    - definition:
+                        - list:
+                            - listitem: Python (placeholder)
+                            - listitem: AWS (placeholder)
+                            - listitem: Terraform (placeholder)
+            - listitem:
+                - article:
+                    - heading "Extracting the auth service with zero downtime (placeholder)" [level=3]:
+                        - link "Extracting the auth service with zero downtime (placeholder)":
+                            - /url: /en/projects/auth-service/
+                    - paragraph: A one-sentence summary of splitting authentication out of Company C's monolith and migrating it without downtime. (placeholder)
+                    - term: Period
+                    - definition: 20XX.XX – 20XX.XX
+                    - term: Phases
+                    - definition:
+                        - list:
+                            - listitem: Requirements (handled)
+                            - listitem: Design (handled)
+                            - listitem: Development (not handled)
+                            - listitem: Testing (not handled)
+                            - listitem: Operations (handled)
+                    - term: Role
+                    - definition: Design and migration planning (placeholder)
+                    - term: Results
+                    - definition:
+                        - list:
+                            - listitem: Migrated XX M requests per month with zero downtime (placeholder)
+                            - listitem: Auth-related incidents per month X → X (placeholder)
+                    - term: Tech
+                    - definition:
+                        - list:
+                            - listitem: Go (placeholder)
+                            - listitem: Redis (placeholder)
+                            - listitem: Kubernetes (placeholder)
+        - link "All projects":
+            - /url: /en/projects/
+- contentinfo:
+    - list "Contact":
+        - listitem:
+            - link "Email":
+                - /url: mailto:songyu0608@gmail.com
+        - listitem:
+            - link "GitHub":
+                - /url: https://github.com/songyu0608
+        - listitem:
+            - link "LinkedIn":
+                - /url: https://www.linkedin.com/in/songyu0608
+    - paragraph: /© \d+ choi/

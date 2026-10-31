@@ -1,0 +1,104 @@
+- link "Skip to main content":
+    - /url: '#main'
+- banner:
+    - link "choi":
+        - /url: /en/
+    - navigation "Main":
+        - list:
+            - listitem:
+                - link "About":
+                    - /url: /en/about/
+            - listitem:
+                - link "Projects":
+                    - /url: /en/projects/
+            - listitem:
+                - link "Contact":
+                    - /url: /en/contact/
+    - button "Open command palette"
+    - navigation "Language":
+        - list:
+            - listitem:
+                - link "日本語":
+                    - /url: /ja/about/
+            - listitem: English
+    - button "Dark mode"
+- main:
+    - region "About":
+        - heading "About" [level=1]
+        - paragraph: choi seonggyu Backend Engineer (placeholder)
+    - region "Experience":
+        - heading "Experience" [level=2]
+        - list:
+            - listitem:
+                - paragraph: 20XX.XX – Present
+                - heading "Company A (placeholder)" [level=3]
+                - paragraph: Backend Engineer (placeholder)
+                - list:
+                    - listitem: Improved p99 latency of the XX API from XX ms to XX ms (placeholder)
+                    - listitem: Owned the XX platform from design through operations (placeholder)
+            - listitem:
+                - paragraph: 20XX.XX – 20XX.XX
+                - heading "Company B (placeholder)" [level=3]
+                - paragraph: Server-side Engineer (placeholder)
+                - list:
+                    - listitem: Cut batch processing time of the XX system by XX% (placeholder)
+            - listitem:
+                - paragraph: 20XX.XX – 20XX.XX
+                - heading "Company C (placeholder)" [level=3]
+                - paragraph: Software Engineer (placeholder)
+                - list:
+                    - listitem: Built an internal XX tool (placeholder)
+    - region "Tech stack":
+        - heading "Tech stack" [level=2]
+        - paragraph: Filled tags mark core technologies.
+        - heading "AI-assisted development" [level=3]
+        - list:
+            - listitem: ChatGPT
+            - listitem: Claude Code
+            - listitem: IBM Consulting Advantage
+            - listitem: IBM Bob
+        - heading "Languages" [level=3]
+        - list:
+            - listitem: 'Core: Java (placeholder)'
+            - listitem: Go (placeholder)
+            - listitem: Python (placeholder)
+        - heading "Frameworks" [level=3]
+        - list:
+            - listitem: 'Core: Spring Boot (placeholder)'
+        - heading "Databases" [level=3]
+        - list:
+            - listitem: 'Core: PostgreSQL (placeholder)'
+            - listitem: Redis (placeholder)
+        - heading "Infrastructure & cloud" [level=3]
+        - list:
+            - listitem: AWS (placeholder)
+            - listitem: Docker (placeholder)
+            - listitem: Kubernetes (placeholder)
+        - heading "Messaging & monitoring" [level=3]
+        - list:
+            - listitem: Kafka (placeholder)
+            - listitem: Prometheus (placeholder)
+        - heading "CI/CD & tools" [level=3]
+        - list:
+            - listitem: GitHub Actions (placeholder)
+            - listitem: Terraform (placeholder)
+    - region "Certifications":
+        - heading "Certifications" [level=2]
+        - term: 20XX.XX
+        - definition: XX Certification (placeholder)
+        - term: 20XX.XX
+        - definition: XX Engineer Examination (placeholder)
+        - term: Studying
+        - definition: Studying for XX (placeholder)
+- contentinfo:
+    - list "Contact":
+        - listitem:
+            - link "Email":
+                - /url: mailto:songyu0608@gmail.com
+        - listitem:
+            - link "GitHub":
+                - /url: https://github.com/songyu0608
+        - listitem:
+            - link "LinkedIn":
+                - /url: https://www.linkedin.com/in/songyu0608
+    - paragraph: /© \d+ choi/

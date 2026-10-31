@@ -6,10 +6,10 @@
 //       src/content/profile/<locale>.yaml의 name, src/i18n/ui.ts의 site.ogImageLabel
 // 출력: public/favicon.ico(16·32·48px), public/apple-touch-icon.png(180px), public/og/<locale>.png(1200×630)
 //
-// Playwright(Chromium)로 그린다. Playwright는 아직 프로젝트 의존성이 아니므로(단계 7에서 추가 예정)
-// 실행 환경에 설치된 것을 쓴다. 자세한 내용은 scripts/brand/README.md.
+// Playwright(Chromium)로 그린다. E2E 테스트(T15)와 같은 프로젝트 의존성(@playwright/test)을 쓴다.
+// 준비 방법은 scripts/brand/README.md.
+import { chromium } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
-import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -18,17 +18,6 @@ const root = path.resolve(
   '../..',
 );
 const fromRoot = (...parts) => path.join(root, ...parts);
-
-const require = createRequire(import.meta.url);
-let chromium;
-try {
-  ({ chromium } = require('playwright'));
-} catch {
-  console.error(
-    'playwright를 찾지 못했습니다. scripts/brand/README.md의 준비 방법을 확인하세요.',
-  );
-  process.exit(1);
-}
 
 // src/i18n/ui.ts는 Node 24의 타입 제거(type stripping)로 바로 읽는다.
 const { ui, locales } = await import(fromRoot('src/i18n/ui.ts'));

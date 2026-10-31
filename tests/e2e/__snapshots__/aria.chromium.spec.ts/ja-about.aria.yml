@@ -1,0 +1,104 @@
+- link "本文へ移動":
+    - /url: '#main'
+- banner:
+    - link "choi":
+        - /url: /ja/
+    - navigation "メイン":
+        - list:
+            - listitem:
+                - link "経歴":
+                    - /url: /ja/about/
+            - listitem:
+                - link "プロジェクト":
+                    - /url: /ja/projects/
+            - listitem:
+                - link "連絡先":
+                    - /url: /ja/contact/
+    - button "コマンドパレットを開く"
+    - navigation "言語":
+        - list:
+            - listitem: 日本語
+            - listitem:
+                - link "English":
+                    - /url: /en/about/
+    - button "ダークモード"
+- main:
+    - region "経歴":
+        - heading "経歴" [level=1]
+        - paragraph: チェ ソンギュ バックエンドエンジニア（仮）
+    - region "職歴":
+        - heading "職歴" [level=2]
+        - list:
+            - listitem:
+                - paragraph: 20XX.XX – 現在
+                - heading "A社（仮）" [level=3]
+                - paragraph: バックエンドエンジニア（仮）
+                - list:
+                    - listitem: 〇〇 API の p99 レイテンシを XX ms から XX ms に改善（仮）
+                    - listitem: 〇〇 基盤の設計から運用までを担当（仮）
+            - listitem:
+                - paragraph: 20XX.XX – 20XX.XX
+                - heading "B社（仮）" [level=3]
+                - paragraph: サーバーサイドエンジニア（仮）
+                - list:
+                    - listitem: 〇〇 システムのバッチ処理時間を 〇〇% 短縮（仮）
+            - listitem:
+                - paragraph: 20XX.XX – 20XX.XX
+                - heading "C社（仮）" [level=3]
+                - paragraph: ソフトウェアエンジニア（仮）
+                - list:
+                    - listitem: 社内向け 〇〇 ツールの開発（仮）
+    - region "技術スタック":
+        - heading "技術スタック" [level=2]
+        - paragraph: 塗りつぶしたタグは主軸の技術です。
+        - heading "AI活用開発 AI-assisted development" [level=3]
+        - list:
+            - listitem: ChatGPT
+            - listitem: Claude Code
+            - listitem: IBM Consulting Advantage
+            - listitem: IBM Bob
+        - heading "言語 Languages" [level=3]
+        - list:
+            - listitem: 主軸： Java（仮）
+            - listitem: Go（仮）
+            - listitem: Python（仮）
+        - heading "フレームワーク Frameworks" [level=3]
+        - list:
+            - listitem: 主軸： Spring Boot（仮）
+        - heading "データベース Databases" [level=3]
+        - list:
+            - listitem: 主軸： PostgreSQL（仮）
+            - listitem: Redis（仮）
+        - heading "インフラ・クラウド Infrastructure & cloud" [level=3]
+        - list:
+            - listitem: AWS（仮）
+            - listitem: Docker（仮）
+            - listitem: Kubernetes（仮）
+        - heading "メッセージング・監視 Messaging & monitoring" [level=3]
+        - list:
+            - listitem: Kafka（仮）
+            - listitem: Prometheus（仮）
+        - heading "CI/CD・ツール CI/CD & tools" [level=3]
+        - list:
+            - listitem: GitHub Actions（仮）
+            - listitem: Terraform（仮）
+    - region "資格":
+        - heading "資格" [level=2]
+        - term: 20XX.XX
+        - definition: 〇〇 認定資格（仮）
+        - term: 20XX.XX
+        - definition: 〇〇 技術者試験（仮）
+        - term: 学習中
+        - definition: 〇〇（仮） 取得に向けて学習中
+- contentinfo:
+    - list "連絡先":
+        - listitem:
+            - link "メール":
+                - /url: mailto:songyu0608@gmail.com
+        - listitem:
+            - link "GitHub":
+                - /url: https://github.com/songyu0608
+        - listitem:
+            - link "LinkedIn":
+                - /url: https://www.linkedin.com/in/songyu0608
+    - paragraph: /© \d+ choi/
