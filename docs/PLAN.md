@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T15 구현)
+마지막 갱신: 2026-11-01 (T15 완료)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 7 테스트 — T15 리뷰 |
-| 진행 중인 작업 | T15 E2E 테스트 PR #46 리뷰(담당 claude, `docs/tasks/T15-e2e-tests.md`). Codex 교차 리뷰 → 사용자 merge |
-| 다음 작업 | T15 merge → T16 Lighthouse CI 지시서 → 단계 8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 7 테스트 — T15 완료 |
+| 진행 중인 작업 | 없음. 다음은 T16 Lighthouse CI 지시서 작성 |
+| 다음 작업 | T16 Lighthouse CI → 단계 8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -110,7 +110,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T12 | React 중심 전환 (화면 컴포넌트 React + TypeScript, CSS Modules, 소개 문서) | 6 | T11 | claude | done | `docs/tasks/T12-react-components.md` — 지시서 [PR #36](https://github.com/songyu0608/portfolio/pull/36), 구현 [PR #37](https://github.com/songyu0608/portfolio/pull/37) |
 | T13 | SEO (canonical·hreflang·OG·sitemap·robots·favicon·404) | 6 | T12 | claude | done | `docs/tasks/T13-seo.md` — 지시서 [PR #39](https://github.com/songyu0608/portfolio/pull/39), 구현 [PR #40](https://github.com/songyu0608/portfolio/pull/40) |
 | T14 | 접근성 점검·수정 (WCAG 2.2 AA 자동·수동 점검, 강제 색상 모드, 터미널 출력 스크롤) | 6 | T13 | claude | done | `docs/tasks/T14-accessibility.md` — 지시서 [PR #42](https://github.com/songyu0608/portfolio/pull/42), 구현 [PR #43](https://github.com/songyu0608/portfolio/pull/43) |
-| T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | review | `docs/tasks/T15-e2e-tests.md` |
+| T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | done | `docs/tasks/T15-e2e-tests.md` — 지시서 [PR #45](https://github.com/songyu0608/portfolio/pull/45), 구현 [PR #46](https://github.com/songyu0608/portfolio/pull/46) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T16 Lighthouse CI(단계 7), 단계 8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -264,3 +264,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | T15 구현 담당 claude. 테스트가 찾은 결함: 프로젝트 상세 担当工程 5칸 그리드가 640~719px에서 영어 공정 이름을 잘랐다(텍스트 간격을 넓히면 799px까지). 5칸 그리드를 기존 전환점 1024px부터로 옮기고 그 아래는 내용 폭 칸 줄바꿈(`docs/DESIGN.md` §7 担当工程) | 사용자 결정 |
 | 2026-10-31 | T15: 테스트·`playwright.config.ts`의 타입 체크(`pnpm check`)에 `@types/node` 24.19.2를 devDependency로 추가(지시서의 새 의존성 2개 밖이라 따로 승인) | 사용자 결정 |
 | 2026-10-31 | T15: 본문 바로가기 대상 `<main id="main">`에 `tabindex="-1"`을 두고 그 포커스는 표시하지 않는다(`main:focus { outline: none }`). Firefox(Playwright, CI)에서 상세 페이지의 다음 Tab이 `main` 첫 링크를 건너뛰었다. T14의 "`tabindex` 없음"을 지시서 범위 4 규칙대로 바꿨다(`docs/DESIGN.md` §4 본문 바로가기) | T15 지시서 |
+| 2026-11-01 | T15 PR #46 merge 완료 반영(CI 3개 브라우저 397개 통과, E2E 단계 약 8분, Codex 교차 리뷰 수정 필요 없음). 이후 PR은 CI에서 E2E를 통과해야 merge한다. 남은 접근성·브라우저 확인(Safari 실기·스크린 리더·IME·Windows 고대비 실제 색, 문절 줄바꿈 위치)은 §8 | 지시서 없음 (문서만 변경) |
