@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T14 지시서)
+마지막 갱신: 2026-10-31 (T14 구현)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 6 품질 — T11·T12·T13 완료, T14 지시서 |
-| 진행 중인 작업 | T14 접근성 지시서 PR 리뷰(`docs/tasks/T14-accessibility.md`) |
-| 다음 작업 | T14 구현 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 6 품질 — T11·T12·T13 완료, T14 구현 리뷰 |
+| 진행 중인 작업 | T14 접근성 구현 PR 리뷰(`docs/tasks/T14-accessibility.md`) |
+| 다음 작업 | T14 merge(단계 6 완료) → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -109,7 +109,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | done | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33), 구현 [PR #34](https://github.com/songyu0608/portfolio/pull/34) |
 | T12 | React 중심 전환 (화면 컴포넌트 React + TypeScript, CSS Modules, 소개 문서) | 6 | T11 | claude | done | `docs/tasks/T12-react-components.md` — 지시서 [PR #36](https://github.com/songyu0608/portfolio/pull/36), 구현 [PR #37](https://github.com/songyu0608/portfolio/pull/37) |
 | T13 | SEO (canonical·hreflang·OG·sitemap·robots·favicon·404) | 6 | T12 | claude | done | `docs/tasks/T13-seo.md` — 지시서 [PR #39](https://github.com/songyu0608/portfolio/pull/39), 구현 [PR #40](https://github.com/songyu0608/portfolio/pull/40) |
-| T14 | 접근성 점검·수정 (WCAG 2.2 AA 자동·수동 점검, 강제 색상 모드, 터미널 출력 스크롤) | 6 | T13 | - | todo | `docs/tasks/T14-accessibility.md` |
+| T14 | 접근성 점검·수정 (WCAG 2.2 AA 자동·수동 점검, 강제 색상 모드, 터미널 출력 스크롤) | 6 | T13 | claude | review | `docs/tasks/T14-accessibility.md` — 지시서 [PR #42](https://github.com/songyu0608/portfolio/pull/42) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 7~8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -190,6 +190,13 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 - [ ] 커스텀 도메인으로 옮기면 `*.workers.dev` 주소의 처리(이동 또는 비활성화)를 정한다.
 - 근거: `docs/tasks/T13-seo.md` "단계 8로 넘기는 일", `docs/ARCHITECTURE.md` §2 "SEO".
 
+### T14 구현 시 추가한 항목 (단계 7)
+
+- [ ] axe 자동 검사를 E2E에 넣는다. 조건은 `docs/DESIGN.md` §11 "점검 도구와 조건"과 같다(19페이지 × 라이트·다크 × 1280·375px, 팔레트·터미널 열린 상태). `@axe-core/playwright` 등 의존성 추가는 사용자 확인 뒤에 한다. T14는 실행 환경의 axe-core 4.14.0을 페이지에 넣어 쟀다.
+- [ ] WebKit·Firefox에서 확인한다: 본문 바로가기 뒤 다음 Tab 위치(`main`에 `tabindex="-1"`이 필요한지), 터미널 출력 영역 포커스·키 스크롤, 강제 색상(Windows 고대비)의 실제 색. 결과에 따라 `main` `tabindex`를 정한다.
+- [ ] 원고 반영 뒤 axe·키보드·리플로·텍스트 간격 점검을 다시 한다. 문구 길이가 바뀌면 결과가 달라질 수 있다.
+- 근거: `docs/tasks/T14-accessibility.md` "단계 7로 넘기는 일", `docs/DESIGN.md` §11.
+
 ### T05 지시서 작성 시 추가한 항목
 
 - [x] T06 Projects 지시서: 프로젝트 스키마에 担当工程(要件定義・設計・開発・テスト・運用) 필드를 추가한다. 카드에도 표시할지 상세에만 둘지는 T06에서 정한다(2026-10-30 사용자 확인: 担当工程은 경력이 아니라 프로젝트 단위). → 2026-10-30 사용자 결정: 카드와 상세 모두에 표시. `docs/tasks/T06-projects.md` 범위 1·4.
@@ -248,3 +255,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | T13 지시서 PR #39 merge, T13 구현 담당 claude. 구현은 지시서 기본안대로(`site` 임시 값 + 빌드 경고, `x-default` = ja, sitemap·robots 엔드포인트, 이중 언어 404 하나). 파비콘(accent 둥근 사각형 + 선으로 그린 `c`)·공유 이미지(이름 + 「ポートフォリオ」/`Portfolio` + accent 띠)·404 문구(「ページが見つかりません」 등)는 기본안이고 사용자 확인 전이다. 바꿀 때는 `scripts/brand/`·`src/i18n/ui.ts`를 고치고 이미지를 다시 만든다 | 사용자 결정(담당), T13 구현 (`docs/ARCHITECTURE.md` A12, `docs/DESIGN.md` §10) |
 | 2026-10-31 | T13 PR #40 merge 완료 반영(CI 통과, Codex 교차 리뷰 수정 필요·개선 제안 없음). 파비콘·공유 이미지·404 문구는 기본안으로 merge했고 사용자 확인 전이다. 배포 전 확인 항목(`site` 교체 등)은 §8 "T13 구현 시 추가한 항목" | 지시서 없음 (문서만 변경) |
 | 2026-10-31 | T14 지시서 작성: 기준은 WCAG 2.2 AA. 19페이지(404 포함)·팔레트·터미널을 axe-core(실행 환경에 있는 것, 새 의존성 없음)·Lighthouse·키보드·320/640px·텍스트 간격·강제 색상으로 점검한다. 사전 점검(위반 0건)에서 찾은 2건을 고친다: 터미널 출력 스크롤 영역 `tabIndex`, 강제 색상 모드의 주력 기술 태그 채움(시스템 색). 본문 바로가기 `tabindex`·자동 검사의 테스트화·WebKit/Firefox 확인은 단계 7 | T14 지시서 |
+| 2026-10-31 | T14 지시서 PR #42 merge, T14 구현 담당 claude. 구현은 지시서 기본안대로: 터미널 출력(`role="log"`)에 `tabIndex={0}`과 안쪽 2px accent 포커스 외곽선, 강제 색상 모드에서 `.tag--featured`를 `forced-color-adjust: none` + `CanvasText`/`Canvas`로 채움 유지. 점검에서 새 위반은 없었다(axe 4.14.0 위반 0, Lighthouse 접근성 100). 점검 기준은 `docs/DESIGN.md` §11 | 사용자 결정(담당), T14 구현 (`docs/DESIGN.md` §11) |

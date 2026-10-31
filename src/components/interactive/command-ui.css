@@ -205,6 +205,12 @@
   overscroll-behavior: contain;
 }
 
+/* 출력 영역은 키보드로 포커스해 스크롤한다(T14). 다이얼로그 안쪽에 그려 잘리지 않게 한다. */
+.command-terminal__log:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
 /* 줄이 적을 때는 아래(입력란 쪽)에 붙인다. */
 .command-terminal__log > :first-child {
   margin-top: auto;

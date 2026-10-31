@@ -4,9 +4,9 @@
 | --- | --- |
 | 단계 | 6 |
 | 선행 작업 | T13 (PR #40) |
-| 담당 | 미배정 |
-| 상태 | todo |
-| 브랜치 | `<agent>/T14-accessibility` |
+| 담당 | claude |
+| 상태 | review |
+| 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T14-accessibility`) |
 
 ## 목표
 
@@ -203,26 +203,26 @@
 
 ## 완료 조건
 
-- [ ] axe 위반 0건
+- [x] axe 위반 0건
   - 19페이지 × 라이트·다크 × 1280·375px(76회)
   - 팔레트·터미널 열린 상태(라이트·다크 × 1280·375px, 터미널은 출력이 넘친 상태)
   - 판정 보류 항목의 목록과 판단을 PR에 적는다.
-- [ ] Lighthouse 접근성 100(사전 점검의 다섯 페이지, 모바일)
-- [ ] 터미널 출력 영역
+- [x] Lighthouse 접근성 100(사전 점검의 다섯 페이지, 모바일)
+- [x] 터미널 출력 영역
   - Tab·Shift+Tab으로 포커스되고 포커스 표시가 보인다.
   - 포커스한 뒤 ↑↓·PageUp·PageDown으로 스크롤된다.
   - 처음 열 때 입력란 포커스, Esc 닫기, 포커스 되돌림은 T10과 같다.
-- [ ] 강제 색상 모드(라이트·다크)에서 주력 태그가 채운 모양으로 다른 태그와 구분된다. 캡처를 PR에 싣는다.
-- [ ] 키보드 점검 표(페이지 종류별 Tab 순서·포커스 표시·가림·함정)를 PR에 싣는다.
-- [ ] 320px·640px 가로 넘침 0, 텍스트 간격 주입 시 잘림 0
-- [ ] 기존 화면이 main과 같다.
+- [x] 강제 색상 모드(라이트·다크)에서 주력 태그가 채운 모양으로 다른 태그와 구분된다. 캡처를 PR에 싣는다.
+- [x] 키보드 점검 표(페이지 종류별 Tab 순서·포커스 표시·가림·함정)를 PR에 싣는다.
+- [x] 320px·640px 가로 넘침 0, 텍스트 간격 주입 시 잘림 0
+- [x] 기존 화면이 main과 같다.
   - T12 방법으로 캡처 45장 픽셀 차이 0, 18페이지 `ariaSnapshot()` 글자 단위 동일
   - 이번 수정은 터미널(열 때만 보임)과 강제 색상 모드에만 영향이 있다.
-- [ ] 페이지가 처음 받는 JS(헤더 스크립트·인라인 모듈)가 main과 같다. 팔레트를 열 때 받는 파일의 크기 변화를 PR에 적는다.
-- [ ] 새 의존성이 없다(`package.json` 의존성 항목, `pnpm-lock.yaml` 변경 없음).
-- [ ] 문서가 갱신되어 있다: `docs/DESIGN.md` §11, `docs/PLAN.md`(진행 상태·표·결정 기록·§8)
+- [x] 페이지가 처음 받는 JS(헤더 스크립트·인라인 모듈)가 main과 같다. 팔레트를 열 때 받는 파일의 크기 변화를 PR에 적는다.
+- [x] 새 의존성이 없다(`package.json` 의존성 항목, `pnpm-lock.yaml` 변경 없음).
+- [x] 문서가 갱신되어 있다: `docs/DESIGN.md` §11, `docs/PLAN.md`(진행 상태·표·결정 기록·§8)
 - [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
-- [ ] 비밀 값 미포함
+- [x] 비밀 값 미포함
 
 ## 확인 방법
 
@@ -236,7 +236,7 @@ pnpm preview
   - 프로젝트 의존성이 아니다. 실행 환경의 `axe.min.js`를 쓴다. 예: Lighthouse 설치에 함께 들어온 것, 또는 프로젝트 밖에 임시로 설치한 것.
   - Playwright `page.addScriptTag({ path })`로 넣고 `axe.run(document, { runOnly: { type: 'tag', values: [...] } })`를 실행한다.
   - 페이지마다 `waitUntil: 'networkidle'`과 `document.fonts.ready`를 기다린 뒤 잰다. 컨텍스트에는 `reducedMotion: 'reduce'`를 준다.
-  - axe-core 버전을 PR에 적는다.
+  - axe-core 버전과 실행된 규칙 ID를 PR에 적는다. 규칙 목록은 `axe.getRules(태그)`로, 실제로 요소에 적용된 규칙은 결과의 `passes`·`violations`·`incomplete` ID로 모은다(`target-size` 포함 여부 확인, T14 지시서 교차 리뷰 개선 제안).
   - 404는 `/404.html`로 연다(상태 200이라 페이지가 그대로 읽힌다).
 - **강제 색상**
   - Playwright `browser.newContext({ forcedColors: 'active', colorScheme: 'light' | 'dark' })`로 연다.

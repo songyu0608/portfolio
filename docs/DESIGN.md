@@ -475,6 +475,7 @@
 - 명령: `help`, `whoami`, `skills`(주력 기술에 `*`), `projects`(상세 링크), `contact`(메일·GitHub·LinkedIn 링크), `open <home|about|projects|contact>`, `lang <ja|en>`(둘 다 「移動します: 」 + 목적지 링크를 출력하고 바로 이동), `theme <light|dark|system>`, `clear`, `exit`. 대소문자·앞뒤 공백 무시. 모르는 명령은 error 색 「command not found: …」, 인자가 틀리면 사용법.
 - 입력 줄(`$ 명령`)은 accent, 보조 출력은 text-muted. 링크는 실제 `<a>`(문자열로 HTML을 만들지 않음). ↑↓로 이번에 연 동안 실행한 명령을 불러온다(IME 변환 중 제외). 출력은 최근 200줄까지.
 - 처음 열면 입력란에 포커스. 닫으면(Esc·닫기 버튼·`exit`·⌘K / Ctrl+K) 팔레트를 연 원래 위치로 포커스를 돌려보낸다.
+- 출력 영역은 `tabIndex={0}`으로 Tab 순서에 들어간다(입력란 바로 앞). 포커스하면 안쪽 2px accent 외곽선이 보이고 ↑↓·PageUp·PageDown·Home·End로 스크롤한다. 출력이 텍스트뿐이면(`help`) 안에 포커스할 곳이 없어서다(T14, §11 "스크롤 영역").
 
 ### 대비 (T10)
 
@@ -524,3 +525,59 @@
 - 영어 구역은 `lang="en"`이고, 위 48px 여백 뒤 border 구분선 + 48px 여백으로 나눈다. 두 구역 모두 `section` + `aria-labelledby`(제목)라 접근성 트리에 이름 있는 영역 2개가 나온다.
 - 새 색 조합은 없다(제목·설명은 text·text-muted / background, 버튼은 전역 `.button`·`.button--primary`로 §2 표와 같음). JS 없이도 모두 읽히고 링크가 동작한다.
 - 모션: 전역 `.button`의 기존 hover 효과만 있다.
+
+## 11. 접근성 기준 (T14)
+
+목표는 [WCAG 2.2](https://www.w3.org/TR/WCAG22/) AA다. 18페이지·404·명령 팔레트·터미널을 아래 도구와 조건으로 점검한다. 원고 반영 뒤와 단계 7 E2E에서도 같은 조건으로 다시 잰다. 지시서 작성 때의 사전 점검과 확인한 공식 문서는 `docs/tasks/T14-accessibility.md`.
+
+### 점검 도구와 조건
+
+| 점검 | 도구·조건 | 기준 |
+| --- | --- | --- |
+| 자동 검사 | axe-core(프로젝트 의존성 아님. Playwright `page.addScriptTag`로 넣음), 태그 `wcag2a`·`wcag2aa`·`wcag21a`·`wcag21aa`·`wcag22aa`·`best-practice`. 19페이지 × 라이트·다크 × 1280·375px, 팔레트·터미널을 연 상태(터미널은 출력이 넘친 상태) 라이트·다크 × 1280·375px. `networkidle`·`document.fonts.ready` 뒤, `reducedMotion: 'reduce'` | 위반 0건. 판정 보류는 목록과 판단을 PR에 적고, 실행한 axe 버전·규칙 ID를 남긴다 |
+| Lighthouse | 접근성 카테고리만, 모바일. `/ja/`·`/en/about/`·`/ja/projects/`·`/ja/projects/order-api/`·`/ja/contact/` | 100 |
+| 키보드 | 페이지 종류 6개(Home·About·Projects·상세·Contact·404)와 팔레트·터미널. 라이트·다크·강제 색상 | Tab 순서 = 화면 순서, Shift+Tab은 정확히 역순, 모든 링크·버튼에 포커스 표시, 가림 없음, 함정 없음(다이얼로그는 Esc로 나오고 포커스가 돌아옴), 본문 바로가기 동작 |
+| 화면 크기·글자 | 320px·640px(1280px 화면의 200% 확대) 가로 넘침. 텍스트 간격(1.4.12: 줄 높이 1.5, 글자 간격 0.12em, 단어 간격 0.16em, 문단 뒤 2em)을 넣은 375·640px에서 잘림 | 0건 |
+| 강제 색상 | Playwright `forcedColors: 'active'` × 라이트·다크. Home·About·상세·Contact, 팔레트·터미널 | 정보가 색·채움에만 기대지 않는다 |
+| reduced-motion | 디코딩·틸트·카드 → 상세 전환·타임라인·팔레트 열림 | 모두 꺼진다(§3 공통 구현 규칙) |
+| 구조 | 18페이지·404 | h1 1개, 제목 단계 건너뜀 없음, 같은 종류 랜드마크는 이름, `lang` 바름, 페이지 제목이 언어 안에서 겹치지 않음 |
+
+강제 색상은 Chromium 에뮬레이션이라 Windows 고대비 테마의 실제 색과 다를 수 있다.
+
+### 포커스
+
+- 기본은 §2의 `2px solid accent` + `3px` 바깥 간격이다.
+- 바깥 외곽선이 잘리거나 엉뚱한 곳에 그려지는 곳만 바꾼다.
+  - 프로젝트 카드: 링크 글자가 아니라 `::after`(카드 전체)에 그린다(§5).
+  - 팔레트 검색 줄·터미널 입력 줄: 입력란 대신 줄 전체에 안쪽(`-2px`) 외곽선(§9).
+  - 터미널 출력 영역: 안쪽(`-2px`) 외곽선. 다이얼로그가 `overflow: hidden`이라 바깥 외곽선은 잘린다. 대비는 §9 "포커스 외곽선"(accent / surface)과 같다.
+- 헤더는 고정(sticky·fixed)이 아니라 포커스를 가리지 않는다(2.4.11). 헤더를 고정으로 바꾸면 `scroll-padding-top` 등으로 다시 점검한다.
+
+### 강제 색상 모드
+
+- 브라우저가 색을 바꾸고 `box-shadow`를 지우는 것을 기본으로 받아들인다. 강제 색상용 디자인을 따로 만들지 않는다.
+- **정보인 표시**만 시스템 색(`CanvasText`·`Canvas` 등)으로 유지한다. 지금은 주력 기술 태그(`.tag--featured`) 하나다. 범례 「塗りつぶしたタグは主軸の技術です。」가 채움으로 뜻을 설명하기 때문이다(1.4.1).
+  - `forced-color-adjust: none` + `background-color: CanvasText`·`border-color: CanvasText`·`color: Canvas`(`src/styles/global.css`).
+  - `forced-color-adjust: none`이 없으면 글자 바탕판(Canvas 색)이 깔려 글자가 보이지 않는다.
+- **장식이거나 문구로도 구분되는 표시**는 브라우저에 맡긴다. 예: 주 버튼과 테두리 버튼의 채움 차이, 카드 그림자.
+- 이미 색 외의 단서가 있는 표시: 担当工程의 체크 아이콘·점선 테두리(§7), 현재 페이지의 굵기·밑줄(§4), 팔레트 선택 항목의 외곽선(§9), 포커스 외곽선.
+
+### 스크롤 영역
+
+- 내용이 넘쳐 스크롤되는 영역은 키보드로 끝까지 닿아야 한다(2.1.1).
+- 안에 포커스할 요소가 없을 수 있으면 영역 자체에 `tabindex="0"`, 이름(`aria-label` 등), `:focus-visible` 표시를 둔다. 스크롤 영역을 Tab 순서에 넣지 않는 브라우저(예: Safari)가 있기 때문이다. 지금은 터미널 출력(`role="log"`)이다.
+- 팔레트 목록(`role="listbox"`)은 예외다. 입력란(`role="combobox"`)에서 ↑↓로 선택을 옮기면 선택 항목이 보이도록 스크롤되므로 목록 자체는 포커스를 받지 않는다.
+
+### 대상 크기
+
+- AA 기준(2.5.8)은 24×24px 이상이거나, 24px 지름 원을 겹치지 않게 둘 간격이 있는 것이다.
+- 헤더·버튼·아이콘 버튼·추천 명령은 높이 44px 이상이다(§4 헤더 규칙).
+- Contact의 주소 링크(높이 약 23px)는 24px보다 작지만 간격 예외로 통과한다. axe `target-size`가 `target-offset` 검사로 판정했다.
+
+### 이 환경에서 확인하지 못한 것
+
+이 환경에는 Chromium만 있어 아래는 단계 7 또는 해당 환경에서 확인한다(`docs/PLAN.md` §8 T03·T10·T14 항목).
+
+- 실제 스크린 리더(VoiceOver, NVDA, TalkBack)
+- Firefox·Safari(WebKit): 본문 바로가기 뒤 다음 Tab 위치, 터미널 출력 포커스, 강제 색상(Windows 고대비) 실제 색
+- 실제 IME 입력(팔레트·터미널)
