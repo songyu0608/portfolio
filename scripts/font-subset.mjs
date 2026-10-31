@@ -3,11 +3,12 @@
 // docs/ARCHITECTURE.md §2).
 // Fontsource CSS는 문자 범위(unicode-range)마다 `@font-face`를 하나씩 담고 있어, 브라우저가 쓰지
 // 않는 범위의 글꼴 파일은 받지 않더라도 CSS는 첫 렌더 전에 전부 받는다. 이 통합은 빌드할 때
-// `src/` 아래 텍스트 파일(주석 제외)에 나오는 글자를 모아, 그 글자와 겹치는 범위의 규칙만 남긴다.
-// 글꼴 파일은 바꾸지 않는다. 코드의 글자까지 모으므로 실제보다 조금 많이 남을 수 있지만(안전한 쪽),
-// 글자 목록을 손으로 관리하지 않아도 원고가 바뀌면 다시 계산된다.
-// 빌드가 끝나면 dist의 HTML·JSON·JS(주석 제외)에 쓰인 글자 중 남긴 범위가 덮지 않는 글자가
-// 있는지 검사하고, 있으면 빌드를 실패시킨다.
+// `src/` 아래 텍스트 파일에 나오는 글자를 모아, 그 글자와 겹치는 범위의 규칙만 남긴다.
+// 글꼴 파일은 바꾸지 않는다. 주석·코드의 글자까지 모으므로 실제보다 조금 많이 남을 수 있지만(안전한
+// 쪽), 글자 목록을 손으로 관리하지 않아도 원고가 바뀌면 다시 계산된다. 주석은 지우지 않는다. 화면
+// 문구에도 `//`·`/*` 같은 글자가 나올 수 있어, 주석으로 오인해 지우면 쓰는 글자를 놓친다.
+// 빌드가 끝나면 dist의 HTML·JSON·JS에 쓰인 글자 중 남긴 범위가 덮지 않는 글자가 있는지 검사하고,
+// 있으면 빌드를 실패시킨다.
 
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
@@ -17,8 +18,9 @@ const FONTSOURCE_CSS = /[\\/]@fontsource[\\/][^\\/]+[\\/][^\\/]+\.css$/;
 const SOURCE_FILE = /\.(astro|ts|tsx|mjs|ya?ml|md|json|css)$/;
 const OUTPUT_FILE = /\.(html|json|js)$/;
 const FONT_FACE = /@font-face\s*\{[^}]*\}/g;
-// 화면에 나오지 않는 주석(한국어 설명 등)의 글자를 세지 않는다. URL의 `://`는 앞에 공백이 없어 남는다.
-const COMMENT = /\/\*[\s\S]*?\*\/|<!--[\s\S]*?-->|(?<=^|\s)\/\/[^\n]*/g;
+// 글꼴에 없는 글자를 알릴 때는 화면에 나오지 않는 HTML 주석과 인라인 스크립트·스타일(한국어 주석
+// 등)을 뺀다. HTML 본문의 `<`는 `&lt;`로 출력되므로 화면 문구가 지워지지 않는다.
+const HIDDEN_HTML = /<!--[\s\S]*?-->|<(script|style)\b[\s\S]*?<\/\1>/g;
 const PRELOAD_MODULE = 'virtual:font-preloads';
 const RESOLVED_PRELOAD_MODULE = `\0${PRELOAD_MODULE}`;
 
@@ -29,10 +31,10 @@ async function listFiles(dir, pattern) {
     .map((entry) => path.join(entry.parentPath, entry.name));
 }
 
-async function collectCodePoints(files) {
+async function collectCodePoints(files, transform = (text) => text) {
   const codePoints = new Set();
   for (const file of files) {
-    for (const char of (await readFile(file, 'utf8')).replace(COMMENT, '')) {
+    for (const char of transform(await readFile(file, 'utf8'))) {
       codePoints.add(char.codePointAt(0));
     }
   }
@@ -169,8 +171,11 @@ export default function fontSubset({ preloadCss, preloadChars }) {
       },
       'astro:build:done': async ({ dir, logger }) => {
         const outDir = fileURLToPath(dir);
-        const used = await collectCodePoints(
-          await listFiles(outDir, OUTPUT_FILE),
+        const outputFiles = await listFiles(outDir, OUTPUT_FILE);
+        const used = await collectCodePoints(outputFiles);
+        const visible = await collectCodePoints(
+          outputFiles.filter((file) => !file.endsWith('.js')),
+          (text) => text.replace(HIDDEN_HTML, ''),
         );
         const groups = [...families.values()];
         const missing = [];
@@ -189,7 +194,7 @@ export default function fontSubset({ preloadCss, preloadChars }) {
             )
           ) {
             missing.push(codePoint);
-          } else {
+          } else if (visible.has(codePoint)) {
             notInFont.push(codePoint);
           }
         }

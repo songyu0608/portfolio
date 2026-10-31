@@ -131,7 +131,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 ### T02 교차 리뷰에서 이월한 항목
 
-- [x] 단계 6(T11): 글꼴 CSS 크기 재검토. T02 시점 빌드에서 공통 CSS가 357,868B(gzip 172,181B), `@font-face` 251개이며 `/ja/`, `/en/` 모두 첫 렌더 전에 받는다. 후보: 빌드 시 실제 사용 글자 기준 서브셋, 일본어 글꼴 CSS를 `/ja/`에만 적용. Lighthouse로 전후를 측정한다. → T11: 빌드 통합(`scripts/font-subset.mjs`)으로 쓰는 글자의 범위만 남겨 `@font-face` 251개 → 69개, 공통 CSS 357,926B → 51,197B(gzip 172,802B → 10,086B). 언어별 분리(선택 항목)는 남은 CSS가 gzip 약 10KB라 효과가 작아 하지 않았다. Lighthouse 렌더 차단 예상 절감 930ms → 180ms(`docs/DESIGN.md` §2, `docs/ARCHITECTURE.md` §2 "글꼴 로딩").
+- [x] 단계 6(T11): 글꼴 CSS 크기 재검토. T02 시점 빌드에서 공통 CSS가 357,868B(gzip 172,181B), `@font-face` 251개이며 `/ja/`, `/en/` 모두 첫 렌더 전에 받는다. 후보: 빌드 시 실제 사용 글자 기준 서브셋, 일본어 글꼴 CSS를 `/ja/`에만 적용. Lighthouse로 전후를 측정한다. → T11: 빌드 통합(`scripts/font-subset.mjs`)으로 쓰는 글자의 범위만 남겨 `@font-face` 251개 → 71개, 공통 CSS 357,926B → 52,819B(gzip 172,802B → 10,369B). 언어별 분리(선택 항목)는 남은 CSS가 gzip 약 10KB라 효과가 작아 하지 않았다. Lighthouse 렌더 차단 예상 절감 930ms → 180ms(`docs/DESIGN.md` §2, `docs/ARCHITECTURE.md` §2 "글꼴 로딩").
 - [x] T03: 일본어 제목 `word-break: auto-phrase`를 Safari·Firefox에서 확인하고, 필요하면 명시적 줄바꿈을 검토한다 (T03 범위 8). → 지원 현황은 공식 자료로 확인(Firefox·Safari 미지원), 실제 Firefox·WebKit 화면은 미확인. 결과·대안은 `docs/DESIGN.md` §2 타이포그래피, 후속은 아래 T03 이월 항목.
 - [x] T03: PR #9 캡처는 `4aa6183` 기준이라 이후 수정이 반영되지 않았다. T03 PR에 최신 캡처를 싣는다 (T03 범위 8). → `docs/screenshots/T03-*`, T03 PR 본문.
 - 근거: [PR #9](https://github.com/songyu0608/portfolio/pull/9) Claude 교차 리뷰, ChatGPT 재검증 리뷰.
