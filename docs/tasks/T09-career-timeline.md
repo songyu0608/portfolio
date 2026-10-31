@@ -4,9 +4,9 @@
 | --- | --- |
 | 단계 | 5 |
 | 선행 작업 | T08 (PR #25) |
-| 담당 | - |
-| 상태 | todo |
-| 브랜치 | `<agent>/T09-career-timeline` (실행 환경이 이름을 정하면 그 이름을 쓰고 PR 제목에 `T09`를 넣는다) |
+| 담당 | claude |
+| 상태 | review |
+| 브랜치 | `claude/project-thread-n27zgi` (실행 환경이 지정한 이름. 원칙상 이름은 `<agent>/T09-career-timeline`) |
 
 ## 목표
 
@@ -74,17 +74,17 @@ About의 경력 타임라인에서, 페이지를 스크롤하면 세로선이 �
 
 ## 완료 조건
 
-- [ ] 지원 브라우저(Chromium)에서 `/ja/about/`, `/en/about/`을 스크롤하면 타임라인 세로선이 위에서부터 accent로 채워지고, 지나간 항목의 점 테두리가 accent가 된다. 되돌리면 되돌아간다. 라이트·다크 모두 같다.
-- [ ] 1280×800, 1280×1200, 375×667에서 페이지 끝까지 스크롤하면 모든 선이 채워지고 모든 점이 강조된다.
-- [ ] 효과 중에도 기간·회사명·직무·성과의 색·불투명도·위치는 T05와 같다. 접근성 트리, Tab 순서, 빌드된 HTML의 타임라인 구조가 T05와 같다.
-- [ ] About의 CLS(Chromium Performance 측정)가 main과 같다. 320px·375px·1280px에서 가로 스크롤이 생기지 않는다.
-- [ ] `prefers-reduced-motion: reduce` 에뮬레이션, `animation-timeline` 미지원 브라우저(또는 해당 규칙을 지운 상태), JavaScript 끔, 인쇄 미리보기에서 T05와 같은 화면이다.
-- [ ] About이 받는 JS가 main과 같다(대체안을 썼으면 스크립트 크기를 압축 전·후로 적고 압축 전 1KB 이하). React island를 쓰지 않는다. 새 의존성이 없다(`package.json`, `pnpm-lock.yaml` 변경 없음).
-- [ ] CSS 스크롤 기반 애니메이션 브라우저 지원 범위를 공식 자료로 확인해 `docs/DESIGN.md`에 출처와 함께 적는다. 이 환경에서 확인하지 못한 브라우저(Firefox·Safari 실기 등)는 PR에 미확인으로 적는다.
-- [ ] PR 본문에 최신 커밋 기준 캡처가 있다: About ja 라이트 1280px(타임라인 일부만 채워진 스크롤 위치 1장, 끝까지 스크롤 1장), ja 다크 375px(채워지는 중), en 라이트 1280px reduced-motion(T05와 같은 화면).
-- [ ] `docs/DESIGN.md` §3·§6, `docs/ARCHITECTURE.md` §2가 갱신되어 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
-- [ ] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
+- [x] 지원 브라우저(Chromium)에서 `/ja/about/`, `/en/about/`을 스크롤하면 타임라인 세로선이 위에서부터 accent로 채워지고, 지나간 항목의 점 테두리가 accent가 된다. 되돌리면 되돌아간다. 라이트·다크 모두 같다.
+- [x] 1280×800, 1280×1200, 375×667에서 페이지 끝까지 스크롤하면 모든 선이 채워지고 모든 점이 강조된다.
+- [x] 효과 중에도 기간·회사명·직무·성과의 색·불투명도·위치는 T05와 같다. 접근성 트리, Tab 순서, 빌드된 HTML의 타임라인 구조가 T05와 같다.
+- [x] About의 CLS(Chromium Performance 측정)가 main과 같다. 320px·375px·1280px에서 가로 스크롤이 생기지 않는다.
+- [x] `prefers-reduced-motion: reduce` 에뮬레이션, `animation-timeline` 미지원 브라우저(또는 해당 규칙을 지운 상태), JavaScript 끔, 인쇄 미리보기에서 T05와 같은 화면이다.
+- [x] About이 받는 JS가 main과 같다(대체안을 썼으면 스크립트 크기를 압축 전·후로 적고 압축 전 1KB 이하). React island를 쓰지 않는다. 새 의존성이 없다(`package.json`, `pnpm-lock.yaml` 변경 없음).
+- [x] CSS 스크롤 기반 애니메이션 브라우저 지원 범위를 공식 자료로 확인해 `docs/DESIGN.md`에 출처와 함께 적는다. 이 환경에서 확인하지 못한 브라우저(Firefox·Safari 실기 등)는 PR에 미확인으로 적는다.
+- [x] PR 본문에 최신 커밋 기준 캡처가 있다: About ja 라이트 1280px(타임라인 일부만 채워진 스크롤 위치 1장, 끝까지 스크롤 1장), ja 다크 375px(채워지는 중), en 라이트 1280px reduced-motion(T05와 같은 화면).
+- [x] `docs/DESIGN.md` §3·§6, `docs/ARCHITECTURE.md` §2가 갱신되어 있다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
+- [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
 
