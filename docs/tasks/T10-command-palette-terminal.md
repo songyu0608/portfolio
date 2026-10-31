@@ -5,7 +5,7 @@
 | 단계 | 5 |
 | 선행 작업 | T09 (PR #28) |
 | 담당 | claude |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-f9n3kf` (실행 환경이 지정한 이름. 원칙상 이름은 `<agent>/T10-command-palette-terminal`) |
 
 ## 목표
@@ -111,7 +111,7 @@
 - [x] 새 의존성이 없다(`package.json`, `pnpm-lock.yaml` 변경 없음). `astro:` 가상 모듈 등 서버 전용 코드를 UI 모듈이 import하지 않는다.
 - [x] PR 본문에 최신 커밋 기준 캡처가 있다: 팔레트 ja 라이트 1280px(열린 직후), 팔레트 ja 다크 375px(검색어 입력, 결과 일부), 팔레트 en 라이트 1280px(일치 없음), 터미널 ja 다크 1280px(`help`·`whoami` 실행 후), 터미널 ja 라이트 375px(추천 명령 버튼 보이는 상태), 헤더 ja 라이트 320px(버튼 배치).
 - [x] `docs/DESIGN.md`, `docs/ARCHITECTURE.md`가 위 "문서" 항목대로 갱신되어 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
 - [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
