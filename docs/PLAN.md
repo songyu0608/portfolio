@@ -2,14 +2,14 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T11 완료)
+마지막 갱신: 2026-10-31 (T12 지시서)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 6 품질 — T11 완료 |
-| 진행 중인 작업 | T12 React 중심 전환(A안, §7) 지시서 준비 |
+| 현재 단계 | 단계 6 품질 — T11 완료, T12 지시서 작성 |
+| 진행 중인 작업 | T12 React 중심 전환 지시서 리뷰(`docs/tasks/T12-react-components.md`) |
 | 다음 작업 | T12 React 전환 → T13 SEO → T14 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
@@ -31,8 +31,8 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 전문 분야 | 백엔드 + AI 활용 개발. AI 엔지니어로도 어필한다 | 사용자 결정(2026-10-30 변경, 이전: 백엔드). 일본 채용 시장에서 AI 개발 경험을 높이 평가하기 때문. 프로젝트 카드는 설계·규모·성능·안정성 지표를 강조. 기술 스택 첫 분류를 「AI活用開発」로 둔다. 직함(후보 「AIエンジニア / バックエンドエンジニア」)·한 줄 소개는 원고 반영 때 확정 |
 | 블로그 | 제외 | 사용자 결정 |
 | 언어 | 일본어 기본, 영어 전환 (`/ja`, `/en`) | 사용자 결정 |
-| 프레임워크 | Astro + TypeScript | 콘텐츠 중심, 기본 출력 JS가 거의 없어 빠름. i18n 라우팅 내장 |
-| 인터랙션 | 기본은 Astro `<script>`·CSS(T08·T09). React는 상태가 많은 컨셉 3·4(T10)에만, 열 때 동적 import(island 아님). Motion / GSAP은 쓰지 않음 | 효과는 자유롭게, 페이지는 가볍게. 2026-10-31 T10 지시서에서 갱신(이전: React island + Motion / GSAP) |
+| 프레임워크 | 화면은 React + TypeScript, 페이지 구성·정적 빌드는 Astro(Vite 기반). 화면 컴포넌트는 빌드 때 HTML로만 렌더(T12에서 전환) | 일본 채용 공고의 React 수요. 기본 출력 JS가 거의 없는 정적 출력과 i18n 라우팅은 Astro로 유지. 2026-10-31 사용자 결정(이전: Astro + TypeScript, §7, `docs/ARCHITECTURE.md` A11) |
+| 인터랙션 | 기본은 `<script>`(TS 모듈)·CSS(T08·T09). 브라우저에서 실행하는 React는 상태가 많은 컨셉 3·4(T10)에만, 열 때 동적 import(island 아님). Motion / GSAP은 쓰지 않음 | 효과는 자유롭게, 페이지는 가볍게. 2026-10-31 T10 지시서에서 갱신(이전: React island + Motion / GSAP) |
 | 인터랙션 컨셉 | 1~5 전부 채택 (`docs/DESIGN.md`) | 사용자 결정 |
 | 렌더링 | 정적 기본 + 필요한 경로만 서버 실행 | 비용 0, 보안·유지보수 부담 최소 |
 | 호스팅 | Cloudflare Workers 정적 자산, 무료 플랜 | 정적 파일 요청 무료. Cloudflare가 신규 프로젝트에 Workers를 권장 |
@@ -107,15 +107,16 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T09 | 스크롤 경력 타임라인 (인터랙션 컨셉 5) | 5 | T08 | claude | done | `docs/tasks/T09-career-timeline.md` — 지시서 [PR #27](https://github.com/songyu0608/portfolio/pull/27), 구현 [PR #28](https://github.com/songyu0608/portfolio/pull/28) |
 | T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | done | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30), 구현 [PR #31](https://github.com/songyu0608/portfolio/pull/31) |
 | T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | done | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33), 구현 [PR #34](https://github.com/songyu0608/portfolio/pull/34) |
+| T12 | React 중심 전환 (화면 컴포넌트 React + TypeScript, CSS Modules, 소개 문서) | 6 | T11 | - | todo | `docs/tasks/T12-react-components.md` |
 
-이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T12 React 중심 전환(§7) → T13 SEO(canonical·hreflang·OG·sitemap·robots·favicon·404) → T14 접근성 점검·수정 → 단계 7~8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
+이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T13 SEO(canonical·hreflang·OG·sitemap·robots·favicon·404) → T14 접근성 점검·수정 → 단계 7~8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
 ## 7. 미결 사항
 
 - [ ] 커스텀 도메인 구입 여부와 도메인 이름 (단계 8 전, 메일 발송 설정에 필요할 가능성 높음)
 - [ ] 콘텐츠 원고 (`docs/CONTENT.md` 체크리스트). 단계 4는 임시 문구로 진행하고, 단계 8 배포 전에 교체한다
 - [x] 패키지 매니저 확정: pnpm 11.25.0 (T01)
-- [ ] React 중심 전환(A안, 2026-10-31 사용자 결정): Astro는 라우팅·빌드 틀로 두고, 화면 컴포넌트(`src/components/**/*.astro` 18개)를 React(`.tsx`, 빌드 때 HTML로만 렌더하고 브라우저 JS는 늘리지 않음)로 바꾼다. 저장소·사이트의 소개(README, 기술 스택 표기)는 「React + TypeScript」를 중심에 두고 Astro는 정적 빌드 도구로 함께 적는다. 빌드는 Vite 기반이다(Astro가 Vite로 빌드하며, T11 글꼴 통합도 Vite 플러그인). 디코딩·틸트 같은 작은 효과는 지금처럼 가벼운 스크립트로 두는 것이 권고안이다(React로 바꾸면 그 페이지가 React 본체 gzip 약 66KB를 받음). 세부(스타일 방식, 남길 `.astro` 파일)와 `AGENTS.md` §5·§7, `docs/ARCHITECTURE.md` A1·A2 갱신은 전환 지시서(T12)에서 정한다. 순서: T12 React 전환 → T13 SEO → T14 접근성(사용자 결정).
+- [ ] React 중심 전환(A안, 2026-10-31 사용자 결정): Astro는 라우팅·빌드 틀로 두고, 화면 컴포넌트(`src/components/*.astro` 12개 + `src/components/pages/*.astro` 5개 = 17개. 처음 적은 18개는 오기)를 React(`.tsx`, 빌드 때 HTML로만 렌더하고 브라우저 JS는 늘리지 않음)로 바꾼다. 저장소·사이트의 소개(README, 기술 스택 표기)는 「React + TypeScript」를 중심에 두고 Astro는 정적 빌드 도구로 함께 적는다. 빌드는 Vite 기반이다(Astro가 Vite로 빌드하며, T11 글꼴 통합도 Vite 플러그인). 디코딩·틸트 같은 작은 효과는 지금처럼 가벼운 스크립트로 두는 것이 권고안이다(React로 바꾸면 그 페이지가 React 본체 gzip 약 66KB를 받음). 세부(스타일 방식, 남길 `.astro` 파일)는 `docs/tasks/T12-react-components.md`에서 정했고, `AGENTS.md` §5·§7과 `docs/ARCHITECTURE.md` A1·A2·A11은 T12 지시서 PR에서 갱신했다. 순서: T12 React 전환 → T13 SEO → T14 접근성(사용자 결정).
   - 고른 이유: 일본 채용 공고에서 React 수요가 크다. 페이지 JS(약 2KB), T11 결과, View Transitions, Cloudflare 배포를 그대로 유지한다. React로 쓴 화면 코드는 나중에 Next.js로 옮길 때 대부분 그대로 쓸 수 있다.
   - 검토 후 고르지 않은 안 — Next.js 정적 출력(`output: 'export'`, 한때 이 방향을 골랐다): 화면·기능은 같게 만들 수 있고 Cloudflare에서 무료로 배포된다. 그러나 첫 로드 JS가 약 2KB → 약 136KB(gzip, Next.js 16.4.3 빈 페이지 실측, `noModule` 폴리필 제외)로 늘고, `next/link` 클라이언트 이동에서는 CSS 문서 간 View Transitions가 동작하지 않으며, T11 글꼴 통합(Vite 플러그인)과 content collections(A9) 대체 로더를 다시 만들어야 한다. 서버 기능(SSR·ISR·Server Actions·middleware 등)은 정적 출력에서 쓸 수 없어([공식 문서](https://nextjs.org/docs/app/guides/static-exports)) Next.js를 쓰는 이점이 작다.
   - 다른 메이저 프레임워크(React Router v7, Nuxt, SvelteKit)도 정적 출력은 되지만, 페이지 전체를 브라우저에서 다시 연결(hydration)하므로 프레임워크 본체 JS를 보낸다(크기는 측정하지 않음). Nuxt·SvelteKit은 React가 아니다.
@@ -223,3 +224,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | React / Next.js 전환을 검토해 한때 Next.js 쪽을 골랐다가, 정적 출력에서는 Next.js의 이점이 작고 페이지 JS가 크게 늘어 A안(Astro 유지 + 화면 컴포넌트 React)으로 결정. 소개는 「React + TypeScript」 중심(§7) | 사용자 결정 |
 | 2026-10-31 | 호스팅은 Cloudflare 유지, Vercel은 검토 후 쓰지 않음. 단계 8 API는 Workers 함수(§7) | 사용자 결정 |
 | 2026-10-31 | 단계 6 순서 변경: React 중심 전환을 T12로 넣고 SEO는 T13, 접근성은 T14로 미룸(마크업 점검을 전환 뒤에 한 번만 하기 위해) | 사용자 결정 |
+| 2026-10-31 | T12 지시서 작성: 화면 컴포넌트 17개를 React(`.tsx`, `client:*` 없이 빌드 때 HTML로만)로 바꾼다. 스타일은 CSS Modules(기본안), 콘텐츠 조회·`<head>`·페이지 스크립트는 `.astro`(`BaseLayout`, 새 페이지 레이아웃)에 두고 라우트 파일은 한 줄 유지(A8). 화면(캡처 픽셀 차이 0)·접근성 트리·페이지 JS는 main과 같게. 소개(README)는 React + TypeScript 중심. ARCHITECTURE A1을 `superseded`로 바꾸고 A11 추가, AGENTS §5·§7 갱신 | T12 지시서 (`docs/ARCHITECTURE.md` A11) |
