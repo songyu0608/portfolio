@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T10 구현)
+마지막 갱신: 2026-10-31 (T10 완료, 단계 5 완료)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 5 인터랙션 — T10 구현 리뷰 |
-| 진행 중인 작업 | T10 구현(컨셉 3·4, claude) PR 리뷰 |
-| 다음 작업 | T10 merge 후 단계 5 완료 → 단계 6~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 5 인터랙션 완료 — 단계 6 품질 지시서 대기 |
+| 진행 중인 작업 | 없음 (T10 완료) |
+| 다음 작업 | 단계 6 품질 지시서 작성 → 단계 6~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -81,7 +81,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2 | 디자인 시스템: 색, 타이포그래피, 간격, 다크 모드, 인터랙션 세부 확정 | done |
 | 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | done |
 | 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | done |
-| 5 | 인터랙션 구현: 컨셉 1~5 (T08 = 1·2, T09 = 5, T10 = 3·4) | in-progress |
+| 5 | 인터랙션 구현: 컨셉 1~5 (T08 = 1·2, T09 = 5, T10 = 3·4) | done |
 | 6 | 품질: SEO, 접근성, 성능 최적화 | todo |
 | 7 | 테스트: E2E(Playwright), Lighthouse CI | todo |
 | 8 | 배포와 동적 기능: Cloudflare, 도메인, HTTPS, 방문 분석, 연락 폼, 회사별 비공개 페이지 | todo |
@@ -105,7 +105,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T07 | Contact (연락 수단 목록·메일 복사 버튼·푸터 연락 링크, 임시 문구) | 4 | T06 | claude | done | `docs/tasks/T07-contact.md` — 지시서 [PR #21](https://github.com/songyu0608/portfolio/pull/21), 구현 [PR #22](https://github.com/songyu0608/portfolio/pull/22) |
 | T08 | Hero 디코딩·프로젝트 카드 틸트와 상세 전환 (인터랙션 컨셉 1·2) | 5 | T07 | claude | done | `docs/tasks/T08-hero-cards.md` — 지시서 [PR #24](https://github.com/songyu0608/portfolio/pull/24), 구현 [PR #25](https://github.com/songyu0608/portfolio/pull/25) |
 | T09 | 스크롤 경력 타임라인 (인터랙션 컨셉 5) | 5 | T08 | claude | done | `docs/tasks/T09-career-timeline.md` — 지시서 [PR #27](https://github.com/songyu0608/portfolio/pull/27), 구현 [PR #28](https://github.com/songyu0608/portfolio/pull/28) |
-| T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | review | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30) |
+| T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | done | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30), 구현 [PR #31](https://github.com/songyu0608/portfolio/pull/31) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 6~8. 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -206,3 +206,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | T09 PR #28 merge 완료 반영(CI 통과, Codex 교차 리뷰 수정 필요 1건(기준선 위치)은 사용자 결정으로 가운데 기준 유지·지시서 조건 갱신, 개선 제안 2건 반영 후 재검증 통과). 글자 나타남 효과 미적용은 지시서 기본안으로 merge | 지시서 없음 (문서만 변경) |
 | 2026-10-31 | T10 지시서 작성: 컨셉 3·4는 모든 페이지에 런처 스크립트만 넣고 열 때 React UI(동적 import, island 아님)와 언어별 정적 JSON(`/ja/commands.json` 등)을 불러온다. 명령 정의는 `src/components/interactive/commands.ts` 하나, 모달은 `<dialog>`, 새 의존성·Motion/GSAP 없음. 팔레트에 프로젝트 상세·시스템 설정 테마 포함, 터미널은 팔레트에서만 연다(기본안) | T10 지시서 (`docs/DESIGN.md` §3, `docs/ARCHITECTURE.md` A2 비고) |
 | 2026-10-31 | T10 지시서 PR #30 merge(Codex 수정 필요 1건·개선 제안 2건 반영), T10 구현 담당 claude. 구현: 테마 버튼 스크립트를 런처와 같은 헤더 스크립트(`SiteHeader.astro`)로 합쳐 페이지가 받는 JS 파일을 1개로 유지, 팔레트 CSS는 `?url`로 열 때 붙임(일반 import는 모든 페이지에 `<link>`가 생김). 헤더 스크립트가 런처 목표 크기(1.5KB)를 넘는 점은 §8 항목으로 이월. Codex 리뷰 후 기준을 "헤더 스크립트 압축 전 4KB 이하"로 변경 | 사용자 결정(담당), T10 구현 |
+| 2026-10-31 | T10 PR #31 merge 완료 반영, 단계 5 완료(CI 통과, Codex 교차 리뷰: 수정 필요 2건 중 헤더 스크립트 크기는 사용자 결정으로 기준을 "헤더 스크립트 1개, 압축 전 4KB 이하"로 변경, 터미널 이동 안내는 링크 출력 + `open`·`lang` 바로 이동으로 지시서 명확화, IME 변환 중 ↑↓ 무시 제안 반영 후 재검증 통과). 팔레트·터미널 UI 문구는 기본안(사용자 확인 전) | 사용자 결정(크기 기준), T10 완료 |
