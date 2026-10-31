@@ -8,9 +8,9 @@
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 4 완료 — 다음 단계 선택 대기 |
-| 진행 중인 작업 | 없음 (T07 완료) |
-| 다음 작업 | 단계 5 인터랙션 지시서 작성 (원고 반영은 맨 마지막, 2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 5 인터랙션 — T08 지시서 작성 |
+| 진행 중인 작업 | T08 지시서(컨셉 1·2) 작성·리뷰 |
+| 다음 작업 | T08 구현(담당 미정) → T09(컨셉 5) → T10(컨셉 3·4). 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -81,7 +81,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2 | 디자인 시스템: 색, 타이포그래피, 간격, 다크 모드, 인터랙션 세부 확정 | done |
 | 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | done |
 | 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | done |
-| 5 | 인터랙션 구현: 컨셉 1~5 | todo |
+| 5 | 인터랙션 구현: 컨셉 1~5 (T08 = 1·2, T09 = 5, T10 = 3·4) | in-progress |
 | 6 | 품질: SEO, 접근성, 성능 최적화 | todo |
 | 7 | 테스트: E2E(Playwright), Lighthouse CI | todo |
 | 8 | 배포와 동적 기능: Cloudflare, 도메인, HTTPS, 방문 분석, 연락 폼, 회사별 비공개 페이지 | todo |
@@ -102,10 +102,10 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T04 | Home (한 줄 소개·핵심 기술·대표 프로젝트, 임시 문구) | 4 | T03 | claude | done | `docs/tasks/T04-home.md` — 지시서 [PR #12](https://github.com/songyu0608/portfolio/pull/12), 구현 [PR #13](https://github.com/songyu0608/portfolio/pull/13) |
 | T05 | About/경력 (경력 타임라인·기술 스택·자격증·이력서 PDF, 임시 문구) | 4 | T04 | claude | done | `docs/tasks/T05-about.md` — 지시서 [PR #15](https://github.com/songyu0608/portfolio/pull/15), 구현 [PR #16](https://github.com/songyu0608/portfolio/pull/16) |
 | T06 | Projects (목록·상세·担当工程, 임시 문구) | 4 | T05 | claude | done | `docs/tasks/T06-projects.md` — 지시서 [PR #18](https://github.com/songyu0608/portfolio/pull/18), 구현 [PR #19](https://github.com/songyu0608/portfolio/pull/19) |
-
 | T07 | Contact (연락 수단 목록·메일 복사 버튼·푸터 연락 링크, 임시 문구) | 4 | T06 | claude | done | `docs/tasks/T07-contact.md` — 지시서 [PR #21](https://github.com/songyu0608/portfolio/pull/21), 구현 [PR #22](https://github.com/songyu0608/portfolio/pull/22) |
+| T08 | Hero 디코딩·프로젝트 카드 틸트와 상세 전환 (인터랙션 컨셉 1·2) | 5 | T07 | - | todo | `docs/tasks/T08-hero-cards.md` |
 
-이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 5 인터랙션 → 단계 6~8. 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
+이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T09 스크롤 경력 타임라인(컨셉 5) → T10 터미널 모드·명령 팔레트(컨셉 3·4) → 단계 6~8. 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
 ## 7. 미결 사항
 
@@ -182,3 +182,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-30 | T07 지시서 PR #21 merge(GitHub Actions 실행 대기로 최신 커밋 CI 결과 없이 사용자가 merge. 문서만 변경, 첫 커밋 CI는 4단계 통과). 연락처 3개(메일·GitHub·LinkedIn)를 실제 값으로 수집. T07 구현 담당 claude | 사용자 결정 |
 | 2026-10-31 | T07 PR #22 merge 완료 반영(CI 통과, Codex 교차 리뷰 수정 필요·개선 제안 없음). 단계 4 완료. Contact UI 문구(「連絡方法」「コピー」 등)는 지시서 기본안으로 merge했고 사용자 확인 전이다. 바꿀 때는 `src/i18n/ui.ts`만 고친다 | 지시서 없음 (문서만 변경) |
 | 2026-10-31 | 작업 순서: 원고 반영(실제 경력·프로젝트 문구, 기술 로고)은 맨 마지막에 한다. 다음은 단계 5 인터랙션. 임시 항목 0건 확인 후 공개 배포하는 규칙은 유지 | 사용자 결정 |
+| 2026-10-31 | 단계 5 지시서를 3개로 나눔: T08 = 컨셉 1·2, T09 = 컨셉 5, T10 = 컨셉 3·4. T08 지시서 작성: 컨셉 1·2는 React island·새 의존성 없이 Astro `<script>`와 CSS cross-document View Transitions로 구현(`docs/ARCHITECTURE.md` A2 비고, `docs/DESIGN.md` §3) | 사용자 결정(나눔), T08 지시서 |
