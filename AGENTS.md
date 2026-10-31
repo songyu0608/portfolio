@@ -70,6 +70,8 @@ pnpm build      # 정적 빌드
 pnpm preview    # 빌드 결과 확인
 ```
 
+`pnpm build`는 글꼴 범위 검사(`scripts/font-subset.mjs`, T11)를 함께 실행한다. 원고를 바꾼 뒤 빌드가 「남긴 @font-face가 덮지 않는 글자」로 실패하면 그 스크립트가 글자를 모으는 파일 범위를 확인한다.
+
 `test` 명령은 아직 없다. E2E 테스트는 단계 7에서 추가한다. CI는 설치 → 포맷 → lint → 타입 체크 → 빌드 순서로 실행한다.
 
 줄바꿈은 `.gitattributes`(`* text=auto eol=lf`)로 LF에 고정되어 있다. Windows에서도 새로 clone하면 그대로 LF로 받는다. `.gitattributes`가 추가되기 전(2026-10-30)에 받아 둔 Windows 체크아웃은 CRLF 파일이 남아 `pnpm format:check`가 실패할 수 있으므로, 한 번만 아래처럼 다시 체크아웃한다(`reset --hard`는 커밋하지 않은 변경을 지우므로 먼저 커밋하거나 stash한다).

@@ -12,7 +12,10 @@ const NARROW_POOL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 // 글자·숫자만 바꾸고 공백·구두점·괄호는 그대로 둔다. 겹침 줄바꿈이 원문과 맞도록 폭을 유지해,
 // 전각(가나·한자·한글·전각 영숫자)은 전각 가타카나로, 반각(반각 가나 포함)은 영문 대문자·숫자로 바꾼다.
 const LETTER = /[\p{L}\p{N}]/u;
-const WIDE = /[ᄀ-ᅟ⺀-〾ぁ-㏿㐀-䶿一-鿿ꥠ-꥿가-힣豈-﫿！-｠￠-￦]/u;
+// 범위는 코드 포인트로 쓴다. 글자로 쓰면 scripts/font-subset.mjs가 화면 글자로 세어, 쓰지 않는
+// 글꼴 범위의 @font-face까지 남긴다.
+const WIDE =
+  /[\u{1100}-\u{115F}\u{2E80}-\u{303E}\u{3041}-\u{33FF}\u{3400}-\u{4DBF}\u{4E00}-\u{9FFF}\u{A960}-\u{A97F}\u{AC00}-\u{D7A3}\u{F900}-\u{FAFF}\u{FF01}-\u{FF60}\u{FFE0}-\u{FFE6}]/u;
 
 function randomFrom(pool: string): string {
   return pool[Math.floor(Math.random() * pool.length)] ?? '';
