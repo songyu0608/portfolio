@@ -2,14 +2,14 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T13 구현)
+마지막 갱신: 2026-10-31 (T13 완료)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 6 품질 — T11·T12 완료, T13 구현 리뷰 |
-| 진행 중인 작업 | T13 SEO 구현 PR 리뷰(`docs/tasks/T13-seo.md`) |
+| 현재 단계 | 단계 6 품질 — T11·T12·T13 완료 |
+| 진행 중인 작업 | 없음. 다음은 T14 접근성 지시서 작성 |
 | 다음 작업 | T14 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
@@ -108,7 +108,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | done | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30), 구현 [PR #31](https://github.com/songyu0608/portfolio/pull/31) |
 | T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | done | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33), 구현 [PR #34](https://github.com/songyu0608/portfolio/pull/34) |
 | T12 | React 중심 전환 (화면 컴포넌트 React + TypeScript, CSS Modules, 소개 문서) | 6 | T11 | claude | done | `docs/tasks/T12-react-components.md` — 지시서 [PR #36](https://github.com/songyu0608/portfolio/pull/36), 구현 [PR #37](https://github.com/songyu0608/portfolio/pull/37) |
-| T13 | SEO (canonical·hreflang·OG·sitemap·robots·favicon·404) | 6 | T12 | claude | review | `docs/tasks/T13-seo.md` — 지시서 [PR #39](https://github.com/songyu0608/portfolio/pull/39) |
+| T13 | SEO (canonical·hreflang·OG·sitemap·robots·favicon·404) | 6 | T12 | claude | done | `docs/tasks/T13-seo.md` — 지시서 [PR #39](https://github.com/songyu0608/portfolio/pull/39), 구현 [PR #40](https://github.com/songyu0608/portfolio/pull/40) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T14 접근성 점검·수정 → 단계 7~8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -245,3 +245,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | T12 구현 담당 claude. 구현: 페이지 진입점 이름은 기본안대로 `src/layouts/*Layout.astro`, 여러 페이지가 쓰는 카드 틸트 `<script>`는 `src/layouts/scripts/CardTiltScript.astro` 한 곳에 둠(레이아웃마다 import하면 공유 청크 외부 파일이 생김), 페이지 진입점은 `BaseLayout`을 화면 컴포넌트보다 먼저 import(전역 CSS를 앞에 둬 CSS Modules 규칙이 이기게) | 사용자 결정(담당), T12 구현 (`docs/ARCHITECTURE.md` §2) |
 | 2026-10-31 | T13 지시서 작성: 절대 URL은 Astro `site` 한 곳에서 만들고 도메인 결정 전에는 임시 값(`https://portfolio.example`, 빌드 경고)을 둔다. 모든 페이지에 canonical·hreflang(ja·en·x-default = ja)·OG·X 카드·파비콘, sitemap·robots는 새 의존성 없이 엔드포인트로, 공유 이미지는 언어별 1장(1200×630, 원고에서 바뀔 문구 없음), 404는 이중 언어 페이지 하나. 기존 화면·접근성 트리·페이지 JS는 main과 같게 | T13 지시서 |
 | 2026-10-31 | T13 지시서 PR #39 merge, T13 구현 담당 claude. 구현은 지시서 기본안대로(`site` 임시 값 + 빌드 경고, `x-default` = ja, sitemap·robots 엔드포인트, 이중 언어 404 하나). 파비콘(accent 둥근 사각형 + 선으로 그린 `c`)·공유 이미지(이름 + 「ポートフォリオ」/`Portfolio` + accent 띠)·404 문구(「ページが見つかりません」 등)는 기본안이고 사용자 확인 전이다. 바꿀 때는 `scripts/brand/`·`src/i18n/ui.ts`를 고치고 이미지를 다시 만든다 | 사용자 결정(담당), T13 구현 (`docs/ARCHITECTURE.md` A12, `docs/DESIGN.md` §10) |
+| 2026-10-31 | T13 PR #40 merge 완료 반영(CI 통과, Codex 교차 리뷰 수정 필요·개선 제안 없음). 파비콘·공유 이미지·404 문구는 기본안으로 merge했고 사용자 확인 전이다. 배포 전 확인 항목(`site` 교체 등)은 §8 "T13 구현 시 추가한 항목" | 지시서 없음 (문서만 변경) |
