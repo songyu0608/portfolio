@@ -14,6 +14,8 @@ interface Stop {
   indicator: boolean;
   /** 화면 안에 있고, 가운데 지점에서 다른 요소에 가려지지 않는다 */
   visible: boolean;
+  /** document.hasFocus(). 실패 메시지에서 문서 밖으로 나갔는지 보려고 남긴다 */
+  documentFocused: boolean;
 }
 
 function readFocus(page: Page): Promise<Stop | null> {
@@ -43,13 +45,61 @@ function readFocus(page: Page): Promise<Stop | null> {
         rect.bottom <= window.innerHeight &&
         hit !== null &&
         el.contains(hit),
+      documentFocused: document.hasFocus(),
     };
   });
 }
 
 /**
- * Tab을 눌러 가며 정지 위치를 모은다. 문서 밖으로 나가거나, 처음 정지 위치·시작 요소(startId)로
- * 돌아오면(순환) 멈춘다.
+ * DOM 순서로 id 요소 뒤(after) 또는 앞에 있는, Tab으로 갈 수 있어 보이는 요소의 라벨.
+ * 포커스가 움직이지 않았을 때 「문서 끝에 닿음」과 「한 요소에 갇힘」을 가르는 데 쓴다.
+ */
+function focusableBeyond(page: Page, id: number, after: boolean) {
+  return page.evaluate(
+    ({ id, after }) => {
+      const all = [...document.getElementsByTagName('*')];
+      const rest = after ? all.slice(id + 1) : all.slice(0, id);
+      const selector = [
+        'a[href]',
+        'area[href]',
+        'button',
+        'input:not([type="hidden"])',
+        'select',
+        'textarea',
+        'summary',
+        'iframe',
+        '[contenteditable]:not([contenteditable="false"])',
+        '[tabindex]',
+      ].join(',');
+      return rest
+        .filter(
+          (el): el is HTMLElement =>
+            el instanceof HTMLElement &&
+            el.matches(selector) &&
+            !el.matches(':disabled') &&
+            el.tabIndex >= 0 &&
+            el.closest('[inert]') === null &&
+            el.checkVisibility({
+              checkVisibilityCSS: true,
+              visibilityProperty: true,
+            }),
+        )
+        .map(
+          (el) =>
+            `${el.tagName.toLowerCase()} "${(el.textContent ?? '').trim().slice(0, 30)}"`,
+        );
+    },
+    { id, after },
+  );
+}
+
+/**
+ * Tab을 눌러 가며 정지 위치를 모은다. 다음 중 하나면 멈춘다.
+ * - 포커스가 문서 밖으로 나가 activeElement가 body가 된다(Chromium·WebKit).
+ * - 포커스가 직전 정지 위치에서 움직이지 않는다. 마지막 요소에서 Tab을 누르면 포커스가 브라우저 UI로
+ *   가고 activeElement는 마지막 요소로 남는 엔진이 있다(Firefox, T15 CI). 이때는 그 뒤(Shift+Tab이면
+ *   앞)에 Tab으로 갈 수 있는 요소가 남아 있지 않은지 확인해, 한 요소에 갇힌 경우와 구분한다.
+ * - 처음 정지 위치나 시작 요소(startId)로 돌아온다(순환).
  */
 async function collectStops(
   page: Page,
@@ -58,13 +108,30 @@ async function collectStops(
   max = 200,
 ) {
   const stops: Stop[] = [];
+  let previous = startId;
   for (let i = 0; i < max; i += 1) {
     await page.keyboard.press(key);
     const stop = await readFocus(page);
-    if (!stop || stop.id === stops[0]?.id || stop.id === startId) return stops;
+    if (!stop || stop.id === stops[0]?.id) return stops;
+    if (stop.id === previous) {
+      const left = await focusableBeyond(page, stop.id, key === 'Tab');
+      if (left.length > 0) {
+        throw new Error(
+          `${key}을 눌러도 포커스가 ${stop.label}에서 움직이지 않습니다(포커스 함정 의심). 남은 요소: ${left.slice(0, 5).join(', ')}`,
+        );
+      }
+      return stops;
+    }
+    if (stop.id === startId) return stops;
     stops.push(stop);
+    previous = stop.id;
   }
-  throw new Error(`${key} ${max}번 안에 끝나지 않았습니다(포커스 함정 의심).`);
+  const tail = stops
+    .slice(-6)
+    .map((s) => `${s.id} ${s.label} focused=${String(s.documentFocused)}`);
+  throw new Error(
+    `${key} ${max}번 안에 끝나지 않았습니다(포커스 함정 의심). 마지막 정지 위치: ${tail.join(' | ')}`,
+  );
 }
 
 /**
@@ -108,7 +175,9 @@ for (const { path: pagePath, locale, kind } of representativePages()) {
     ).toEqual([]);
 
     // Shift+Tab은 정확히 역순이다. 마지막 정지 위치에서 시작한다.
+    // 포커스가 브라우저 UI로 나간 엔진(Firefox)을 위해 먼저 페이지로 되돌린다.
     const last = forward.at(-1);
+    await page.bringToFront();
     await page.evaluate((id) => {
       (document.getElementsByTagName('*')[id] as HTMLElement).focus();
     }, last?.id ?? -1);
@@ -135,6 +204,7 @@ for (const { path: pagePath, locale, kind } of representativePages()) {
     expect(target, 'main 이후에 Tab 정지 위치가 있다').toBeDefined();
 
     await page.reload({ waitUntil: 'networkidle' });
+    await page.bringToFront();
     await page.keyboard.press('Tab');
     const skip = page.getByRole('link', { name: ui[locale].skipLink });
     await expect(skip).toBeFocused();
