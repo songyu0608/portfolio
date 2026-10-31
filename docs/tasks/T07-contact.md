@@ -4,9 +4,9 @@
 | --- | --- |
 | 단계 | 4 |
 | 선행 작업 | T06 (PR #19) |
-| 담당 | 미배정 |
-| 상태 | todo |
-| 브랜치 | `<agent>/T07-contact` (실행 환경이 이름을 정하면 그 이름을 쓰고 PR 제목에 `T07`을 넣는다) |
+| 담당 | claude |
+| 상태 | review |
+| 브랜치 | `claude/project-thread-0wqbsm` (실행 환경이 지정한 이름. 원칙상 이름은 `<agent>/T07-contact`) |
 
 ## 목표
 
@@ -108,22 +108,22 @@
 
 ## 완료 조건
 
-- [ ] `/ja/contact/`, `/en/contact/`에 페이지 머리와 연락 수단 목록(メール・GitHub・LinkedIn)이 표시되고, 준비 중 문구·폼 자리가 없다. 주소 문자열이 클릭하지 않아도 보인다.
-- [ ] 메일 링크는 `mailto:songyu0608@gmail.com`, GitHub 링크는 `https://github.com/songyu0608`, LinkedIn 링크는 `https://www.linkedin.com/in/songyu0608`로 간다. `contact.yaml`에서 `linkedin` 항목을 지우면 Contact와 푸터에서 그 줄·링크가 사라진다.
-- [ ] 모든 페이지(Home·About·Projects 목록·상세·Contact, ja/en)의 푸터에 연락 링크가 있다.
-- [ ] 복사 버튼: JS가 켜진 Chromium에서 주소가 복사되고 「コピーしました」 표시와 `aria-live` 알림이 나온 뒤 약 2초 후 되돌아간다. JS를 끄면 버튼이 보이지 않고 나머지 화면은 같다.
-- [ ] 콘텐츠 검사: ① `email.address`가 형식 규칙을 어김(`@` 없음, `name@`, `@example.com`을 각각 재현) ② `links[].url`이 `https://`로 시작하지 않음 ③ `github` 항목의 호스트가 `github.com`이 아님 ④ `links`의 `id` 중복 — 각각 빌드가 실패한다. ①~④를 한 번씩 재현해 오류 메시지를 PR에 적는다. T04~T06의 기존 검사도 계속 동작한다.
-- [ ] `intro`는 `placeholder: true`이고 문구에 「（仮）」/`(placeholder)` 표식이 있다. 메일·GitHub·LinkedIn은 `placeholder: false`이며 표식이 없다. `email.placeholder`를 일시적으로 `true`로 바꾸면 Contact 주소 뒤와 푸터 「メール」 뒤에 표식이 나온다. 빌드 로그의 임시 항목 수가 갱신된다.
-- [ ] 화면의 콘텐츠 값은 모두 `src/content/`에서, UI 문구는 `src/i18n/ui.ts`에서 온다. 영어 UI 문구 키가 빠지면 `pnpm check`가 실패한다.
-- [ ] ja/en × 320px·375px·1280px × 라이트·다크에서 Contact와 푸터에 가로 스크롤이 없다. 연락 수단 항목의 배치(한 줄 ↔ 위아래)와 푸터 배치가 640px 전환점에서 바뀐다.
-- [ ] 제목 구조: h1(페이지 이름) → h2(시각적으로 숨긴 「連絡方法」). 아이콘은 접근성 트리에 나오지 않고, 복사 버튼의 접근 가능한 이름에 「メールアドレス」가 들어간다. 키보드 Tab으로 메일 링크 → 복사 버튼 → GitHub → LinkedIn 순서로 이동한다.
-- [ ] 새 색 조합의 대비를 측정해 `docs/DESIGN.md` §8에 적는다. 글자 4.5:1, UI 경계 3:1 이상(복사 버튼 테두리 포함).
-- [ ] 클라이언트 JS: Contact 페이지만 복사 스크립트가 늘고, 다른 페이지가 받는 JS는 T06과 같다. React island를 쓰지 않는다. `/ja/contact/`가 받는 JS·CSS 크기를 T06의 `/ja/projects/`와 비교해 PR에 적는다.
-- [ ] `prefers-reduced-motion: reduce`에서 새로 추가한 전환 효과가 꺼진다(복사 상태 문구 전환 자체는 유지).
-- [ ] PR 본문에 최신 커밋 기준 캡처가 있다: Contact ja 라이트 1280px(전체)·ja 다크 375px(전체, 복사 후 상태)·en 라이트 1280px·en 다크 320px, Home ja 라이트 1280px 푸터 부분 이상.
-- [ ] `docs/DESIGN.md` §4·§5·§8, `docs/ARCHITECTURE.md` §2, `docs/CONTENT.md` 수집 현황이 갱신되어 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
-- [ ] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
+- [x] `/ja/contact/`, `/en/contact/`에 페이지 머리와 연락 수단 목록(メール・GitHub・LinkedIn)이 표시되고, 준비 중 문구·폼 자리가 없다. 주소 문자열이 클릭하지 않아도 보인다.
+- [x] 메일 링크는 `mailto:songyu0608@gmail.com`, GitHub 링크는 `https://github.com/songyu0608`, LinkedIn 링크는 `https://www.linkedin.com/in/songyu0608`로 간다. `contact.yaml`에서 `linkedin` 항목을 지우면 Contact와 푸터에서 그 줄·링크가 사라진다.
+- [x] 모든 페이지(Home·About·Projects 목록·상세·Contact, ja/en)의 푸터에 연락 링크가 있다.
+- [x] 복사 버튼: JS가 켜진 Chromium에서 주소가 복사되고 「コピーしました」 표시와 `aria-live` 알림이 나온 뒤 약 2초 후 되돌아간다. JS를 끄면 버튼이 보이지 않고 나머지 화면은 같다.
+- [x] 콘텐츠 검사: ① `email.address`가 형식 규칙을 어김(`@` 없음, `name@`, `@example.com`을 각각 재현) ② `links[].url`이 `https://`로 시작하지 않음 ③ `github` 항목의 호스트가 `github.com`이 아님 ④ `links`의 `id` 중복 — 각각 빌드가 실패한다. ①~④를 한 번씩 재현해 오류 메시지를 PR에 적는다. T04~T06의 기존 검사도 계속 동작한다.
+- [x] `intro`는 `placeholder: true`이고 문구에 「（仮）」/`(placeholder)` 표식이 있다. 메일·GitHub·LinkedIn은 `placeholder: false`이며 표식이 없다. `email.placeholder`를 일시적으로 `true`로 바꾸면 Contact 주소 뒤와 푸터 「メール」 뒤에 표식이 나온다. 빌드 로그의 임시 항목 수가 갱신된다.
+- [x] 화면의 콘텐츠 값은 모두 `src/content/`에서, UI 문구는 `src/i18n/ui.ts`에서 온다. 영어 UI 문구 키가 빠지면 `pnpm check`가 실패한다.
+- [x] ja/en × 320px·375px·1280px × 라이트·다크에서 Contact와 푸터에 가로 스크롤이 없다. 연락 수단 항목의 배치(한 줄 ↔ 위아래)와 푸터 배치가 640px 전환점에서 바뀐다.
+- [x] 제목 구조: h1(페이지 이름) → h2(시각적으로 숨긴 「連絡方法」). 아이콘은 접근성 트리에 나오지 않고, 복사 버튼의 접근 가능한 이름에 「メールアドレス」가 들어간다. 키보드 Tab으로 메일 링크 → 복사 버튼 → GitHub → LinkedIn 순서로 이동한다.
+- [x] 새 색 조합의 대비를 측정해 `docs/DESIGN.md` §8에 적는다. 글자 4.5:1, UI 경계 3:1 이상(복사 버튼 테두리 포함).
+- [x] 클라이언트 JS: Contact 페이지만 복사 스크립트가 늘고, 다른 페이지가 받는 JS는 T06과 같다. React island를 쓰지 않는다. `/ja/contact/`가 받는 JS·CSS 크기를 T06의 `/ja/projects/`와 비교해 PR에 적는다.
+- [x] `prefers-reduced-motion: reduce`에서 새로 추가한 전환 효과가 꺼진다(복사 상태 문구 전환 자체는 유지).
+- [x] PR 본문에 최신 커밋 기준 캡처가 있다: Contact ja 라이트 1280px(전체)·ja 다크 375px(전체, 복사 후 상태)·en 라이트 1280px·en 다크 320px, Home ja 라이트 1280px 푸터 부분 이상.
+- [x] `docs/DESIGN.md` §4·§5·§8, `docs/ARCHITECTURE.md` §2, `docs/CONTENT.md` 수집 현황이 갱신되어 있다.
+- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다. (로컬 4개 통과, GitHub CI는 PR에서 확인)
+- [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
 

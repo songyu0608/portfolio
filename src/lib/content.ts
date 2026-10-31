@@ -2,7 +2,7 @@
 // 규칙을 어기면 어긴 규칙을 모두 적은 오류를 던져 빌드를 멈춘다(docs/ARCHITECTURE.md §2 "콘텐츠 구조").
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { publicDir } from 'astro:config/server';
-import { PHASES } from '../content.config';
+import { CONTACT_LINKS, PHASES } from '../content.config';
 import { locales, type Locale } from '../i18n/ui';
 
 export type Profile = CollectionEntry<'profile'>['data'];
@@ -66,6 +66,22 @@ export interface AboutContent {
   certifications: LocalizedCertification[];
 }
 
+type ContactData = CollectionEntry<'contact'>['data'];
+/** 연락 링크 서비스 id. */
+export type ContactLinkId = (typeof CONTACT_LINKS)[number];
+
+/** 연락 링크 하나. display는 화면에 보이는 주소 문자열(https://와 끝 / 제외). */
+export type ContactLink = ContactData['links'][number] & { display: string };
+
+/** Contact 페이지와 푸터가 쓰는 연락처. */
+export interface ContactContent {
+  /** 소개 문단(그 언어 값) */
+  intro: string;
+  email: ContactData['email'];
+  /** contact.yaml의 순서 */
+  links: ContactLink[];
+}
+
 // docs/CONTENT.md "기술 스택 표기 규칙", docs/PLAN.md §3
 const FEATURED_PROJECTS = { min: 2, max: 3 };
 const HOME_SKILLS = { min: 3, max: 6 };
@@ -121,6 +137,30 @@ function resumeFileProblem(file: string, fs: NodeFs): string | undefined {
   return undefined;
 }
 
+// docs/tasks/T07-contact.md: `@` 하나, 앞뒤가 비어 있지 않고 도메인에 `.`이 있으며 공백이 없다.
+// 주소가 쓸 수 있는 mailto: 링크인지만 본다. RFC 전체를 검사하지는 않는다.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@.][^\s@]*\.[^\s@]+$/;
+const CONTACT_HOSTS: Record<ContactLinkId, string[]> = {
+  github: ['github.com'],
+  linkedin: ['linkedin.com', 'www.linkedin.com'],
+};
+
+/** 연락 링크 URL을 검사하고 문제가 있으면 이유를 돌려준다. */
+function contactUrlProblem(id: ContactLinkId, url: string): string | undefined {
+  if (!url.startsWith('https://')) return '`https://`로 시작해야 한다';
+  let host: string;
+  try {
+    host = new URL(url).host;
+  } catch {
+    return 'URL 형식이 아니다';
+  }
+  const hosts = CONTACT_HOSTS[id];
+  if (!hosts.includes(host)) {
+    return `호스트가 ${hosts.join(' 또는 ')}여야 한다: ${host}`;
+  }
+  return undefined;
+}
+
 let placeholderReported = false;
 
 async function loadContent() {
@@ -130,12 +170,14 @@ async function loadContent() {
     projectEntries,
     careerEntries,
     certificationEntries,
+    contactEntries,
   ] = await Promise.all([
     getCollection('profile'),
     getCollection('skills'),
     getCollection('projects'),
     getCollection('career'),
     getCollection('certifications'),
+    getCollection('contact'),
   ]);
   const errors: string[] = [];
 
@@ -360,6 +402,29 @@ async function loadContent() {
     }
   }
 
+  // 연락처: 언어 공통 1건. 메일 형식, 링크 URL(https, 서비스별 호스트), 서비스 중복
+  const contact = contactEntries[0]?.data;
+  if (contactEntries.length !== 1 || !contact) {
+    errors.push(
+      `연락처: contact.yaml이 1건이어야 한다: ${contactEntries.length}건`,
+    );
+  } else {
+    if (!EMAIL_PATTERN.test(contact.email.address)) {
+      errors.push(
+        `연락처: email.address 형식이 잘못됐다(\`@\` 하나, 앞뒤가 비어 있지 않고 도메인에 \`.\`, 공백 없음): ${contact.email.address}`,
+      );
+    }
+    for (const link of contact.links) {
+      const problem = contactUrlProblem(link.id, link.url);
+      if (problem) errors.push(`연락처: links의 ${link.id} — ${problem}`);
+    }
+    const ids = contact.links.map((link) => link.id);
+    const dupIds = [...new Set(ids.filter((id, i) => ids.indexOf(id) !== i))];
+    if (dupIds.length > 0) {
+      errors.push(`연락처: links에 ${dupIds.join(', ')}이 두 번 이상 나온다`);
+    }
+  }
+
   if (errors.length > 0) {
     throw new Error(
       `[content] 콘텐츠 규칙 위반 ${errors.length}건\n${errors.map((e) => `- ${e}`).join('\n')}`,
@@ -377,6 +442,12 @@ async function loadContent() {
       career: locales.flatMap((l) => career[l]).filter((c) => c.placeholder)
         .length,
       certifications: certifications.filter((c) => c.placeholder).length,
+      // intro, email, links를 각각 1건으로 센다.
+      contact: contact
+        ? [contact, contact.email, ...contact.links].filter(
+            (c) => c.placeholder,
+          ).length
+        : 0,
     };
     const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
     console.warn(
@@ -393,6 +464,8 @@ async function loadContent() {
     career,
     categories,
     certifications,
+    // 검사를 통과했으므로 contact는 있다.
+    contact: contact as ContactData,
   };
 }
 
@@ -467,6 +540,24 @@ export async function getAboutContent(locale: Locale): Promise<AboutContent> {
     certifications: content.certifications.map((certification) => ({
       ...certification,
       name: localize(certification.name, locale),
+    })),
+  };
+}
+
+/** 화면에 보이는 주소 문자열: https://와 끝의 /를 뺀다. */
+const displayUrl = (url: string) =>
+  url.replace(/^https:\/\//, '').replace(/\/$/, '');
+
+export async function getContactContent(
+  locale: Locale,
+): Promise<ContactContent> {
+  const { contact } = await loadContent();
+  return {
+    intro: contact.intro[locale],
+    email: contact.email,
+    links: contact.links.map((link) => ({
+      ...link,
+      display: displayUrl(link.url),
     })),
   };
 }

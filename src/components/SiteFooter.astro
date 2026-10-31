@@ -1,20 +1,46 @@
 ---
-// 연락처 링크는 Contact 지시서에서 이 푸터에 추가한다.
+// 연락 링크(src/content/contact.yaml)와 저작권 표기. 배치는 docs/DESIGN.md §4 "본문 바로가기·푸터".
+// 640px 미만은 연락 링크가 위, 이상은 왼쪽 저작권·오른쪽 연락 링크(DOM 순서는 연락 링크가 먼저).
 import { ui, type Locale } from '../i18n/ui';
+import { getContactContent } from '../lib/content';
 
 interface Props {
   locale: Locale;
 }
 
 const { locale } = Astro.props;
+const text = ui[locale];
 const year = new Date().getFullYear();
+const { email, links } = await getContactContent(locale);
+const contactLinks = [
+  {
+    href: `mailto:${email.address}`,
+    label: text.contact.method.email,
+    placeholder: email.placeholder,
+  },
+  ...links.map((link) => ({
+    href: link.url,
+    label: text.contact.method[link.id],
+    placeholder: link.placeholder,
+  })),
+];
 ---
 
 <footer class="site-footer">
   <div class="site-footer__inner container">
+    <ul class="site-footer__links" aria-label={text.footer.contact}>
+      {contactLinks.map((link) => (
+        <li>
+          <a href={link.href}>
+            {link.label}
+            {link.placeholder && text.contact.placeholder}
+          </a>
+        </li>
+      ))}
+    </ul>
     <p>
       <small>
-        &copy; {year} {ui[locale].site.name}
+        &copy; {year} {text.site.name}
       </small>
     </p>
   </div>
@@ -28,15 +54,46 @@ const year = new Date().getFullYear();
 
   .site-footer__inner {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-4);
-    padding-block: var(--space-6);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding-block: var(--space-4) var(--space-6);
     color: var(--color-text-muted);
   }
 
   .site-footer small {
     font-size: var(--font-size-small);
+  }
+
+  .site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-footer__links a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-small);
+  }
+
+  @media (min-width: 40rem) {
+    .site-footer__inner {
+      flex-direction: row-reverse;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding-block: var(--space-4);
+    }
+
+    .site-footer__links {
+      column-gap: var(--space-6);
+    }
   }
 </style>
