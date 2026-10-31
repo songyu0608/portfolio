@@ -210,6 +210,9 @@ for (const { path: pagePath, locale, kind } of representativePages()) {
     await expect(skip).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(/#main$/);
+    // main(tabindex="-1")이 포커스를 받아야 다음 Tab이 그 뒤에서 시작한다. 없으면 Firefox는 상세 페이지에서
+    // main 안 첫 링크를 건너뛰었다(T15 CI, docs/DESIGN.md §4 본문 바로가기).
+    await expect(page.locator('main')).toBeFocused();
     await page.keyboard.press('Tab');
     expect((await readFocus(page))?.id, '다음 Tab은 main 안 첫 요소').toBe(
       target?.id,
