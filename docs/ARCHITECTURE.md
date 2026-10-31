@@ -115,7 +115,7 @@ T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는
 | # | 결정 | 이유 | 대안 | 상태 |
 | --- | --- | --- | --- | --- |
 | A1 | Astro + TypeScript | 콘텐츠 중심 사이트, 기본 출력 JS 최소, i18n 라우팅 내장 | Next.js(무겁고 서버 전제), Hugo(인터랙션 확장 불편) | accepted |
-| A2 | 인터랙션은 React island + Motion / GSAP | 필요한 컴포넌트만 hydrate해 페이지는 가볍게 유지. 단, 상태가 필요 없는 효과(컨셉 1 디코딩·컨셉 2 틸트)는 Astro `<script>`, 페이지 전환은 CSS View Transitions로 만들고 컨셉 5 스크롤 타임라인은 JS 없이 CSS 스크롤 기반 애니메이션(T09 지시서)으로 만들며, React는 상태가 많은 컨셉 3·4(T10)에 쓴다(2026-10-31, T08·T09 지시서) | 전체 SPA | accepted |
+| A2 | 인터랙션은 React island + Motion / GSAP | 필요한 컴포넌트만 hydrate해 페이지는 가볍게 유지. 단, 상태가 필요 없는 효과(컨셉 1 디코딩·컨셉 2 틸트)는 Astro `<script>`, 페이지 전환은 CSS View Transitions로 만들고 컨셉 5 스크롤 타임라인은 JS 없이 CSS 스크롤 기반 애니메이션(T09 지시서)으로 만들며, React는 상태가 많은 컨셉 3·4(T10)에만 쓰되 island가 아니라 열 때 동적 import로 마운트하고, T10은 Motion / GSAP을 쓰지 않는다(2026-10-31, T08·T09·T10 지시서) | 전체 SPA | accepted |
 | A3 | Cloudflare Workers 정적 자산, 무료 플랜 | 정적 요청 무료, 동적 기능을 같은 플랫폼에서 추가 가능 | Cloudflare Pages, Vercel, Netlify | accepted |
 | A4 | i18n: `/ja`(기본), `/en` 경로 분리 | SEO(hreflang), 공유 링크가 언어를 유지 | 쿼리/쿠키 기반 전환 | accepted |
 | A5 | 회사별 비공개 페이지는 토큰 URL + KV | 채용 담당자에게 로그인 단계가 없음 | Cloudflare Access(이메일 OTP) | accepted (단계 8에 재검토) |
