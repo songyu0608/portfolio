@@ -56,6 +56,7 @@ Home 히어로의 한 줄 소개가 페이지를 열 때 한 번 디코딩되며
    - 카드 제목(h3)과 상세 h1에 같은 `view-transition-name`(기본안 `project-title-<slug>`)을 주어, 카드 제목이 상세 제목 자리로 옮겨 가는 것처럼 보이게 한다. 나머지 화면은 기본 크로스페이드다. 전환 시간 약 250~300ms, `--ease-standard`.
    - 이름은 한 페이지 안에서 겹치면 전환이 취소되므로, 한 페이지에 같은 프로젝트 카드가 두 번 나오지 않는지 확인한다(현재 Home·Projects 목록 모두 한 번씩). slug에 CSS 식별자로 쓸 수 없는 글자가 들어올 수 있으면 `src/lib/content.ts`에 slug 형식 검사(`^[a-z0-9]+(?:-[a-z0-9]+)*$`, 기본안)를 더하고 어기면 빌드를 멈춘다.
    - 상세 페이지의 이전·다음 링크, 「一覧へ戻る」 링크, 브라우저 뒤로 가기도 같은 규칙으로 전환된다(같은 slug의 이름이 양쪽에 있으면 제목이 이어지고, 없으면 크로스페이드). 별도 처리는 하지 않는다.
+   - 느린 연결 확인: 도착 페이지의 h1이 파싱되기 전에 브라우저가 새 화면을 캡처하면 제목 이동이 크로스페이드로 약해질 수 있다. 개발자 도구에서 네트워크 속도를 낮춰(예: Slow 4G) 카드 → 상세와 뒤로 가기를 확인하고, 재현되면 도착 문서 `<head>`에 `<link rel="expect" href="#<대상 id>" blocking="render">`를 넣어 대상 요소가 파싱될 때까지 렌더링을 기다리게 한다([Chrome 가이드](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-behaviors/consistent-cross-document-transitions)). 결과(재현 여부, 적용 여부)를 PR에 적는다.
    - `prefers-reduced-motion: reduce`이면 `@view-transition { navigation: none; }`으로 전환을 끈다.
    - 브라우저 지원: cross-document View Transitions를 지원하지 않는 브라우저에서는 일반 페이지 이동이 되며, 이것이 정상 동작이다. 지원 범위(Chromium·Safari·Firefox 버전)는 구현 시 공식 문서(MDN, caniuse 등)로 확인해 `docs/DESIGN.md`에 적는다(확인 필요).
 
@@ -82,6 +83,7 @@ Home 히어로의 한 줄 소개가 페이지를 열 때 한 번 디코딩되며
 - `src/scripts/hero-decode.ts`, `src/scripts/card-tilt.ts` (새 파일, 이름은 기본안)
 - `src/styles/global.css` 및 전환용 새 CSS(세 종류의 페이지만 불러온다). `src/styles/tokens.css`의 값은 바꾸지 않는다(새 토큰 추가는 이유를 PR에 적는다).
 - `src/lib/content.ts` (slug 형식 검사가 필요할 때만)
+- `src/layouts/BaseLayout.astro` (위 `rel="expect"` 링크를 `<head>`에 넣어야 할 때만)
 - `docs/DESIGN.md`, `docs/ARCHITECTURE.md`, `docs/PLAN.md`, `docs/tasks/T08-hero-cards.md`
 - 새 의존성은 추가하지 않는다.
 
