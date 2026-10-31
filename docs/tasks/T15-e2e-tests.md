@@ -105,6 +105,7 @@
      - **실행 파일 경로**(선택): 브라우저를 내려받을 수 없는 환경을 위해 환경 변수로 Chromium 실행 파일 경로를 줄 수 있게 한다(예: `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` → `launchOptions.executablePath`). 값이 없으면 Playwright가 설치한 브라우저를 쓴다. 이름과 쓰는 법은 `docs/ARCHITECTURE.md`에 적는다.
    - **페이지 목록은 하드코딩하지 않는다.**
      - 미리보기 서버의 `/sitemap.xml` `<loc>`(18개)에서 경로를 얻는다. `site` 부분은 떼어 낸다.
+     - sitemap 자체가 맞는지는 sitemap과 독립된 목록으로 확인한다(2-2). sitemap에서 페이지가 빠지면 테스트 대상에서도 함께 빠지기 때문이다.
      - 404는 `/404.html`을 더한다.
      - 프로젝트를 더하거나 원고를 바꿔도 테스트를 고치지 않게 하려는 것이다.
    - **문구는 하드코딩하지 않는다.**
@@ -119,7 +120,7 @@
    | # | 영역 | 확인할 것 | 브라우저 |
    | --- | --- | --- | --- |
    | 2-1 | 페이지 스모크 | 19페이지 각각에 대해 확인한다. 상태 200, `html[lang]`이 경로 언어와 같음, h1 1개, `<title>`이 비어 있지 않고 같은 언어 안에서 겹치지 않음, 페이지 오류(`pageerror`)·콘솔 오류 0. 루트 `/`가 `/ja/`로 이동함(지금은 2초 meta refresh, 단계 8에서 301로 바뀔 수 있으니 도착만 본다). 없는 경로(`/ja/xyz/`)가 404 상태로 404 페이지를 보임 | 3 |
-   | 2-2 | SEO 태그 | `docs/ARCHITECTURE.md` §2 "검증 방법(T13)"을 옮긴다. canonical·`og:url` = `site` + 경로, hreflang 3개(자기 포함, x-default = ja)가 짝 페이지와 같음, OG 속성이 하나씩, 파비콘 링크 3개, sitemap `<loc>` = 페이지 목록, `xhtml:link` = `<head>` 묶음, 404의 `noindex`와 canonical·hreflang·`og:url` 없음, robots의 `Sitemap:` 줄 | C (HTML만 보므로) |
+   | 2-2 | SEO 태그 | `docs/ARCHITECTURE.md` §2 "검증 방법(T13)"을 옮긴다. canonical·`og:url` = `site` + 경로, hreflang 3개(자기 포함, x-default = ja)가 짝 페이지와 같음, OG 속성이 하나씩, 파비콘 링크 3개, **sitemap 완전성**: 빌드된 `dist/{ja,en}/**/index.html`(루트 이동·404 제외)을 파일 시스템에서 따로 열거한 경로 집합이 sitemap `<loc>` 경로 집합과 같음(sitemap에서 만든 목록과 비교하지 않는다), `xhtml:link` = `<head>` 묶음, 404의 `noindex`와 canonical·hreflang·`og:url` 없음, robots의 `Sitemap:` 줄 | C (HTML만 보므로) |
    | 2-3 | 언어·테마·내비게이션 | 헤더 내비게이션의 `aria-current`(T03 규칙). 언어 전환 링크가 짝 페이지(상세는 같은 slug)로 간다. 테마 버튼으로 바꾼 값이 `html[data-theme]`·`localStorage`에 남고 다른 페이지로 이동·새로고침해도 유지된다. 시스템 설정(`colorScheme`)을 따르는 기본 상태 | 3 |
    | 2-4 | 명령 팔레트·터미널 (T10) | ⌘K/Ctrl+K(`ControlOrMeta+k`)·헤더 버튼으로 열기, 검색 거르기, ↑↓·Enter 이동, 테마·언어 명령, Esc로 닫고 연 자리로 포커스 복귀. 터미널: 팔레트에서 열기, 입력란 첫 포커스, `help`·`whoami`·`projects`(링크)·모르는 명령(오류)·`clear`·`exit`, ↑↓ 이력, 출력 영역 Tab 도달·포커스 표시·키 스크롤(T14), Esc 닫기·포커스 복귀 | 3 |
    | 2-5 | Contact 복사 버튼 (T07) | Chromium: 클립보드 권한을 주고 복사 값이 메일 주소와 같고 상태 문구가 나온다. WebKit·Firefox: 버튼이 보이고 누르면 성공 또는 실패 문구가 상태 영역에 나온다(엔진마다 권한 처리가 달라 값은 보지 않는다) | 3 |
@@ -139,6 +140,7 @@
      - 페이지 레이아웃 하나에서 `BaseLayout` import를 화면 컴포넌트 뒤로 옮김 → 2-9
      - hreflang 하나 제거 → 2-2
      - `.tag--featured` 강제 색상 규칙 제거 → 2-8
+     - `src/pages/sitemap.xml.ts`에서 한 페이지를 뺌 → 2-2(sitemap 완전성)
      - 헤더 링크 하나의 `aria-current` 제거 → 2-3 또는 2-10
 4. **WebKit·Firefox 결과에 따른 수정** (이월 항목)
    - 2-6 본문 바로가기가 WebKit 또는 Firefox에서 실패하면 다음과 같이 고친다.
@@ -215,7 +217,7 @@
   - 로컬은 실행 가능한 브라우저로 확인한다. 결과와 환경을 PR에 적는다.
 - [ ] 범위 2의 2-1~2-10이 모두 있다. PR에 "파일 · 테스트 · 브라우저 · 폭" 표를 싣는다.
 - [ ] axe 위반 0(범위 2-7 조건). 실행된 axe 버전과 규칙 ID가 테스트 결과에 남는다.
-- [ ] 범위 3의 결함 주입 5건이 모두 해당 테스트를 실패시킨다(PR 표, 결함은 커밋하지 않음).
+- [ ] 범위 3의 결함 주입 6건이 모두 해당 테스트를 실패시킨다(PR 표, 결함은 커밋하지 않음).
 - [ ] 이월 항목 결과를 PR 표로 남긴다. 본문 바로가기와 터미널 출력 포커스가 브라우저별로 어땠는지, 범위 4 수정 여부를 적는다.
 - [ ] 테스트에 페이지 경로 목록과 화면 문구가 하드코딩되어 있지 않다. 예외(예: 없는 경로 `/ja/xyz/`)는 이유를 주석으로 남긴다.
 - [ ] `skip`·`fixme`·`only`가 없고 `retries`는 0이다.
