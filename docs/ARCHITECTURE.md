@@ -18,13 +18,16 @@ Cloudflare Workers (정적 자산)
 - 기본은 완전 정적. 서버 실행이 필요한 경로만 Workers 함수로 처리한다.
 - 단계 7까지는 Workers 함수가 없어도 사이트가 완성되어야 한다.
 
-## 2. 디렉터리 구조 (T12 기준)
+## 2. 디렉터리 구조 (T13 기준)
 
 ```text
 .
 ├─ AGENTS.md / CLAUDE.md / README.md
 ├─ docs/                       ← 계획·설계 문서, 작업 지시서, 화면 캡처
-├─ public/fonts/               ← 글꼴 라이선스
+├─ public/
+│  ├─ fonts/                    ← 글꼴 라이선스
+│  ├─ favicon.svg / favicon.ico / apple-touch-icon.png ← 파비콘(T13, scripts/brand/에서 만들어 커밋)
+│  └─ og/<ja|en>.png            ← 언어별 공유 이미지 1200×630(T13, scripts/brand/에서 만들어 커밋)
 ├─ src/
 │  ├─ content.config.ts          ← 콘텐츠 컬렉션 스키마(zod는 astro/zod)
 │  ├─ content/                   ← 페이지 본문 콘텐츠(아래 "콘텐츠 구조")
@@ -39,9 +42,10 @@ Cloudflare Workers (정적 자산)
 │  │  ├─ ui.ts                  ← UI 문구(일본어 기준 타입, 영어 키 누락·초과 시 타입 오류)
 │  │  └─ paths.ts               ← 페이지·프로젝트 상세 경로, 언어 전환 경로 변환(astro:i18n 사용)
 │  ├─ lib/cx.ts                  ← 클래스 이름 합치기(Astro class:list 대신, T12)
+│  ├─ lib/seo.ts                 ← 절대 URL·hreflang 묶음·OG 값(T13, <head>와 sitemap·robots가 함께 씀, 아래 "SEO")
 │  ├─ layouts/                   ← .astro: 콘텐츠 조회·<head>·페이지 스크립트(아래 "화면 컴포넌트와 스타일")
-│  │  ├─ BaseLayout.astro        ← 문서 골격, 전역 CSS·글꼴 로드·글꼴 preload, 테마 첫 적용 인라인 스크립트, 헤더·푸터, 헤더 스크립트
-│  │  ├─ HomeLayout.astro / AboutLayout.astro / ProjectsLayout.astro / ProjectDetailLayout.astro / ContactLayout.astro ← 페이지 진입점
+│  │  ├─ BaseLayout.astro        ← 문서 골격, 전역 CSS·글꼴 로드·글꼴 preload, 테마 첫 적용 인라인 스크립트, SEO 태그(canonical·hreflang·OG·파비콘, `noindex` prop), 헤더·푸터, 헤더 스크립트
+│  │  ├─ HomeLayout.astro / AboutLayout.astro / ProjectsLayout.astro / ProjectDetailLayout.astro / ContactLayout.astro / NotFoundLayout.astro ← 페이지 진입점
 │  │  └─ scripts/CardTiltScript.astro ← 카드 틸트 <script>를 Home·Projects가 함께 쓰는 한 곳(인라인 유지)
 │  ├─ components/                ← React 화면 컴포넌트(.tsx) + CSS Modules(.module.css). 빌드 때 HTML로만 렌더
 │  │  ├─ SiteHeader / SiteFooter / LanguageSwitch / ThemeToggle / CommandButton
@@ -49,7 +53,7 @@ Cloudflare Workers (정적 자산)
 │  │  ├─ PhaseList               ← 担当工程 표시(카드·프로젝트 상세)
 │  │  ├─ CareerTimeline / SkillStack / CertificationList ← About 화면 부품
 │  │  ├─ Phrases                 ← 일본어 문절 단위 줄바꿈 출력(docs/DESIGN.md §2)
-│  │  ├─ pages/                  ← 페이지 본문(HomePage·AboutPage·ProjectsPage·ProjectDetailPage·ContactPage). 언어와 콘텐츠를 props로 받음
+│  │  ├─ pages/                  ← 페이지 본문(HomePage·AboutPage·ProjectsPage·ProjectDetailPage·ContactPage·NotFoundPage). 언어와 콘텐츠를 props로 받음
 │  │  └─ interactive/            ← 명령 팔레트·터미널(T10, 브라우저에서 실행하는 React): commands.ts(명령 정의, 순수 TS), mount.tsx·CommandUI·Palette·Terminal·Dialog, command-ui.css(전역 CSS, 열 때 붙임)
 │  ├─ scripts/theme.ts          ← 테마 읽기·쓰기(헤더 버튼, 명령 팔레트·터미널이 공유)
 │  ├─ scripts/site-header.ts    ← 헤더 스크립트: 테마 버튼 처리 + 팔레트 런처 import(모든 페이지, T12에서 SiteHeader의 <script>를 옮김)
@@ -60,12 +64,15 @@ Cloudflare Workers (정적 자산)
 │  ├─ styles/                   ← tokens.css(디자인 토큰), global.css(전역 스타일), view-transitions.css(카드 → 상세 전환, Home·Projects·상세만)
 │  └─ pages/
 │     ├─ index.astro            ← /ja/로 이동
+│     ├─ 404.astro              ← 404(dist/404.html 하나, ja·en 안내를 함께, noindex. T13)
+│     ├─ sitemap.xml.ts / robots.txt.ts ← 사이트맵·크롤러 안내(빌드 시 정적 파일, T13)
 │     ├─ ja/index.astro, about.astro, projects.astro, contact.astro ← 페이지 진입점에 언어만 넘기는 한 줄 파일
 │     ├─ ja/projects/[slug].astro ← 프로젝트 상세(getStaticPaths)
 │     ├─ ja/commands.json.ts     ← 팔레트·터미널 데이터 엔드포인트(빌드 시 정적 JSON, T10)
 │     └─ en/ (ja와 같은 구성)
 ├─ scripts/font-subset.mjs    ← 빌드 통합: Fontsource CSS를 쓰는 글자의 범위로 줄이기, 가나 범위 preload 목록(`virtual:font-preloads`), 빌드 후 글자 누락 검사(T11)
-├─ astro.config.mjs            ← 정적 출력, React, i18n, 글꼴 통합
+├─ scripts/brand/             ← 파비콘·공유 이미지 원본(favicon은 public/favicon.svg, 공유 이미지는 og.html)과 만드는 스크립트(T13, 손으로 실행, README.md)
+├─ astro.config.mjs            ← 정적 출력, site(절대 주소, 임시 값이면 빌드 경고), React, i18n, 글꼴 통합
 ├─ tsconfig.json               ← Astro strict + React JSX
 ├─ eslint.config.mjs            ← JS, TypeScript, Astro, React, Hooks
 ├─ .prettierrc.json / .prettierignore / .editorconfig
@@ -93,6 +100,29 @@ Cloudflare Workers (정적 자산)
 - CSS 순서: CSS Modules 클래스는 선택자 하나라서 Astro scoped style(`.x[data-astro-cid-…]`, 클래스 + 속성)보다 명시도가 낮다. 같은 요소에 전역 클래스와 함께 쓰는 곳(예: `project-grid` + 페이지의 `.body`의 `margin-top`)은 CSS 순서로 결과가 정해지므로, 페이지 진입점은 `BaseLayout`을 화면 컴포넌트보다 먼저 import해 전역 CSS가 앞에 오게 한다(T12 구현 중 Projects·About에서 순서가 바뀌어 `margin-top`이 사라진 것을 캡처 비교로 찾음).
 - 페이지 스크립트: 디코딩은 `HomeLayout`, 카드 틸트는 `scripts/CardTiltScript.astro`(Home·Projects가 함께 씀), 메일 복사는 `ContactLayout`이 `<script>`로 넣는다. 같은 모듈을 두 레이아웃의 `<script>`에서 각각 import하면 Vite가 공유 청크(외부 파일)로 떼어 내 페이지가 받는 JS 파일이 늘어나므로, 여러 페이지가 쓰는 스크립트는 `<script>` 하나를 가진 작은 `.astro`에 둔다.
 - 검증 방법(T12): main과 같은 Playwright 조건으로 전체 페이지 캡처 45장과 18페이지 `ariaSnapshot()`을 비교해 모두 같았다(`docs/tasks/T12-react-components.md` "확인 방법").
+
+### SEO (T13 결정)
+
+- **`site` 한 곳**: 사이트의 절대 주소는 `astro.config.mjs`의 `site` 상수 하나다. canonical·hreflang·`og:url`·`og:image`·sitemap·robots의 절대 URL은 모두 `src/lib/seo.ts`(`absoluteUrl`·`languageAlternates`·`ogImageUrl`)가 `Astro.site`(엔드포인트는 `site` 인자)로 만들고, 소스의 다른 곳에는 도메인을 적지 않는다. `site`가 없으면 `requireSite`가 빌드를 멈춘다(상대 URL로 내보내지 않기 위해).
+- **임시 값**: 도메인을 정하기 전(단계 8)까지 `site`는 예약 도메인 `https://portfolio.example`이다. 같은 파일의 작은 통합(`portfolio:site-placeholder`)이 `astro:build:done`에서 호스트가 `.example`로 끝나면 경고 한 줄을 낸다. 빌드는 실패시키지 않는다. 배포 전에 바꾸는 일은 `docs/PLAN.md` §8 "T13 구현 시 추가한 항목".
+- **`<head>`** (`BaseLayout.astro`): `charset` → `viewport` → `<title>` → `description` → 글꼴 preload → 테마 첫 적용 인라인 스크립트 → SEO 태그 순서다. 첫 렌더에 필요한 것을 앞에 둔다.
+
+  | 태그 | 값 |
+  | --- | --- |
+  | `link rel="canonical"` | 자기 URL(`site` + 경로, 끝 슬래시) |
+  | `link rel="alternate" hreflang="ja"`·`"en"`·`"x-default"` | 같은 페이지의 ja·en URL(`switchLocalePath`), x-default는 ja URL. 짝 페이지가 같은 묶음을 가진다 |
+  | `link rel="icon"` ×2, `rel="apple-touch-icon"` | `/favicon.ico`(`sizes="32x32"`), `/favicon.svg`(`type="image/svg+xml"`), `/apple-touch-icon.png` |
+  | `og:type` / `og:site_name` | `website` / `ui[locale].site.name` |
+  | `og:title` / `og:description` / `og:url` | `<title>` / `description` / canonical과 같은 값 |
+  | `og:locale` / `og:locale:alternate` | `ja_JP`·`en_US` 중 페이지 언어 / 다른 언어 |
+  | `og:image`(+ `width`·`height`·`alt`) | `/og/<locale>.png`(1200×630). alt는 이미지에 쓴 글자와 같은 프로필 이름 + `ui[locale].site.ogImageLabel` |
+  | `twitter:card` | `summary_large_image`. 제목·설명·이미지는 X가 OG 태그를 쓴다고 보고 넣지 않는다(X 공식 문서는 확인하지 못함, `docs/tasks/T13-seo.md`) |
+
+- **`noindex` prop**: 켜면 `<meta name="robots" content="noindex">`를 넣고 canonical·hreflang·`og:url`은 넣지 않는다. 지금은 404만 쓴다. 단계 8의 회사별 비공개 페이지도 이 prop을 쓴다.
+- **sitemap·robots**: `src/pages/sitemap.xml.ts`·`robots.txt.ts` 엔드포인트가 빌드 때 정적 파일이 된다(`commands.json.ts`와 같은 방식, 새 의존성 없음). sitemap은 18페이지(`pagePaths` × 언어 + `getProjectPages`)의 `<loc>`와 `<head>`와 같은 함수로 만든 `xhtml:link` 3개를 가진다. 루트 이동 페이지·404·`commands.json`과 `lastmod`(정확한 수정일을 낼 방법이 없음)는 넣지 않는다. robots는 전체 허용과 `Sitemap:` 한 줄이며, 누구나 읽으므로 비공개 경로를 적지 않는다.
+- **404**: `src/pages/404.astro` → `dist/404.html` 하나다. `NotFoundLayout`(`BaseLayout` `locale="ja"` + `noindex`)과 `NotFoundPage`가 일본어 안내(h1) 뒤에 영어 안내(`lang="en"`, h2)를 함께 그린다. 없는 경로마다 같은 파일이 나가므로 링크는 절대 경로만 쓴다. 언어별 404를 두지 않는 이유: Astro는 언어 폴더 아래 404를 `ja/404/index.html`로 출력해 Cloudflare가 찾는 `ja/404.html`을 바로 만들 수 없고, 그 동작은 배포 전에는 확인할 수 없다(`docs/tasks/T13-seo.md` 메모). `pnpm preview`는 끝 슬래시가 있는 없는 경로에 이 파일을 404 상태로 보낸다. Cloudflare에서는 `not_found_handling = "404-page"`가 필요하다(단계 8).
+- **파비콘·공유 이미지**: `public/`에 커밋한 파일이다. 원본과 만드는 스크립트는 `scripts/brand/`(README.md)이며, 실행 환경의 Playwright Chromium으로 그린다. 빌드에서는 만들지 않는다(빌드에 브라우저가 필요해지고 새 의존성이 생기므로). 모양은 `docs/DESIGN.md` §10.
+- **검증 방법(T13)**: `dist/**/*.html`(루트 이동·404 제외)을 읽어 canonical·`og:url` = `site` + 경로, hreflang 3개(자기 포함, x-default = ja)가 짝 페이지와 같음, OG 속성이 하나씩, 파비콘 링크 3개, sitemap `<loc>` = 페이지 목록·`xhtml:link` = `<head>` 묶음, 404의 `noindex`와 canonical·hreflang·`og:url` 없음을 확인했다. 단계 7 E2E로 옮길 수 있다.
 
 ### 페이지 파일 방식 (T03 결정, T12 갱신)
 
@@ -153,6 +183,7 @@ T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는
 | A9 | 콘텐츠는 YAML content collections + 조회 함수에서 여러 항목 규칙 검사 | 스키마로 필드 누락·오타를, 조회 함수로 개수·언어 짝 규칙을 빌드 시점에 막음. 원고 반영 시 콘텐츠 파일만 바꿈 | 커스텀 loader에서 검사, TypeScript 상수 파일 | accepted (T04) |
 | A10 | 글꼴은 Fontsource 자체 호스팅 + 빌드 통합으로 쓰는 글자의 범위만 남기고, 일본어 페이지는 가나 범위만 preload | 첫 렌더 전 CSS를 약 1/7로 줄이고(렌더 차단 예상 절감 930ms → 180ms) 글꼴 교체에 따른 Home CLS를 0.1 이하로. 새 의존성·외부 요청 없음, 원고가 바뀌면 자동으로 다시 계산 | Astro Fonts API(빌드 때 외부 API, HTML 인라인, 범위 수동), 글꼴 파일 재서브셋(새 도구 필요), `font-display: optional`(첫 방문 글꼴이 달라짐, 사용자 결정 필요) | accepted (T11) |
 | A11 | 화면은 React + TypeScript, 페이지 구성·정적 빌드는 Astro(Vite 기반). 화면 컴포넌트(`src/components/**/*.tsx`)는 `client:*` 없이 빌드 때 HTML로만 렌더하고, 콘텐츠 조회·`<head>`·페이지 스크립트는 `.astro`(레이아웃·라우트)가 맡는다. 브라우저에서 실행하는 React는 A2대로 컨셉 3·4뿐 | 일본 채용 공고에서 React 수요가 크다(`docs/PLAN.md` §7). 정적 출력과 페이지 JS(헤더 스크립트 + 페이지 스크립트), T11 글꼴 통합(A10), content collections(A9), 문서 간 View Transitions, Cloudflare 정적 배포(A3)를 그대로 유지 | Astro 컴포넌트 유지(A1), Next.js 정적 출력(첫 로드 JS 약 136KB gzip, `next/link` 이동에서 문서 간 View Transitions 미동작, 글꼴 통합·콘텐츠 로더 재작성), React Router v7·Nuxt·SvelteKit(hydration으로 프레임워크 본체 JS를 보냄) | accepted (2026-10-31 사용자 결정, T12에서 전환. 스타일은 CSS Modules, §2 "화면 컴포넌트와 스타일") |
+| A12 | SEO: 절대 URL은 `astro.config.mjs`의 `site` 한 곳에서 `src/lib/seo.ts`로 만든다(도메인 결정 전에는 임시 값 + 빌드 경고). sitemap·robots는 엔드포인트, 404는 ja·en 안내를 함께 보여주는 `dist/404.html` 하나, 파비콘·공유 이미지는 `scripts/brand/`에서 만들어 커밋 | 도메인을 정할 때(단계 8) 값 하나만 바꾸면 된다. hreflang 묶음을 `<head>`와 sitemap이 같은 함수로 만들어 어긋나지 않는다. 새 의존성·빌드 시간 증가 없음. Astro는 언어 폴더 아래 404를 `ja/404/index.html`로 출력해 언어별 `404.html`을 바로 만들 수 없다 | `@astrojs/sitemap`(새 의존성, 기능 비교 안 함), 언어별 404(빌드 후 파일 이동 필요, 단계 8에 재검토), 빌드 때 공유 이미지 생성(satori 등 새 의존성), 페이지별 공유 이미지(원고 반영 뒤 검토) | accepted (T13, §2 "SEO") |
 
 직접 의존성은 정확한 버전으로 통일하고, 간접 의존성은 lockfile로 고정한다. CI는 `pnpm install --frozen-lockfile`을 사용한다. pnpm 버전은 `packageManager`로 고정한다.
 

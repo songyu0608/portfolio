@@ -1,0 +1,82 @@
+<!doctype html>
+<!--
+  공유 이미지(OG) 원본(T13). scripts/brand/build.mjs가 {{lang}}·{{name}}·{{label}}·{{mark}}를 채워 1200×630으로 찍는다.
+  색·글꼴은 src/styles/tokens.css(라이트 테마)를 그대로 쓴다. 경로는 저장소 루트 기준이다(build.mjs가 파일을 내준다).
+-->
+<html lang="{{lang}}">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link
+      rel="stylesheet"
+      href="/node_modules/@fontsource/ibm-plex-sans-jp/400.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/node_modules/@fontsource/ibm-plex-sans-jp/700.css"
+    />
+    <style>
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        margin: 0;
+      }
+
+      body {
+        position: relative;
+        display: flex;
+        box-sizing: border-box;
+        align-items: center;
+        justify-content: space-between;
+        gap: 64px;
+        padding: 0 104px 16px;
+        overflow: hidden;
+        background: var(--color-background);
+        color: var(--color-text);
+        font-family: var(--font-sans);
+      }
+
+      /* 아래 가장자리의 강조색 띠 */
+      body::after {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        height: 16px;
+        background: var(--color-accent);
+        content: '';
+      }
+
+      .name {
+        margin: 0;
+        font-size: 88px;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+      }
+
+      .label {
+        margin: 24px 0 0;
+        color: var(--color-text-muted);
+        font-size: 44px;
+        font-weight: 400;
+        line-height: 1.4;
+      }
+
+      .mark {
+        flex: none;
+        width: 200px;
+        height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <p class="name">{{name}}</p>
+      <p class="label">{{label}}</p>
+    </div>
+    <img class="mark" src="{{mark}}" alt="" />
+  </body>
+</html>

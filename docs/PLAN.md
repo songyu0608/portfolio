@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T13 지시서)
+마지막 갱신: 2026-10-31 (T13 구현)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 6 품질 — T11·T12 완료, T13 지시서 |
-| 진행 중인 작업 | T13 SEO 지시서 PR 리뷰(`docs/tasks/T13-seo.md`) |
-| 다음 작업 | T13 구현 → T14 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 6 품질 — T11·T12 완료, T13 구현 리뷰 |
+| 진행 중인 작업 | T13 SEO 구현 PR 리뷰(`docs/tasks/T13-seo.md`) |
+| 다음 작업 | T14 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -108,7 +108,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | done | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30), 구현 [PR #31](https://github.com/songyu0608/portfolio/pull/31) |
 | T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | done | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33), 구현 [PR #34](https://github.com/songyu0608/portfolio/pull/34) |
 | T12 | React 중심 전환 (화면 컴포넌트 React + TypeScript, CSS Modules, 소개 문서) | 6 | T11 | claude | done | `docs/tasks/T12-react-components.md` — 지시서 [PR #36](https://github.com/songyu0608/portfolio/pull/36), 구현 [PR #37](https://github.com/songyu0608/portfolio/pull/37) |
-| T13 | SEO (canonical·hreflang·OG·sitemap·robots·favicon·404) | 6 | T12 | - | todo | `docs/tasks/T13-seo.md` |
+| T13 | SEO (canonical·hreflang·OG·sitemap·robots·favicon·404) | 6 | T12 | claude | review | `docs/tasks/T13-seo.md` — 지시서 [PR #39](https://github.com/songyu0608/portfolio/pull/39) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T14 접근성 점검·수정 → 단계 7~8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -179,6 +179,16 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 - [ ] 화면 컴포넌트의 이식성을 높일 때(다른 React 환경으로 옮기기 등): `PhaseList.tsx`가 런타임 import하는 `PHASES`를 Astro 전용 `src/content.config.ts`에서 프레임워크에 독립적인 파일로 옮긴다. `astro:i18n`을 쓰는 `src/i18n/paths.ts`도 이때 바꾼다. 지금은 빌드 때 HTML로만 렌더해 문제가 없어 그대로 둔다.
 - 근거: [PR #37](https://github.com/songyu0608/portfolio/pull/37) ChatGPT(Codex) 교차 리뷰 개선 제안(머지 차단 아님).
 
+### T13 구현 시 추가한 항목 (단계 8 배포 전)
+
+- [ ] `astro.config.mjs`의 `site`를 실제 주소(`*.workers.dev` 또는 커스텀 도메인)로 바꾸고, 빌드 로그에 `[portfolio:site-placeholder]` 경고가 없는지 확인한다. T04 항목(임시 문구 0건 확인)과 같은 때 한다.
+- [ ] Workers 설정에 `not_found_handling = "404-page"`를 넣고, 배포 URL에서 없는 경로(`/ja/xyz/`, `/en/projects/xyz/`)가 404 상태로 `404.html`을 보이는지 확인한다.
+- [ ] 루트 `/` 이동은 T01 항목(HTTP 301)과 같은 일이다. 서버 이동으로 바꾸면 Home의 `x-default`를 `/`로 바꿀지 다시 정한다. Google이 검색 결과 파비콘을 `/` → `/ja/` 이동 뒤 페이지에서 찾는지는 확인하지 못했다(확인 필요, `/favicon.ico`는 루트에 있음).
+- [ ] 공유 미리보기(LINE·Slack·LinkedIn·X 등)를 실제 URL로 확인한다. X 카드(`summary_large_image`)의 이미지 조건은 공식 문서를 찾지 못해 1200×630으로 두었다(확인 필요). sitemap을 Search Console에 제출할지 정한다.
+- [ ] 회사별 비공개 페이지(§4)는 `BaseLayout`의 `noindex`로 두고 sitemap에 넣지 않는다. 경로를 `robots.txt`에 적지 않는다(누구나 읽을 수 있어 토큰 경로가 드러남).
+- [ ] 커스텀 도메인으로 옮기면 `*.workers.dev` 주소의 처리(이동 또는 비활성화)를 정한다.
+- 근거: `docs/tasks/T13-seo.md` "단계 8로 넘기는 일", `docs/ARCHITECTURE.md` §2 "SEO".
+
 ### T05 지시서 작성 시 추가한 항목
 
 - [x] T06 Projects 지시서: 프로젝트 스키마에 担当工程(要件定義・設計・開発・テスト・運用) 필드를 추가한다. 카드에도 표시할지 상세에만 둘지는 T06에서 정한다(2026-10-30 사용자 확인: 担当工程은 경력이 아니라 프로젝트 단위). → 2026-10-30 사용자 결정: 카드와 상세 모두에 표시. `docs/tasks/T06-projects.md` 범위 1·4.
@@ -234,3 +244,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | T12 지시서 작성: 화면 컴포넌트 17개를 React(`.tsx`, `client:*` 없이 빌드 때 HTML로만)로 바꾼다. 스타일은 CSS Modules(기본안), 콘텐츠 조회·`<head>`·페이지 스크립트는 `.astro`(`BaseLayout`, 새 페이지 레이아웃)에 두고 라우트 파일은 한 줄 유지(A8). 화면(캡처 픽셀 차이 0)·접근성 트리·페이지 JS는 main과 같게. 소개(README)는 React + TypeScript 중심. ARCHITECTURE A1을 `superseded`로 바꾸고 A11 추가, AGENTS §5·§7 갱신 | T12 지시서 (`docs/ARCHITECTURE.md` A11) |
 | 2026-10-31 | T12 구현 담당 claude. 구현: 페이지 진입점 이름은 기본안대로 `src/layouts/*Layout.astro`, 여러 페이지가 쓰는 카드 틸트 `<script>`는 `src/layouts/scripts/CardTiltScript.astro` 한 곳에 둠(레이아웃마다 import하면 공유 청크 외부 파일이 생김), 페이지 진입점은 `BaseLayout`을 화면 컴포넌트보다 먼저 import(전역 CSS를 앞에 둬 CSS Modules 규칙이 이기게) | 사용자 결정(담당), T12 구현 (`docs/ARCHITECTURE.md` §2) |
 | 2026-10-31 | T13 지시서 작성: 절대 URL은 Astro `site` 한 곳에서 만들고 도메인 결정 전에는 임시 값(`https://portfolio.example`, 빌드 경고)을 둔다. 모든 페이지에 canonical·hreflang(ja·en·x-default = ja)·OG·X 카드·파비콘, sitemap·robots는 새 의존성 없이 엔드포인트로, 공유 이미지는 언어별 1장(1200×630, 원고에서 바뀔 문구 없음), 404는 이중 언어 페이지 하나. 기존 화면·접근성 트리·페이지 JS는 main과 같게 | T13 지시서 |
+| 2026-10-31 | T13 지시서 PR #39 merge, T13 구현 담당 claude. 구현은 지시서 기본안대로(`site` 임시 값 + 빌드 경고, `x-default` = ja, sitemap·robots 엔드포인트, 이중 언어 404 하나). 파비콘(accent 둥근 사각형 + 선으로 그린 `c`)·공유 이미지(이름 + 「ポートフォリオ」/`Portfolio` + accent 띠)·404 문구(「ページが見つかりません」 등)는 기본안이고 사용자 확인 전이다. 바꿀 때는 `scripts/brand/`·`src/i18n/ui.ts`를 고치고 이미지를 다시 만든다 | 사용자 결정(담당), T13 구현 (`docs/ARCHITECTURE.md` A12, `docs/DESIGN.md` §10) |

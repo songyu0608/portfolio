@@ -4,9 +4,9 @@
 | --- | --- |
 | 단계 | 6 |
 | 선행 작업 | T12 (PR #37) |
-| 담당 | 미배정 |
-| 상태 | todo |
-| 브랜치 | `<agent>/T13-seo` |
+| 담당 | claude |
+| 상태 | review |
+| 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T13-seo`) |
 
 ## 목표
 
@@ -190,38 +190,38 @@
 
 ## 완료 조건
 
-- [ ] `site`가 `astro.config.mjs` 한 곳에만 있고, 출력의 절대 URL이 모두 그 값으로 시작한다.
+- [x] `site`가 `astro.config.mjs` 한 곳에만 있고, 출력의 절대 URL이 모두 그 값으로 시작한다.
   - 대상: canonical, hreflang, `og:url`, `og:image`, sitemap, robots
   - 확인: `src/`·`scripts/brand/`에서 `portfolio.example`을 grep하면 `astro.config.mjs` 외에 나오지 않는다.
   - 임시 값이면 빌드 로그에 경고 한 줄이 나온다.
-- [ ] 18페이지 모두 `<head>`에 범위 2의 태그가 하나씩 있다(파비콘 링크 포함).
+- [x] 18페이지 모두 `<head>`에 범위 2의 태그가 하나씩 있다(파비콘 링크 포함).
   - canonical과 `og:url`은 그 페이지 URL(`site` + 경로, 끝 슬래시)과 같다.
   - hreflang ja·en·x-default 묶음이 ja·en 짝 페이지에서 서로 같다.
   - 확인은 `dist/**/*.html`을 읽는 스크립트로 한다. 결과를 PR에 적는다.
-- [ ] `dist/sitemap.xml`이 올바른 XML이다(`xmllint --noout`).
+- [x] `dist/sitemap.xml`이 올바른 XML이다(`xmllint --noout`).
   - `<url>`이 18개이고, 각각 `xhtml:link` 3개가 범위 2와 같다.
   - 모든 `<loc>`가 `pnpm preview`에서 200이다. 루트 이동·404·JSON은 없다.
-- [ ] `dist/robots.txt`가 전체 허용과 절대 URL `Sitemap:` 한 줄을 가진다.
-- [ ] 공유 이미지 2장이 1200×630 PNG, 각 300KB 이하다. `og:image`가 가리키는 파일이 `dist/og/`에 있다. ja·en 이미지를 PR에 싣는다.
-- [ ] 파비콘이 있다.
+- [x] `dist/robots.txt`가 전체 허용과 절대 URL `Sitemap:` 한 줄을 가진다.
+- [x] 공유 이미지 2장이 1200×630 PNG, 각 300KB 이하다. `og:image`가 가리키는 파일이 `dist/og/`에 있다. ja·en 이미지를 PR에 싣는다.
+- [x] 파비콘이 있다.
   - `/favicon.ico`(16·32·48px 포함), `/favicon.svg`, `/apple-touch-icon.png`(180×180)가 `pnpm preview`에서 200이다.
   - 브라우저 탭에 보인다(캡처 또는 확인 방법을 PR에).
-- [ ] 404 페이지
+- [x] 404 페이지
   - `dist/404.html`이 있고 `noindex`이며, canonical·hreflang·`og:url`이 없다.
   - `pnpm preview`에서 `/ja/xyz/`, `/en/projects/xyz/`가 404 상태로 이 페이지를 보여준다.
   - 일본어·영어 안내와 `/ja/`·`/en/` 링크가 보이고, JS를 꺼도 읽힌다.
   - 캡처 3장을 PR에 싣는다: ja 라이트 1280px, 다크 375px, JS 끔.
-- [ ] 기존 화면이 main과 같다. T12 방법으로 캡처 45장 픽셀 차이 0, 18페이지 `ariaSnapshot()` 글자 단위 동일. 바뀌는 것은 `<head>`뿐이다.
-- [ ] 페이지가 받는 JS가 main과 같다(외부 JS 헤더 스크립트 1개, 인라인 모듈 합계 같음). 첫 로드에 새로 받는 파일은 파비콘뿐이다.
-- [ ] 페이지별 HTML 크기 증가량을 PR 표에 적는다(main → T13, `<head>` 태그만큼 늘어남).
-- [ ] Lighthouse(`/ja/`, `/ja/projects/`, 모바일·데스크톱)
+- [x] 기존 화면이 main과 같다. T12 방법으로 캡처 45장 픽셀 차이 0, 18페이지 `ariaSnapshot()` 글자 단위 동일. 바뀌는 것은 `<head>`뿐이다.
+- [x] 페이지가 받는 JS가 main과 같다(외부 JS 헤더 스크립트 1개, 인라인 모듈 합계 같음). 첫 로드에 새로 받는 파일은 파비콘뿐이다.
+- [x] 페이지별 HTML 크기 증가량을 PR 표에 적는다(main → T13, `<head>` 태그만큼 늘어남).
+- [x] Lighthouse(`/ja/`, `/ja/projects/`, 모바일·데스크톱)
   - SEO 100, Best Practices 100(`errors-in-console` 감점 없음)
   - Performance는 3회 중앙값이 모바일 90·데스크톱 95 이상, CLS 0.1 이하, TBT 0ms(T11 기준 유지)
-- [ ] 글꼴 누락 검사가 빌드에서 통과한다(새 404 문구 포함). `@font-face` 개수가 늘면 이유를 적는다.
-- [ ] 새 의존성이 없다(`package.json` 의존성 항목, `pnpm-lock.yaml` 변경 없음).
-- [ ] 문서가 갱신되어 있다: `docs/ARCHITECTURE.md` §2·A12, `docs/DESIGN.md`, `docs/PLAN.md`(진행 상태·표·결정 기록·§8 단계 8 항목).
+- [x] 글꼴 누락 검사가 빌드에서 통과한다(새 404 문구 포함). `@font-face` 개수가 늘면 이유를 적는다.
+- [x] 새 의존성이 없다(`package.json` 의존성 항목, `pnpm-lock.yaml` 변경 없음).
+- [x] 문서가 갱신되어 있다: `docs/ARCHITECTURE.md` §2·A12, `docs/DESIGN.md`, `docs/PLAN.md`(진행 상태·표·결정 기록·§8 단계 8 항목).
 - [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
-- [ ] 비밀 값 미포함.
+- [x] 비밀 값 미포함.
 
 ## 확인 방법
 
