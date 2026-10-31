@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T10 완료, 단계 5 완료)
+마지막 갱신: 2026-10-31 (단계 6 지시서 분할, T11 지시서 작성)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 5 인터랙션 완료 — 단계 6 품질 지시서 대기 |
-| 진행 중인 작업 | 없음 (T10 완료) |
-| 다음 작업 | 단계 6 품질 지시서 작성 → 단계 6~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 6 품질 — T11 지시서 작성 |
+| 진행 중인 작업 | T11 지시서(성능) 작성·리뷰 |
+| 다음 작업 | T11 구현(담당 미정) → T12 SEO → T13 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -82,7 +82,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | done |
 | 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | done |
 | 5 | 인터랙션 구현: 컨셉 1~5 (T08 = 1·2, T09 = 5, T10 = 3·4) | done |
-| 6 | 품질: SEO, 접근성, 성능 최적화 | todo |
+| 6 | 품질: 성능(T11) → SEO(T12) → 접근성(T13) | in-progress |
 | 7 | 테스트: E2E(Playwright), Lighthouse CI | todo |
 | 8 | 배포와 동적 기능: Cloudflare, 도메인, HTTPS, 방문 분석, 연락 폼, 회사별 비공개 페이지 | todo |
 | 9 | 운영: 콘텐츠 추가 절차 문서화, 카드 클릭률 확인 후 효과 조정 | todo |
@@ -106,8 +106,9 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T08 | Hero 디코딩·프로젝트 카드 틸트와 상세 전환 (인터랙션 컨셉 1·2) | 5 | T07 | claude | done | `docs/tasks/T08-hero-cards.md` — 지시서 [PR #24](https://github.com/songyu0608/portfolio/pull/24), 구현 [PR #25](https://github.com/songyu0608/portfolio/pull/25) |
 | T09 | 스크롤 경력 타임라인 (인터랙션 컨셉 5) | 5 | T08 | claude | done | `docs/tasks/T09-career-timeline.md` — 지시서 [PR #27](https://github.com/songyu0608/portfolio/pull/27), 구현 [PR #28](https://github.com/songyu0608/portfolio/pull/28) |
 | T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | done | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30), 구현 [PR #31](https://github.com/songyu0608/portfolio/pull/31) |
+| T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | - | todo | `docs/tasks/T11-performance.md` |
 
-이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 6~8. 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
+이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T12 SEO(canonical·hreflang·OG·sitemap·robots·favicon·404) → T13 접근성 점검·수정 → 단계 7~8. 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
 ## 7. 미결 사항
 
@@ -130,7 +131,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 ### T02 교차 리뷰에서 이월한 항목
 
-- [ ] 단계 6: 글꼴 CSS 크기 재검토. T02 시점 빌드에서 공통 CSS가 357,868B(gzip 172,181B), `@font-face` 251개이며 `/ja/`, `/en/` 모두 첫 렌더 전에 받는다. 후보: 빌드 시 실제 사용 글자 기준 서브셋, 일본어 글꼴 CSS를 `/ja/`에만 적용. Lighthouse로 전후를 측정한다.
+- [ ] 단계 6(T11): 글꼴 CSS 크기 재검토. T02 시점 빌드에서 공통 CSS가 357,868B(gzip 172,181B), `@font-face` 251개이며 `/ja/`, `/en/` 모두 첫 렌더 전에 받는다. 후보: 빌드 시 실제 사용 글자 기준 서브셋, 일본어 글꼴 CSS를 `/ja/`에만 적용. Lighthouse로 전후를 측정한다.
 - [x] T03: 일본어 제목 `word-break: auto-phrase`를 Safari·Firefox에서 확인하고, 필요하면 명시적 줄바꿈을 검토한다 (T03 범위 8). → 지원 현황은 공식 자료로 확인(Firefox·Safari 미지원), 실제 Firefox·WebKit 화면은 미확인. 결과·대안은 `docs/DESIGN.md` §2 타이포그래피, 후속은 아래 T03 이월 항목.
 - [x] T03: PR #9 캡처는 `4aa6183` 기준이라 이후 수정이 반영되지 않았다. T03 PR에 최신 캡처를 싣는다 (T03 범위 8). → `docs/screenshots/T03-*`, T03 PR 본문.
 - 근거: [PR #9](https://github.com/songyu0608/portfolio/pull/9) Claude 교차 리뷰, ChatGPT 재검증 리뷰.
@@ -155,12 +156,12 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 ### T10 구현 시 발견한 항목
 
-- [x] 헤더 스크립트(테마 버튼 + 팔레트 런처)가 압축 전 약 3.5KB로 지시서의 처음 기준 "런처 1.5KB 이하"를 넘었다(약 1.7KB는 Vite 동적 import 도우미, `vite.build.modulePreload: false`는 Astro 설정에 밀려 미적용). 2026-10-31 사용자 결정으로 기준을 "헤더 스크립트 1개, 압축 전 4KB 이하"로 바꿨다. 단계 6 성능 점검에서 Lighthouse로 영향만 확인한다.
+- [x] 헤더 스크립트(테마 버튼 + 팔레트 런처)가 압축 전 약 3.5KB로 지시서의 처음 기준 "런처 1.5KB 이하"를 넘었다(약 1.7KB는 Vite 동적 import 도우미, `vite.build.modulePreload: false`는 Astro 설정에 밀려 미적용). 2026-10-31 사용자 결정으로 기준을 "헤더 스크립트 1개, 압축 전 4KB 이하"로 바꿨다. 단계 6 성능 점검에서 Lighthouse로 영향만 확인한다(T11 범위 4).
 - [ ] Firefox·Safari 실기, 실제 IME(일본어 입력 확정 Enter), 실제 스크린 리더(VoiceOver, NVDA)로 팔레트·터미널을 확인한다(단계 7 또는 해당 환경). 이 환경에서는 Chromium만 확인했다.
 
 ### T08 구현 시 발견한 항목
 
-- [ ] 단계 6: Home의 CLS가 Chromium 1280px에서 0.32~0.37이다(T07 main도 같음, 2026-10-31 측정). 원인은 IBM Plex Sans JP 글꼴 교체 때 히어로 줄바꿈이 바뀌어 아래 내용이 약 35px 올라가는 것이다. 글꼴 로딩 방식(`font-display`, preload, 대체 글꼴 크기 맞춤 등)을 단계 6에서 정한다.
+- [ ] 단계 6(T11): Home의 CLS가 Chromium 1280px에서 0.32~0.37이다(T07 main도 같음, 2026-10-31 측정). 원인은 IBM Plex Sans JP 글꼴 교체 때 히어로 줄바꿈이 바뀌어 아래 내용이 약 35px 올라가는 것이다. 글꼴 로딩 방식(`font-display`, preload, 대체 글꼴 크기 맞춤 등)을 단계 6에서 정한다.
 
 ### T05 지시서 작성 시 추가한 항목
 
@@ -207,3 +208,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | T10 지시서 작성: 컨셉 3·4는 모든 페이지에 런처 스크립트만 넣고 열 때 React UI(동적 import, island 아님)와 언어별 정적 JSON(`/ja/commands.json` 등)을 불러온다. 명령 정의는 `src/components/interactive/commands.ts` 하나, 모달은 `<dialog>`, 새 의존성·Motion/GSAP 없음. 팔레트에 프로젝트 상세·시스템 설정 테마 포함, 터미널은 팔레트에서만 연다(기본안) | T10 지시서 (`docs/DESIGN.md` §3, `docs/ARCHITECTURE.md` A2 비고) |
 | 2026-10-31 | T10 지시서 PR #30 merge(Codex 수정 필요 1건·개선 제안 2건 반영), T10 구현 담당 claude. 구현: 테마 버튼 스크립트를 런처와 같은 헤더 스크립트(`SiteHeader.astro`)로 합쳐 페이지가 받는 JS 파일을 1개로 유지, 팔레트 CSS는 `?url`로 열 때 붙임(일반 import는 모든 페이지에 `<link>`가 생김). 헤더 스크립트가 런처 목표 크기(1.5KB)를 넘는 점은 §8 항목으로 이월. Codex 리뷰 후 기준을 "헤더 스크립트 압축 전 4KB 이하"로 변경 | 사용자 결정(담당), T10 구현 |
 | 2026-10-31 | T10 PR #31 merge 완료 반영, 단계 5 완료(CI 통과, Codex 교차 리뷰: 수정 필요 2건 중 헤더 스크립트 크기는 사용자 결정으로 기준을 "헤더 스크립트 1개, 압축 전 4KB 이하"로 변경, 터미널 이동 안내는 링크 출력 + `open`·`lang` 바로 이동으로 지시서 명확화, IME 변환 중 ↑↓ 무시 제안 반영 후 재검증 통과). 팔레트·터미널 UI 문구는 기본안(사용자 확인 전) | 사용자 결정(크기 기준), T10 완료 |
+| 2026-10-31 | 단계 6을 지시서 3개로 나눔: T11 = 성능, T12 = SEO, T13 = 접근성(이 순서). T11 지시서 작성: 첫 렌더 전 글꼴 CSS를 실제 쓰는 글자의 `unicode-range`만 남기고(글꼴 파일 재서브셋·새 의존성 없음), CLS 0.1 이하를 목표로 preload → 대체 글꼴 메트릭 맞춤 순서로 적용. `font-display: optional`·히어로 최소 높이는 사용자 결정 후에만 | 사용자 결정(나눔), T11 지시서 |
