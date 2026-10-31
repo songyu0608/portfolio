@@ -50,7 +50,7 @@ Claude 전용 메모는 `CLAUDE.md`에 있지만, 규칙은 여기만 고친다.
 자세한 내용과 이유는 `docs/ARCHITECTURE.md`.
 
 - Astro + TypeScript (strict), 정적 출력 기본
-- 인터랙션: 필요한 부분만 React island + Motion / GSAP
+- 인터랙션: 기본은 Astro `<script>`·CSS. 상태가 많은 명령 팔레트·터미널(T10)만 React를 쓰고, 열 때 동적 import한다(island 아님). Motion / GSAP은 현재 쓰지 않는다
 - 호스팅: Cloudflare Workers 정적 자산 (무료 플랜). 동적 기능(연락 폼, 회사별 비공개 페이지)은 단계 8에서 Workers 함수로 추가
 - i18n: Astro 내장 i18n 라우팅 (`/ja`, `/en`)
 - 테스트: Playwright(E2E), Lighthouse CI
@@ -84,7 +84,7 @@ git reset --hard
 
 - 핵심 정보는 클릭하지 않아도 보여야 한다. 정보를 숨기는 효과(카드 플립 등)는 쓰지 않는다.
 - `prefers-reduced-motion: reduce`에서는 장식 애니메이션을 끈다 (`docs/DESIGN.md` 참고).
-- 기본 출력 JS를 최소화한다. React island는 인터랙션이 필요한 컴포넌트에만, 가능한 한 `client:visible`/`client:idle`로 지연 로딩한다.
+- 기본 출력 JS를 최소화한다. 상태가 없는 효과는 Astro `<script>`·CSS로 만든다. React는 인터랙션이 필요한 컴포넌트에만 쓰고, 사용자가 열 때만 필요한 UI(T10 명령 팔레트·터미널)는 `client:*` island가 아니라 동적 import로 불러온다. island를 쓸 때는 가능한 한 `client:visible`/`client:idle`로 지연 로딩한다.
 - 접근성: 시맨틱 HTML, 키보드 조작, 충분한 대비, 이미지 alt.
 - 일본어/영어 문구는 컴포넌트에 하드코딩하지 않고 콘텐츠·번역 파일에서 가져온다 (구조는 T01/T03에서 확정).
 - 확인되지 않은 수치·사실(무료 플랜 한도 등)은 문서에 "확인 필요"로 표시하고, 구현 시 공식 문서로 재확인한다.

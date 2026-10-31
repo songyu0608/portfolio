@@ -32,7 +32,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 블로그 | 제외 | 사용자 결정 |
 | 언어 | 일본어 기본, 영어 전환 (`/ja`, `/en`) | 사용자 결정 |
 | 프레임워크 | Astro + TypeScript | 콘텐츠 중심, 기본 출력 JS가 거의 없어 빠름. i18n 라우팅 내장 |
-| 인터랙션 | React island(필요한 부분만) + Motion / GSAP | 효과는 자유롭게, 페이지는 가볍게 |
+| 인터랙션 | 기본은 Astro `<script>`·CSS(T08·T09). React는 상태가 많은 컨셉 3·4(T10)에만, 열 때 동적 import(island 아님). Motion / GSAP은 쓰지 않음 | 효과는 자유롭게, 페이지는 가볍게. 2026-10-31 T10 지시서에서 갱신(이전: React island + Motion / GSAP) |
 | 인터랙션 컨셉 | 1~5 전부 채택 (`docs/DESIGN.md`) | 사용자 결정 |
 | 렌더링 | 정적 기본 + 필요한 경로만 서버 실행 | 비용 0, 보안·유지보수 부담 최소 |
 | 호스팅 | Cloudflare Workers 정적 자산, 무료 플랜 | 정적 파일 요청 무료. Cloudflare가 신규 프로젝트에 Workers를 권장 |
