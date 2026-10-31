@@ -180,7 +180,7 @@
 | 핵심 기술 | h2 「主な技術」 + 범례 문구(「塗りつぶしたタグは主軸の技術です。」) + 태그 목록(`<ul>`). 주력 기술은 채운 태그(`.tag--featured`)와 시각적으로 숨긴 「主軸：」, 나머지는 테두리 태그(`.tag`). 순서는 콘텐츠의 `homeOrder` |
 | 대표 프로젝트 | h2 「代表プロジェクト」(`project.featured`, Projects와 공용) + 카드 목록(`<ul>` 안의 `<article>`) + 끝에 「すべてのプロジェクト →」 링크 하나(→ Projects) |
 
-- h1은 이름이다. 30초 안에 "누구인지"를 먼저 알리고(§1), 문서 제목(`<title>` = 사이트 이름)과 맞추기 위함이다. 한 줄 소개는 h1 바로 아래 문단이며, 단계 5 컨셉 1(디코딩)은 이 문단을 감싼다. 최종 문구는 처음부터 HTML에 있다.
+- h1은 이름이다. 30초 안에 "누구인지"를 먼저 알리고(§1), 문서 제목(`<title>` = 사이트 이름)과 맞추기 위함이다. 한 줄 소개는 h1 바로 아래 문단이며, 컨셉 1 디코딩(T08, 아래 "한 줄 소개 디코딩")은 이 문단에만 적용한다. 최종 문구는 처음부터 HTML에 있다.
 - 히어로에는 연락처를 직접 늘어놓지 않고 「連絡する」 버튼(→ Contact)만 둔다. 연락 링크는 모든 페이지의 푸터에 있다(§4, T07 사용자 결정). 아바타·사진은 없다.
 
 ### 전환점별 배치
@@ -200,7 +200,7 @@
 - 라벨(`<dt>`)은 값 위에 둔다(12px, 700, text-muted). 3열 카드와 320px 화면에서 값이 좁아지지 않게 하기 위함이다. 일본어 라벨은 모노스페이스를 쓰지 않는다.
 - 모든 정보를 펼쳐 보인다. 같은 줄의 카드 높이는 맞추고, 내용은 위에서부터 채운다.
 - 카드 전체가 프로젝트 상세 링크다(T06). 링크는 제목(h3) 안의 `<a>` 하나이고 `::after`를 카드 크기로 늘려 카드 어디를 눌러도 상세로 간다. 카드 전체를 `<a>`로 감싸면 링크 이름이 카드 전문이 되어 길어지기 때문이다. 링크 이름은 제목뿐이고, Tab은 카드마다 한 번만 멈춘다. 「詳細を見る →」는 같은 곳을 가리키는 시각적 안내라 `aria-hidden="true"`다. 늘린 링크가 카드 위를 덮으므로 카드 안 글자를 드래그로 선택할 수 없다(채용 담당자가 복사할 정보는 상세에도 있다).
-- 포커스 링(2px accent, 간격 3px)은 링크 글자가 아니라 `::after`(카드 전체)에 그린다. 마우스 오버 시 카드 경계가 accent로 바뀌고(200ms) 제목에 밑줄이 생긴다. 틸트·상세 전환 애니메이션은 단계 5 컨셉 2다.
+- 포커스 링(2px accent, 간격 3px)은 링크 글자가 아니라 `::after`(카드 전체)에 그린다. 마우스 오버 시 카드 경계가 accent로 바뀌고(200ms) 제목에 밑줄이 생긴다. 틸트와 상세 전환(컨셉 2, T08)은 아래 "카드 틸트"와 §7 모션 "카드 → 상세 전환".
 - 짧은 카드(`variant="compact"`, Projects 「その他のプロジェクト」): 成果를 빼고 期間·役割 → 担当工程 → 技術 순서다. 640px 이상에서 期間·役割를 한 줄 2칸에 둔다. 화면 순서와 HTML 순서는 같다(CSS `order`를 쓰지 않음).
 - 카드 안 기술 태그는 주력 표시를 하지 않는다(주력 표시는 핵심 기술·About 기술 스택에서만).
 
@@ -218,9 +218,28 @@
 | 채운 태그(주력) | on-accent / accent | 5.00 | 8.14 |
 | 테두리 태그 경계(UI) | text-muted / background·surface | 6.63·7.00 | 7.79·7.09 |
 
+### 한 줄 소개 디코딩 (컨셉 1, T08)
+
+`src/scripts/hero-decode.ts`. 한 줄 소개 문단(`data-decode`)에만 적용한다.
+
+- Home을 열 때마다 1회, 약 1초(1000ms) 재생한다. 앞에서부터 글자가 확정되고(ease-out), 확정되지 않은 글자는 50ms마다 임의 글자로 바뀐다. 헤더 언어 전환은 다른 언어의 Home으로 이동하므로 그때 다시 재생된다. 다른 페이지에는 없다.
+- 임의 글자: 글자·숫자만 바꾸며 폭을 유지한다. 전각 문자(가나·한자·한글·전각 영숫자)는 전각 가타카나, 반각 문자(영숫자·반각 가나)는 영문 대문자·숫자. 공백·구두점·괄호는 그대로이고 글자 수는 바뀌지 않는다.
+- 접근성: 최종 문구 문단은 그대로 두고 글자색만 투명하게 한 뒤(`.is-decoding`), 문단 안의 내용(문절 span 포함)을 복제한 장식용 겹침 요소(`.decode-overlay`, `aria-hidden="true"`, `pointer-events: none`, `user-select: none`)에 임의 글자를 그린다. 접근성 트리·복사·HTML에는 처음부터 최종 문구만 있다. 재생이 끝나면 겹침 요소를 지운다.
+- 겹침 요소는 문단 위 절대 위치(`inset: 0`, 넘침은 자름)라 문단 크기가 바뀌지 않는다. Chromium에서 Home의 CLS는 T07 main과 같다(2026-10-31 측정 0.32~0.37. 이 값은 디코딩과 무관한 기존 글꼴 교체 때문이며 단계 6에서 다룬다).
+- JS가 없거나 `prefers-reduced-motion: reduce`이거나 탭이 숨겨진 채 열리면 재생하지 않는다. 재생 중 탭이 숨겨지면 바로 최종 상태로 끝낸다.
+
+### 카드 틸트 (컨셉 2, T08)
+
+`src/scripts/card-tilt.ts`(document에 이벤트 위임, 페이지에 한 번 등록). Home·Projects 목록의 모든 카드(`full`·`compact`)에 적용한다.
+
+- 조건: `(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)`이고 포인터 종류가 마우스일 때. 조건이 바뀌면 따라간다. 터치·펜에서는 기울지 않는다.
+- 포인터 위치(카드 중심 기준)에 따라 `perspective(800px) rotateX/rotateY` 최대 4°와 `translateY(-4px)`. 스크립트는 `--tilt-x`·`--tilt-y`와 `.is-tilting`만 넣고(`requestAnimationFrame`으로 프레임당 한 번), transform은 CSS가 정한다. 따라갈 때 120ms(linear), 포인터가 나가면 200ms(`--ease-standard`)로 돌아온다.
+- 키보드 포커스(`:focus-visible`)는 기울기 없이 `translateY(-4px)`만 한다. 포커스 링·Tab 순서·카드 전체 클릭 영역은 그대로다.
+- 「詳細を見る →」는 T06부터 항상 보인다(시안의 "오버 시 표시"는 정보를 숨기지 않는 원칙에 따라 적용하지 않음).
+
 ### 모션
 
-새 전환 효과는 없다. 행동 링크는 기존 `.button`(떠오름 120ms·그림자 200ms)을 그대로 쓰며 `prefers-reduced-motion: reduce`에서 꺼진다(T02). 프로젝트 카드의 경계 색 전환(T06)은 §7 모션.
+행동 링크는 기존 `.button`(떠오름 120ms·그림자 200ms)을 그대로 쓰며 `prefers-reduced-motion: reduce`에서 꺼진다(T02). 한 줄 소개 디코딩·카드 틸트(T08)는 위 절. reduced-motion에서는 디코딩·틸트·포커스 떠오름이 모두 꺼진다. 프로젝트 카드의 경계 색 전환(T06)과 카드 → 상세 전환(T08)은 §7 모션.
 
 ## 6. About (T05)
 
@@ -351,7 +370,15 @@
 
 ### 모션
 
-카드 경계 색 전환(200ms)과 이전·다음 링크 경계 색 전환(200ms)을 더했다. `prefers-reduced-motion: reduce`에서 둘 다 꺼진다(`transition: none`). 틸트·상세 전환 애니메이션은 단계 5 컨셉 2다.
+카드 경계 색 전환(200ms)과 이전·다음 링크 경계 색 전환(200ms)을 더했다. `prefers-reduced-motion: reduce`에서 둘 다 꺼진다(`transition: none`). 카드 틸트는 §5 "카드 틸트".
+
+**카드 → 상세 전환 (컨셉 2, T08)**: JS 없이 CSS cross-document View Transitions(`src/styles/view-transitions.css`)로 만든다.
+
+- `@view-transition { navigation: auto; }`는 Home·Projects 목록·프로젝트 상세에서만 불러온다. 이동 전후 문서가 모두 규칙을 가져야 전환되므로 이 세 페이지 사이(카드 → 상세, 「一覧へ戻る」, 이전·다음, 뒤로 가기)에서만 일어나고, About·Contact로 가는 이동에는 없다.
+- 카드 제목(h3)과 상세 h1은 같은 `view-transition-name: project-title-<slug>`를 가져 제목이 상세 제목 자리로 옮겨 간다. 나머지는 기본 크로스페이드다. 시간 280ms, `--ease-standard`. slug는 `src/lib/content.ts`가 영문 소문자·숫자·하이픈만 허용한다(CSS 식별자로 쓰기 위함).
+- `prefers-reduced-motion: reduce`에서는 `navigation: none`으로 끈다.
+- 브라우저 지원([MDN browser-compat-data `css.at-rules.view-transition`](https://github.com/mdn/browser-compat-data/blob/main/css/at-rules/view-transition.json), [MDN `@view-transition`](https://developer.mozilla.org/en-US/docs/Web/CSS/@view-transition), 2026-10-31 확인): Chrome·Edge 126 이상, Safari 18.2 이상(iOS 포함). Firefox는 미지원이며 일반 페이지 이동이 된다. 폴리필은 두지 않는다.
+- 느린 연결: Chromium에서 Slow 4G 수준(지연 562ms, 내려받기 180KB/s)으로 낮춰도 카드 → 상세와 뒤로 가기 모두 제목 전환이 짝지어졌다(2026-10-31, T08). 그래서 `<link rel="expect" blocking="render">`는 넣지 않았다. 상세 페이지가 무거워져 제목이 페이드로 바뀌면 다시 검토한다.
 
 ## 8. Contact (T07)
 

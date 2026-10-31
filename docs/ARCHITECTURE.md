@@ -47,7 +47,9 @@ Cloudflare Workers (정적 자산)
 │  │  ├─ Phrases.astro          ← 일본어 문절 단위 줄바꿈 출력(docs/DESIGN.md §2)
 │  │  └─ pages/                 ← 페이지 화면 컴포넌트(레이아웃 + 본문). 언어만 props로 받음
 │  ├─ scripts/theme.ts          ← 테마 읽기·쓰기(헤더 버튼, 단계 5 명령 팔레트가 공유)
-│  ├─ styles/                   ← tokens.css(디자인 토큰), global.css(전역 스타일)
+│  ├─ scripts/hero-decode.ts    ← Home 한 줄 소개 디코딩(컨셉 1, T08)
+│  ├─ scripts/card-tilt.ts      ← 프로젝트 카드 틸트(컨셉 2, T08)
+│  ├─ styles/                   ← tokens.css(디자인 토큰), global.css(전역 스타일), view-transitions.css(카드 → 상세 전환, Home·Projects·상세만)
 │  └─ pages/
 │     ├─ index.astro            ← /ja/로 이동
 │     ├─ ja/index.astro, about.astro, projects.astro, contact.astro
@@ -104,7 +106,7 @@ Cloudflare Workers (정적 자산)
 
 T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는 검사 도구의 지원 범위에 맞춰 6.0.3을 사용한다. 직접 의존성과 lockfile로 설치 버전을 기록한다. pnpm이 생성한 `pnpm-workspace.yaml`에는 이번 Astro 설치에 필요한 특정 버전의 release-age 예외만 기록한다.
 
-`output: 'static'` 빌드는 `dist/{ja,en}/index.html`, `dist/{ja,en}/{about,projects,contact}/index.html`(T03), 프로젝트 상세 `dist/{ja,en}/projects/<slug>/index.html`(T06), 루트 redirect HTML을 생성한다. React hydration은 없으며 서버 어댑터도 필요하지 않다. 페이지가 받는 JS는 테마 관련 인라인 스크립트 2개이고, Contact 페이지만 메일 복사 스크립트 1개(인라인 모듈, 약 0.6KB)를 더 받는다(T07). 다만 `@astrojs/react` 통합 때문에 어느 페이지도 참조하지 않는 React 클라이언트 번들(`dist/_astro/client.*.js`, 약 220KB)이 T01부터 빌드 결과에 생성된다. 단계 5(A2)에서 React island를 쓰므로 통합은 유지한다(2026-10-30 사용자 결정, PLAN §8). `dist/`를 Workers 정적 자산 디렉터리로 지정할 수 있음을 [공식 문서](https://developers.cloudflare.com/workers/static-assets/binding/)와 출력 구조로 확인한다. 실제 배포·HTTP redirect 정책은 단계 8에서 검증한다.
+`output: 'static'` 빌드는 `dist/{ja,en}/index.html`, `dist/{ja,en}/{about,projects,contact}/index.html`(T03), 프로젝트 상세 `dist/{ja,en}/projects/<slug>/index.html`(T06), 루트 redirect HTML을 생성한다. React hydration은 없으며 서버 어댑터도 필요하지 않다. 페이지가 받는 JS는 테마 관련 인라인 스크립트 2개이고, Contact 페이지만 메일 복사 스크립트 1개(인라인 모듈, 약 0.6KB)를 더 받는다(T07). T08부터 Home은 디코딩(약 1.4KB)과 카드 틸트(약 1.1KB), Projects 목록은 카드 틸트 스크립트를 더 받는다(모두 인라인 모듈, 압축 전 크기). 카드 → 상세 전환은 CSS만 쓴다. 다만 `@astrojs/react` 통합 때문에 어느 페이지도 참조하지 않는 React 클라이언트 번들(`dist/_astro/client.*.js`, 약 220KB)이 T01부터 빌드 결과에 생성된다. 단계 5(A2)에서 React island를 쓰므로 통합은 유지한다(2026-10-30 사용자 결정, PLAN §8). `dist/`를 Workers 정적 자산 디렉터리로 지정할 수 있음을 [공식 문서](https://developers.cloudflare.com/workers/static-assets/binding/)와 출력 구조로 확인한다. 실제 배포·HTTP redirect 정책은 단계 8에서 검증한다.
 
 ## 3. 기술 결정 기록 (ADR 요약)
 

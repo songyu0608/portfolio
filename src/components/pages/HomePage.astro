@@ -8,6 +8,7 @@ import { getHomeContent } from '../../lib/content';
 import Phrases from '../Phrases.astro';
 import ProjectCard from '../ProjectCard.astro';
 import SkillTag from '../SkillTag.astro';
+import '../../styles/view-transitions.css';
 
 interface Props {
   locale: Locale;
@@ -27,7 +28,7 @@ const contactHref = localizePath(locale, 'contact');
         {profile.name}
       </h1>
       <p class="hero__role">{profile.role}</p>
-      <p class="hero__tagline">
+      <p class="hero__tagline" data-decode>
         <Phrases text={profile.tagline} />
       </p>
       <div class="hero__actions">
@@ -73,6 +74,10 @@ const contactHref = localizePath(locale, 'contact');
   </div>
 </BaseLayout>
 
+<script>
+  import '../../scripts/hero-decode';
+</script>
+
 <style>
   .hero {
     padding-top: var(--space-12);
@@ -91,6 +96,22 @@ const contactHref = localizePath(locale, 'contact');
     margin-top: var(--space-4);
     font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
     line-height: 1.6;
+  }
+
+  /* 디코딩 중(src/scripts/hero-decode.ts): 최종 문구는 투명하게 두고 겹침 요소가 임의 글자를 그린다. */
+  .hero__tagline.is-decoding {
+    position: relative;
+    color: transparent;
+  }
+
+  .hero__tagline :global(.decode-overlay) {
+    display: block;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    color: var(--color-text);
+    pointer-events: none;
+    user-select: none;
   }
 
   .hero__actions {

@@ -9,6 +9,7 @@ import type { ProjectPage } from '../../lib/content';
 import PhaseList from '../PhaseList.astro';
 import Phrases from '../Phrases.astro';
 import SkillTag from '../SkillTag.astro';
+import '../../styles/view-transitions.css';
 
 type Props = ProjectPage & { locale: Locale };
 
@@ -42,7 +43,7 @@ const pager = [
       {project.featuredOrder !== undefined && (
         <p class="project-detail__badge">{text.featured}</p>
       )}
-      <h1>
+      <h1 style={`view-transition-name: project-title-${project.slug}`}>
         <Phrases text={project.title} />
       </h1>
       <p class="project-detail__summary">{project.summary}</p>

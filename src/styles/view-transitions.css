@@ -1,0 +1,23 @@
+/*
+ * 카드 → 프로젝트 상세 전환(docs/DESIGN.md §3 컨셉 2, §7 모션).
+ * cross-document View Transitions는 이동 전후 문서가 모두 이 규칙을 가질 때만 일어나므로,
+ * Home·Projects 목록·프로젝트 상세에서만 불러온다(전역 CSS에 넣지 않는다).
+ * 카드 제목과 상세 h1은 같은 view-transition-name(project-title-<slug>)을 갖는다.
+ * 지원하지 않는 브라우저에서는 일반 페이지 이동이 된다.
+ */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 280ms;
+  animation-timing-function: var(--ease-standard);
+}
