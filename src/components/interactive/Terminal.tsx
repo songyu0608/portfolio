@@ -110,11 +110,14 @@ export default function Terminal({ data, ctx, onEffect, onClose }: Props) {
           </svg>
         </button>
       </div>
+      {/* 출력이 넘쳐 스크롤될 때 키보드로 닿게 tabIndex를 준다. 스크롤 영역을 Tab 순서에 넣지 않는
+          브라우저(예: Safari)가 있어서다(T14, docs/DESIGN.md §11). */}
       <div
         ref={logRef}
         className="command-terminal__log"
         role="log"
         aria-label={text.output}
+        tabIndex={0}
       >
         {entries.map(({ id, line }) => (
           <p key={id} className="command-terminal__line" data-kind={line.kind}>

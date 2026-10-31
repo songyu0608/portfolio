@@ -121,6 +121,20 @@ a {
   color: var(--color-on-accent);
 }
 
+/*
+ * 강제 색상 모드(Windows 고대비 등)는 채움을 지워 주력 태그가 다른 태그와 같아진다. 범례
+ * 「塗りつぶしたタグは…」가 채움으로 뜻을 설명하므로 시스템 색으로 채움을 유지한다(T14, docs/DESIGN.md §11).
+ * forced-color-adjust: none이 없으면 글자 바탕판(Canvas 색) 때문에 글자가 보이지 않는다.
+ */
+@media (forced-colors: active) {
+  .tag--featured {
+    border-color: CanvasText;
+    background-color: CanvasText;
+    color: Canvas;
+    forced-color-adjust: none;
+  }
+}
+
 .tag-list {
   display: flex;
   flex-wrap: wrap;
