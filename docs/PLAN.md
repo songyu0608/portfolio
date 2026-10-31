@@ -106,7 +106,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T08 | Hero 디코딩·프로젝트 카드 틸트와 상세 전환 (인터랙션 컨셉 1·2) | 5 | T07 | claude | done | `docs/tasks/T08-hero-cards.md` — 지시서 [PR #24](https://github.com/songyu0608/portfolio/pull/24), 구현 [PR #25](https://github.com/songyu0608/portfolio/pull/25) |
 | T09 | 스크롤 경력 타임라인 (인터랙션 컨셉 5) | 5 | T08 | claude | done | `docs/tasks/T09-career-timeline.md` — 지시서 [PR #27](https://github.com/songyu0608/portfolio/pull/27), 구현 [PR #28](https://github.com/songyu0608/portfolio/pull/28) |
 | T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | done | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30), 구현 [PR #31](https://github.com/songyu0608/portfolio/pull/31) |
-| T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | in-progress | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33) |
+| T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | in-progress | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33), 구현 [PR #34](https://github.com/songyu0608/portfolio/pull/34) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T12 SEO(canonical·hreflang·OG·sitemap·robots·favicon·404) → T13 접근성 점검·수정 → 단계 7~8. 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
