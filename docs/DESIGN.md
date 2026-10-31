@@ -223,7 +223,7 @@
 `src/scripts/hero-decode.ts`. 한 줄 소개 문단(`data-decode`)에만 적용한다.
 
 - Home을 열 때마다 1회, 약 1초(1000ms) 재생한다. 앞에서부터 글자가 확정되고(ease-out), 확정되지 않은 글자는 50ms마다 임의 글자로 바뀐다. 헤더 언어 전환은 다른 언어의 Home으로 이동하므로 그때 다시 재생된다. 다른 페이지에는 없다.
-- 임의 글자: 가나·한자·반각 가나는 전각 가타카나, 그 밖의 글자·숫자는 영문 대문자·숫자. 공백·구두점·괄호는 그대로이고 글자 수는 바뀌지 않는다.
+- 임의 글자: 글자·숫자만 바꾸며 폭을 유지한다. 전각 문자(가나·한자·한글·전각 영숫자)는 전각 가타카나, 반각 문자(영숫자·반각 가나)는 영문 대문자·숫자. 공백·구두점·괄호는 그대로이고 글자 수는 바뀌지 않는다.
 - 접근성: 최종 문구 문단은 그대로 두고 글자색만 투명하게 한 뒤(`.is-decoding`), 문단 안의 내용(문절 span 포함)을 복제한 장식용 겹침 요소(`.decode-overlay`, `aria-hidden="true"`, `pointer-events: none`, `user-select: none`)에 임의 글자를 그린다. 접근성 트리·복사·HTML에는 처음부터 최종 문구만 있다. 재생이 끝나면 겹침 요소를 지운다.
 - 겹침 요소는 문단 위 절대 위치(`inset: 0`, 넘침은 자름)라 문단 크기가 바뀌지 않는다. Chromium에서 Home의 CLS는 T07 main과 같다(2026-10-31 측정 0.32~0.37. 이 값은 디코딩과 무관한 기존 글꼴 교체 때문이며 단계 6에서 다룬다).
 - JS가 없거나 `prefers-reduced-motion: reduce`이거나 탭이 숨겨진 채 열리면 재생하지 않는다. 재생 중 탭이 숨겨지면 바로 최종 상태로 끝낸다.
@@ -377,7 +377,7 @@
 - `@view-transition { navigation: auto; }`는 Home·Projects 목록·프로젝트 상세에서만 불러온다. 이동 전후 문서가 모두 규칙을 가져야 전환되므로 이 세 페이지 사이(카드 → 상세, 「一覧へ戻る」, 이전·다음, 뒤로 가기)에서만 일어나고, About·Contact로 가는 이동에는 없다.
 - 카드 제목(h3)과 상세 h1은 같은 `view-transition-name: project-title-<slug>`를 가져 제목이 상세 제목 자리로 옮겨 간다. 나머지는 기본 크로스페이드다. 시간 280ms, `--ease-standard`. slug는 `src/lib/content.ts`가 영문 소문자·숫자·하이픈만 허용한다(CSS 식별자로 쓰기 위함).
 - `prefers-reduced-motion: reduce`에서는 `navigation: none`으로 끈다.
-- 브라우저 지원(MDN browser-compat-data `css.at-rules.view-transition`, 2026-10-31 확인): Chrome·Edge 126 이상, Safari 18.2 이상(iOS 포함). Firefox는 미지원이며 일반 페이지 이동이 된다. 폴리필은 두지 않는다.
+- 브라우저 지원([MDN browser-compat-data `css.at-rules.view-transition`](https://github.com/mdn/browser-compat-data/blob/main/css/at-rules/view-transition.json), [MDN `@view-transition`](https://developer.mozilla.org/en-US/docs/Web/CSS/@view-transition), 2026-10-31 확인): Chrome·Edge 126 이상, Safari 18.2 이상(iOS 포함). Firefox는 미지원이며 일반 페이지 이동이 된다. 폴리필은 두지 않는다.
 - 느린 연결: Chromium에서 Slow 4G 수준(지연 562ms, 내려받기 180KB/s)으로 낮춰도 카드 → 상세와 뒤로 가기 모두 제목 전환이 짝지어졌다(2026-10-31, T08). 그래서 `<link rel="expect" blocking="render">`는 넣지 않았다. 상세 페이지가 무거워져 제목이 페이드로 바뀌면 다시 검토한다.
 
 ## 8. Contact (T07)

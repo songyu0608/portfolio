@@ -9,19 +9,18 @@ const SCRAMBLE_INTERVAL = 50;
 const WIDE_POOL =
   'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン';
 const NARROW_POOL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-// 가나·한자·반각 가나는 전각 가타카나로, 그 밖의 글자·숫자는 영문 대문자·숫자로 바꾼다.
-// 공백·구두점·괄호는 그대로 둔다.
-const WIDE = /[぀-ヿ㐀-鿿豈-﫿ｦ-ﾟ]/u;
+// 글자·숫자만 바꾸고 공백·구두점·괄호는 그대로 둔다. 겹침 줄바꿈이 원문과 맞도록 폭을 유지해,
+// 전각(가나·한자·한글·전각 영숫자)은 전각 가타카나로, 반각(반각 가나 포함)은 영문 대문자·숫자로 바꾼다.
 const LETTER = /[\p{L}\p{N}]/u;
+const WIDE = /[ᄀ-ᅟ⺀-〾ぁ-㏿㐀-䶿一-鿿ꥠ-꥿가-힣豈-﫿！-｠￠-￦]/u;
 
 function randomFrom(pool: string): string {
   return pool[Math.floor(Math.random() * pool.length)] ?? '';
 }
 
 function scramble(char: string): string {
-  if (WIDE.test(char)) return randomFrom(WIDE_POOL);
-  if (LETTER.test(char)) return randomFrom(NARROW_POOL);
-  return char;
+  if (!LETTER.test(char)) return char;
+  return randomFrom(WIDE.test(char) ? WIDE_POOL : NARROW_POOL);
 }
 
 function decode(target: HTMLElement): void {

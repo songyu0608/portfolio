@@ -102,7 +102,7 @@ Home 히어로의 한 줄 소개가 페이지를 열 때 한 번 디코딩되며
 - [x] cross-document View Transitions 브라우저 지원 범위를 공식 자료로 확인해 `docs/DESIGN.md`에 출처와 함께 적는다. 이 환경에서 확인하지 못한 브라우저(Firefox·Safari 실기 등)는 PR에 미확인으로 적는다.
 - [x] PR 본문에 최신 커밋 기준 캡처가 있다: Home ja 라이트 1280px(디코딩 재생 중 1장, 끝난 뒤 1장), Projects 목록 ja 다크 1280px(카드 틸트 중), en 라이트 375px Home(끝난 상태). 가능하면 카드 → 상세 전환을 짧은 GIF나 연속 캡처로 남긴다.
 - [x] `docs/DESIGN.md` §5·§7, `docs/ARCHITECTURE.md` §2가 갱신되어 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다. (PR #25 CI 통과)
 - [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
