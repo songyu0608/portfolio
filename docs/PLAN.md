@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T11 구현)
+마지막 갱신: 2026-10-31 (T11 완료)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 6 품질 — T11 구현 |
-| 진행 중인 작업 | T11 구현(claude) 리뷰 |
-| 다음 작업 | T11 merge → T12 SEO 지시서 → T13 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 6 품질 — T11 완료 |
+| 진행 중인 작업 | 프레임워크 전환(Next.js + React) 계획 검토. 사용자가 방향을 골랐고 범위·순서는 미정(§7) |
+| 다음 작업 | 전환 범위·순서 결정 → T12 SEO 지시서 → T13 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -106,7 +106,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T08 | Hero 디코딩·프로젝트 카드 틸트와 상세 전환 (인터랙션 컨셉 1·2) | 5 | T07 | claude | done | `docs/tasks/T08-hero-cards.md` — 지시서 [PR #24](https://github.com/songyu0608/portfolio/pull/24), 구현 [PR #25](https://github.com/songyu0608/portfolio/pull/25) |
 | T09 | 스크롤 경력 타임라인 (인터랙션 컨셉 5) | 5 | T08 | claude | done | `docs/tasks/T09-career-timeline.md` — 지시서 [PR #27](https://github.com/songyu0608/portfolio/pull/27), 구현 [PR #28](https://github.com/songyu0608/portfolio/pull/28) |
 | T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | done | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30), 구현 [PR #31](https://github.com/songyu0608/portfolio/pull/31) |
-| T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | in-progress | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33), 구현 [PR #34](https://github.com/songyu0608/portfolio/pull/34) |
+| T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | done | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33), 구현 [PR #34](https://github.com/songyu0608/portfolio/pull/34) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T12 SEO(canonical·hreflang·OG·sitemap·robots·favicon·404) → T13 접근성 점검·수정 → 단계 7~8. 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -115,6 +115,12 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 - [ ] 커스텀 도메인 구입 여부와 도메인 이름 (단계 8 전, 메일 발송 설정에 필요할 가능성 높음)
 - [ ] 콘텐츠 원고 (`docs/CONTENT.md` 체크리스트). 단계 4는 임시 문구로 진행하고, 단계 8 배포 전에 교체한다
 - [x] 패키지 매니저 확정: pnpm 11.25.0 (T01)
+- [ ] 프레임워크 전환: 채용 공고에서 React·Next.js 수요가 크다는 이유로 사용자가 Next.js + React로 바꾸는 방향을 골랐다(2026-10-31). 전환 범위, T12·T13과의 순서, `AGENTS.md` §5·§7과 `docs/ARCHITECTURE.md` A1·A2·A10을 어떻게 바꿀지는 아직 정하지 않았다. 검토 때 확인한 점:
+  - 화면·기능은 모두 Next.js로 같게 만들 수 있다. 정적 출력(`output: 'export'`)이면 Cloudflare Workers 정적 자산으로 무료 배포된다(정적 자산 요청은 무료·무제한, [공식 문서](https://developers.cloudflare.com/workers/static-assets/billing-and-limitations)). 단계 8 동적 기능은 어느 쪽이든 Worker 함수다.
+  - 첫 로드 JS: 지금 모든 페이지 약 2KB(gzip) → Next.js 16.4.3 빈 페이지 정적 출력 실측 약 136KB(gzip, `noModule` 폴리필 제외). T11의 Lighthouse 결과를 다시 재야 한다.
+  - 다시 만들 것: `next/link`의 클라이언트 이동에서는 CSS 문서 간 View Transitions(T08 상세 전환)가 동작하지 않는다(React 19.3.1의 `ViewTransition` 또는 일반 `<a>`로 대체). T11 글꼴 통합은 Vite 플러그인이라 다시 작성한다. content collections(A9)를 대신할 YAML 로더가 필요하다.
+  - 대안으로 Astro를 유지하고 화면 컴포넌트만 React(.tsx, 서버에서 HTML로만 렌더)로 바꾸는 방법도 검토했다(페이지 JS 유지). 사용자는 Next.js 쪽을 골랐다.
+  - 일본 공고 수(2026-10-31 조사): フリーランスボード 2024-02~2026-08 누적 React 29,864건·Vue.js 12,244건·Next.js 8,486건, paiza 전직(2026-10-29) React 71건·Vue.js 67건·Next.js 18건·Nuxt.js 12건. Astro 공고 수 자료는 찾지 못했다.
 
 ## 8. 구현 시 공식 문서로 재확인할 항목
 
@@ -212,3 +218,5 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | 단계 6을 지시서 3개로 나눔: T11 = 성능, T12 = SEO, T13 = 접근성(이 순서). T11 지시서 작성: 첫 렌더 전 글꼴 CSS를 실제 쓰는 글자의 `unicode-range`만 남기고(글꼴 파일 재서브셋·새 의존성 없음), CLS 0.1 이하를 목표로 preload → 대체 글꼴 메트릭 맞춤 순서로 적용. `font-display: optional`·히어로 최소 높이는 사용자 결정 후에만 | 사용자 결정(나눔), T11 지시서 |
 | 2026-10-31 | T11 구현 담당 claude. 구현: 글꼴 CSS는 Astro Fonts API 대신 빌드 통합 `scripts/font-subset.mjs`(Fonts API는 빌드 때 외부 API 호출·HTML 인라인·범위 수동), 일본어 페이지 가나 범위 preload만(라틴 포함 시 CLS 악화), 대체 글꼴 메트릭 맞춤은 목표 달성으로 생략. 디코딩 정규식의 범위 글자를 코드 포인트로 바꿈(`src/scripts/hero-decode.ts`, 동작 같음) | 사용자 결정(담당), T11 구현 (`docs/ARCHITECTURE.md` A10) |
 | 2026-10-31 | 3G 수준 이하에서 남는 Home CLS(약 0.3)는 그대로 둔다. `font-display: optional`·한 줄 소개 최소 높이는 쓰지 않고, 원고 반영 때 다시 잰다 | 사용자 결정(T11 범위 3-4) |
+| 2026-10-31 | T11 PR #34 merge 완료 반영(CI 통과, Codex 교차 리뷰: 수정 필요 1건(화면 문구의 ` // `를 주석으로 지워 글꼴 누락을 놓침)은 주석을 지우지 않도록 고쳐 재검증 통과, 개선 제안 1건(완료 조건 표현)은 판정 기준을 지시서에 기록) | 지시서 없음 (문서만 변경) |
+| 2026-10-31 | 프레임워크를 Next.js + React로 바꾸는 방향을 고름. 범위·순서는 T11 완료 후 정한다(§7) | 사용자 결정 |
