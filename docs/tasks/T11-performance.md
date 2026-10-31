@@ -5,7 +5,7 @@
 | 단계 | 6 |
 | 선행 작업 | T10 (PR #31) |
 | 담당 | claude |
-| 상태 | in-progress |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T11-performance`) |
 
 ## 목표
@@ -14,7 +14,7 @@
 
 ## 배경
 
-- `docs/PLAN.md` §5 단계 6. 2026-10-31 사용자 결정으로 단계 6은 지시서 3개로 나눈다: **T11 = 성능**, T12 = SEO(canonical·hreflang·OG·sitemap·robots·favicon·404), T13 = 접근성 점검·수정. 글꼴 변경이 레이아웃과 측정값을 바꾸므로 성능을 먼저 한다.
+- `docs/PLAN.md` §5 단계 6. 2026-10-31 사용자 결정으로 단계 6은 지시서 3개로 나눈다: **T11 = 성능**, T12 = SEO(canonical·hreflang·OG·sitemap·robots·favicon·404), T13 = 접근성 점검·수정. 글꼴 변경이 레이아웃과 측정값을 바꾸므로 성능을 먼저 한다. (T11 완료 후 2026-10-31 사용자 결정으로 React 중심 전환이 T12가 되어 SEO는 T13, 접근성은 T14로 번호가 바뀌었다. 아래의 T12·T13은 각각 SEO·접근성을 뜻한다.)
 - `docs/PLAN.md` §8에서 단계 6으로 넘긴 항목:
   - T02 이월: 글꼴 CSS 크기. 공통 CSS가 첫 렌더 전에 모든 페이지에서 받아진다.
   - T08 발견: Home CLS 0.32~0.37(Chromium 1280px). IBM Plex Sans JP로 바뀔 때 히어로 줄바꿈이 바뀌어 아래 내용이 약 35px 올라간다.

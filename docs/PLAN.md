@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T11 구현)
+마지막 갱신: 2026-10-31 (T11 완료)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 6 품질 — T11 구현 |
-| 진행 중인 작업 | T11 구현(claude) 리뷰 |
-| 다음 작업 | T11 merge → T12 SEO 지시서 → T13 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 6 품질 — T11 완료 |
+| 진행 중인 작업 | T12 React 중심 전환(A안, §7) 지시서 준비 |
+| 다음 작업 | T12 React 전환 → T13 SEO → T14 접근성 → 단계 7~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -82,7 +82,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | done |
 | 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | done |
 | 5 | 인터랙션 구현: 컨셉 1~5 (T08 = 1·2, T09 = 5, T10 = 3·4) | done |
-| 6 | 품질: 성능(T11) → SEO(T12) → 접근성(T13) | in-progress |
+| 6 | 품질: 성능(T11) → React 중심 전환(T12) → SEO(T13) → 접근성(T14) | in-progress |
 | 7 | 테스트: E2E(Playwright), Lighthouse CI | todo |
 | 8 | 배포와 동적 기능: Cloudflare, 도메인, HTTPS, 방문 분석, 연락 폼, 회사별 비공개 페이지 | todo |
 | 9 | 운영: 콘텐츠 추가 절차 문서화, 카드 클릭률 확인 후 효과 조정 | todo |
@@ -106,15 +106,22 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T08 | Hero 디코딩·프로젝트 카드 틸트와 상세 전환 (인터랙션 컨셉 1·2) | 5 | T07 | claude | done | `docs/tasks/T08-hero-cards.md` — 지시서 [PR #24](https://github.com/songyu0608/portfolio/pull/24), 구현 [PR #25](https://github.com/songyu0608/portfolio/pull/25) |
 | T09 | 스크롤 경력 타임라인 (인터랙션 컨셉 5) | 5 | T08 | claude | done | `docs/tasks/T09-career-timeline.md` — 지시서 [PR #27](https://github.com/songyu0608/portfolio/pull/27), 구현 [PR #28](https://github.com/songyu0608/portfolio/pull/28) |
 | T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | done | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30), 구현 [PR #31](https://github.com/songyu0608/portfolio/pull/31) |
-| T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | in-progress | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33), 구현 [PR #34](https://github.com/songyu0608/portfolio/pull/34) |
+| T11 | 성능 최적화 (글꼴 로딩·CLS·스크립트 점검) | 6 | T10 | claude | done | `docs/tasks/T11-performance.md` — 지시서 [PR #33](https://github.com/songyu0608/portfolio/pull/33), 구현 [PR #34](https://github.com/songyu0608/portfolio/pull/34) |
 
-이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T12 SEO(canonical·hreflang·OG·sitemap·robots·favicon·404) → T13 접근성 점검·수정 → 단계 7~8. 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
+이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: T12 React 중심 전환(§7) → T13 SEO(canonical·hreflang·OG·sitemap·robots·favicon·404) → T14 접근성 점검·수정 → 단계 7~8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
 ## 7. 미결 사항
 
 - [ ] 커스텀 도메인 구입 여부와 도메인 이름 (단계 8 전, 메일 발송 설정에 필요할 가능성 높음)
 - [ ] 콘텐츠 원고 (`docs/CONTENT.md` 체크리스트). 단계 4는 임시 문구로 진행하고, 단계 8 배포 전에 교체한다
 - [x] 패키지 매니저 확정: pnpm 11.25.0 (T01)
+- [ ] React 중심 전환(A안, 2026-10-31 사용자 결정): Astro는 라우팅·빌드 틀로 두고, 화면 컴포넌트(`src/components/**/*.astro` 18개)를 React(`.tsx`, 빌드 때 HTML로만 렌더하고 브라우저 JS는 늘리지 않음)로 바꾼다. 저장소·사이트의 소개(README, 기술 스택 표기)는 「React + TypeScript」를 중심에 두고 Astro는 정적 빌드 도구로 함께 적는다. 빌드는 Vite 기반이다(Astro가 Vite로 빌드하며, T11 글꼴 통합도 Vite 플러그인). 디코딩·틸트 같은 작은 효과는 지금처럼 가벼운 스크립트로 두는 것이 권고안이다(React로 바꾸면 그 페이지가 React 본체 gzip 약 66KB를 받음). 세부(스타일 방식, 남길 `.astro` 파일)와 `AGENTS.md` §5·§7, `docs/ARCHITECTURE.md` A1·A2 갱신은 전환 지시서(T12)에서 정한다. 순서: T12 React 전환 → T13 SEO → T14 접근성(사용자 결정).
+  - 고른 이유: 일본 채용 공고에서 React 수요가 크다. 페이지 JS(약 2KB), T11 결과, View Transitions, Cloudflare 배포를 그대로 유지한다. React로 쓴 화면 코드는 나중에 Next.js로 옮길 때 대부분 그대로 쓸 수 있다.
+  - 검토 후 고르지 않은 안 — Next.js 정적 출력(`output: 'export'`, 한때 이 방향을 골랐다): 화면·기능은 같게 만들 수 있고 Cloudflare에서 무료로 배포된다. 그러나 첫 로드 JS가 약 2KB → 약 136KB(gzip, Next.js 16.4.3 빈 페이지 실측, `noModule` 폴리필 제외)로 늘고, `next/link` 클라이언트 이동에서는 CSS 문서 간 View Transitions가 동작하지 않으며, T11 글꼴 통합(Vite 플러그인)과 content collections(A9) 대체 로더를 다시 만들어야 한다. 서버 기능(SSR·ISR·Server Actions·middleware 등)은 정적 출력에서 쓸 수 없어([공식 문서](https://nextjs.org/docs/app/guides/static-exports)) Next.js를 쓰는 이점이 작다.
+  - 다른 메이저 프레임워크(React Router v7, Nuxt, SvelteKit)도 정적 출력은 되지만, 페이지 전체를 브라우저에서 다시 연결(hydration)하므로 프레임워크 본체 JS를 보낸다(크기는 측정하지 않음). Nuxt·SvelteKit은 React가 아니다.
+  - 일본 공고 수(2026-10-31 조사): フリーランスボード 2024-02~2026-08 누적 React 29,864건·Vue.js 12,244건·Next.js 8,486건, paiza 전직(2026-10-29) React 71건·Vue.js 67건·Next.js 18건·Nuxt.js 12건. Astro 공고 수 자료는 찾지 못했다.
+  - 용어: React는 공식 정의상 라이브러리("A JavaScript library for building user interfaces")지만, 공고·이력서에서는 프레임워크로 분류해도 된다(paiza도 React를 「フレームワーク」로 분류). 설계 문서에서는 역할을 나눠 "화면은 React, 페이지 구성·빌드는 Astro"로 적는다.
+  - 호스팅(2026-10-31 사용자 결정): Cloudflare를 유지한다(A3). 화면은 정적 출력으로 Workers 정적 자산에 올리고, 단계 8 API(연락 폼·회사별 비공개 페이지, §4)는 Workers 함수로 둔다. Vercel(Next.js 개발사, 무료 주소 `*.vercel.app`)도 검토했으나, 무료(Hobby) 플랜이 비상업적 개인 용도로 한정되어 구직 포트폴리오가 허용되는지 공식 답이 없고([공정 이용 가이드](https://vercel.com/docs/limits/fair-use-guidelines)), §4 API가 이미 Cloudflare 기준(Turnstile·KV·D1·메일)이라 관리할 곳을 하나로 둔다.
 
 ## 8. 구현 시 공식 문서로 재확인할 항목
 
@@ -212,3 +219,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | 단계 6을 지시서 3개로 나눔: T11 = 성능, T12 = SEO, T13 = 접근성(이 순서). T11 지시서 작성: 첫 렌더 전 글꼴 CSS를 실제 쓰는 글자의 `unicode-range`만 남기고(글꼴 파일 재서브셋·새 의존성 없음), CLS 0.1 이하를 목표로 preload → 대체 글꼴 메트릭 맞춤 순서로 적용. `font-display: optional`·히어로 최소 높이는 사용자 결정 후에만 | 사용자 결정(나눔), T11 지시서 |
 | 2026-10-31 | T11 구현 담당 claude. 구현: 글꼴 CSS는 Astro Fonts API 대신 빌드 통합 `scripts/font-subset.mjs`(Fonts API는 빌드 때 외부 API 호출·HTML 인라인·범위 수동), 일본어 페이지 가나 범위 preload만(라틴 포함 시 CLS 악화), 대체 글꼴 메트릭 맞춤은 목표 달성으로 생략. 디코딩 정규식의 범위 글자를 코드 포인트로 바꿈(`src/scripts/hero-decode.ts`, 동작 같음) | 사용자 결정(담당), T11 구현 (`docs/ARCHITECTURE.md` A10) |
 | 2026-10-31 | 3G 수준 이하에서 남는 Home CLS(약 0.3)는 그대로 둔다. `font-display: optional`·한 줄 소개 최소 높이는 쓰지 않고, 원고 반영 때 다시 잰다 | 사용자 결정(T11 범위 3-4) |
+| 2026-10-31 | T11 PR #34 merge 완료 반영(CI 통과, Codex 교차 리뷰: 수정 필요 1건(화면 문구의 ` // `를 주석으로 지워 글꼴 누락을 놓침)은 주석을 지우지 않도록 고쳐 재검증 통과, 개선 제안 1건(완료 조건 표현)은 판정 기준을 지시서에 기록) | 지시서 없음 (문서만 변경) |
+| 2026-10-31 | React / Next.js 전환을 검토해 한때 Next.js 쪽을 골랐다가, 정적 출력에서는 Next.js의 이점이 작고 페이지 JS가 크게 늘어 A안(Astro 유지 + 화면 컴포넌트 React)으로 결정. 소개는 「React + TypeScript」 중심(§7) | 사용자 결정 |
+| 2026-10-31 | 호스팅은 Cloudflare 유지, Vercel은 검토 후 쓰지 않음. 단계 8 API는 Workers 함수(§7) | 사용자 결정 |
+| 2026-10-31 | 단계 6 순서 변경: React 중심 전환을 T12로 넣고 SEO는 T13, 접근성은 T14로 미룸(마크업 점검을 전환 뒤에 한 번만 하기 위해) | 사용자 결정 |
