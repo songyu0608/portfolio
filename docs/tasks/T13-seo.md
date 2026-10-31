@@ -5,7 +5,7 @@
 | 단계 | 6 |
 | 선행 작업 | T12 (PR #37) |
 | 담당 | claude |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T13-seo`) |
 
 ## 목표
@@ -220,7 +220,7 @@
 - [x] 글꼴 누락 검사가 빌드에서 통과한다(새 404 문구 포함). `@font-face` 개수가 늘면 이유를 적는다.
 - [x] 새 의존성이 없다(`package.json` 의존성 항목, `pnpm-lock.yaml` 변경 없음).
 - [x] 문서가 갱신되어 있다: `docs/ARCHITECTURE.md` §2·A12, `docs/DESIGN.md`, `docs/PLAN.md`(진행 상태·표·결정 기록·§8 단계 8 항목).
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
 - [x] 비밀 값 미포함.
 
 ## 확인 방법
