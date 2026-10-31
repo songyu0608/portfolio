@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-30 (T07 Contact 구현 PR)
+마지막 갱신: 2026-10-31 (T07 PR #22 merge 반영, 단계 4 완료)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 4 — 페이지 구현 |
-| 진행 중인 작업 | T07 Contact 구현 (claude, PR 리뷰 대기) |
-| 다음 작업 | T07 merge 후 단계 4 마무리. 다음 지시서(원고 반영 또는 단계 5 인터랙션)는 사용자가 정함 |
+| 현재 단계 | 단계 4 완료 — 다음 단계 선택 대기 |
+| 진행 중인 작업 | 없음 (T07 완료) |
+| 다음 작업 | 다음 지시서 작성(원고 반영 또는 단계 5 인터랙션, 사용자가 정함) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -80,7 +80,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 1 | 프로젝트 초기화: Astro, TypeScript, lint/format, CI | done |
 | 2 | 디자인 시스템: 색, 타이포그래피, 간격, 다크 모드, 인터랙션 세부 확정 | done |
 | 3 | 공통 레이아웃: 헤더, 푸터, 내비게이션, 언어 전환 | done |
-| 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | in-progress |
+| 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | done |
 | 5 | 인터랙션 구현: 컨셉 1~5 | todo |
 | 6 | 품질: SEO, 접근성, 성능 최적화 | todo |
 | 7 | 테스트: E2E(Playwright), Lighthouse CI | todo |
@@ -103,7 +103,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T05 | About/경력 (경력 타임라인·기술 스택·자격증·이력서 PDF, 임시 문구) | 4 | T04 | claude | done | `docs/tasks/T05-about.md` — 지시서 [PR #15](https://github.com/songyu0608/portfolio/pull/15), 구현 [PR #16](https://github.com/songyu0608/portfolio/pull/16) |
 | T06 | Projects (목록·상세·担当工程, 임시 문구) | 4 | T05 | claude | done | `docs/tasks/T06-projects.md` — 지시서 [PR #18](https://github.com/songyu0608/portfolio/pull/18), 구현 [PR #19](https://github.com/songyu0608/portfolio/pull/19) |
 
-| T07 | Contact (연락 수단 목록·메일 복사 버튼·푸터 연락 링크, 임시 문구) | 4 | T06 | claude | review | `docs/tasks/T07-contact.md` — 지시서 [PR #21](https://github.com/songyu0608/portfolio/pull/21) |
+| T07 | Contact (연락 수단 목록·메일 복사 버튼·푸터 연락 링크, 임시 문구) | 4 | T06 | claude | done | `docs/tasks/T07-contact.md` — 지시서 [PR #21](https://github.com/songyu0608/portfolio/pull/21), 구현 [PR #22](https://github.com/songyu0608/portfolio/pull/22) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 원고 반영(기술 로고 포함), 단계 5 인터랙션.
 
@@ -180,3 +180,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-30 | `.gitattributes`로 줄바꿈을 LF에 고정. Windows 노트북에서도 작업하기 때문(사용자 확인). 기존 Windows 체크아웃의 재체크아웃 방법은 `AGENTS.md` §6 | 지시서 없음, Codex 리뷰(PR #19)에서 `core.autocrlf=true` 환경의 `pnpm format:check` 실패 보고 |
 | 2026-10-30 | T07 Contact 지시서 작성. 연락 수단 목록(메일·GitHub·LinkedIn, 값이 있는 것만), 메일 복사 버튼(점진적 향상), 모든 페이지 푸터에 연락 링크. 희망 조건 칸·폼 자리는 두지 않고 Home 히어로는 「連絡する」 버튼만 유지 | 사용자 결정(범위 정리·시안 확인), T07 지시서 |
 | 2026-10-30 | T07 지시서 PR #21 merge(GitHub Actions 실행 대기로 최신 커밋 CI 결과 없이 사용자가 merge. 문서만 변경, 첫 커밋 CI는 4단계 통과). 연락처 3개(메일·GitHub·LinkedIn)를 실제 값으로 수집. T07 구현 담당 claude | 사용자 결정 |
+| 2026-10-31 | T07 PR #22 merge 완료 반영(CI 통과, Codex 교차 리뷰 수정 필요·개선 제안 없음). 단계 4 완료. Contact UI 문구(「連絡方法」「コピー」 등)는 지시서 기본안으로 merge했고 사용자 확인 전이다. 바꿀 때는 `src/i18n/ui.ts`만 고친다 | 지시서 없음 (문서만 변경) |
