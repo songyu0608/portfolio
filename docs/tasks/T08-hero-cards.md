@@ -5,7 +5,7 @@
 | 단계 | 5 |
 | 선행 작업 | T07 (PR #22) |
 | 담당 | claude |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-9xxr6l` (실행 환경이 지정한 이름. 원칙상 이름은 `<agent>/T08-hero-cards`) |
 
 ## 목표
