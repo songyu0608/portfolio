@@ -41,3 +41,36 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  # Lighthouse 점수 기준(T16, docs/ARCHITECTURE.md "테스트"). check와 동시에, 폼팩터마다 작업 하나.
+  # 포맷·lint·타입 체크는 check 작업이 하므로 여기서 반복하지 않는다.
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      # 한쪽이 실패해도 다른 폼팩터 결과를 남긴다.
+      fail-fast: false
+      matrix:
+        form-factor: [mobile, desktop]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      # Lighthouse가 띄울 Chromium. 버전은 lockfile의 Playwright 버전으로 고정된다(캐시하지 않음).
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      # 점수 요약 표는 작업 요약(GITHUB_STEP_SUMMARY)에 나온다.
+      - name: Lighthouse
+        run: pnpm lighthouse --project=${{ matrix.form-factor }}
+      - name: Upload Lighthouse report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report-${{ matrix.form-factor }}
+          path: lighthouse-report/
+          retention-days: 7

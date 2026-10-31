@@ -18,7 +18,7 @@ Cloudflare Workers (정적 자산)
 - 기본은 완전 정적. 서버 실행이 필요한 경로만 Workers 함수로 처리한다.
 - 단계 7까지는 Workers 함수가 없어도 사이트가 완성되어야 한다.
 
-## 2. 디렉터리 구조 (T15 기준)
+## 2. 디렉터리 구조 (T16 기준)
 
 ```text
 .
@@ -77,17 +77,21 @@ Cloudflare Workers (정적 자산)
 │  ├─ *.chromium.spec.ts      ← Chromium에서만 도는 테스트(SEO·접근성 트리·reduced-motion·텍스트 간격 등)
 │  ├─ support/                ← 페이지 목록·문구(site.ts), 팔레트·터미널 열기, axe, 레이아웃 도우미
 │  └─ __snapshots__/          ← 접근성 트리 기준 파일(aria.chromium.spec.ts, 커밋)
+├─ tests/lighthouse/          ← Lighthouse 점수 기준(T16, 아래 "테스트")
+│  ├─ lighthouse.spec.ts      ← 페이지 × 폼팩터마다 3회 측정·판정
+│  └─ support/                ← 측정 대상(targets.ts), Lighthouse CLI 실행(lighthouse.ts), 요약 표·reporter
 ├─ playwright.config.ts        ← 브라우저 3개, 미리보기 서버, CI 설정, 스냅샷 위치(T15)
+├─ playwright.lighthouse.config.ts ← Lighthouse용: 프로젝트 mobile·desktop, workers 1, 보고서 lighthouse-report/(T16)
 ├─ astro.config.mjs            ← 정적 출력, site(절대 주소, 임시 값이면 빌드 경고), React, i18n, 글꼴 통합
 ├─ tsconfig.json               ← Astro strict + React JSX
 ├─ eslint.config.mjs            ← JS, TypeScript, Astro, React, Hooks
 ├─ .prettierrc.json / .prettierignore / .editorconfig
 ├─ package.json / pnpm-lock.yaml / pnpm-workspace.yaml
 ├─ .nvmrc / .npmrc              ← Node 버전 및 엔진 검사
-└─ .github/workflows/ci.yml      ← 포맷 → lint → 타입 → 빌드 → E2E(T15)
+└─ .github/workflows/ci.yml      ← check: 포맷 → lint → 타입 → 빌드 → E2E(T15). lighthouse: 빌드 → Lighthouse(mobile·desktop 두 작업, T16)
 ```
 
-Lighthouse CI는 T16, Workers 함수는 단계 8에 추가한다.
+Workers 함수는 단계 8에 추가한다.
 
 ### 글꼴 로딩 (T11 결정)
 
@@ -131,7 +135,7 @@ Lighthouse CI는 T16, Workers 함수는 단계 8에 추가한다.
 - **파비콘·공유 이미지**: `public/`에 커밋한 파일이다. 원본과 만드는 스크립트는 `scripts/brand/`(README.md)이며, 실행 환경의 Playwright Chromium으로 그린다. 빌드에서는 만들지 않는다(빌드에 브라우저가 필요해지고 새 의존성이 생기므로). 모양은 `docs/DESIGN.md` §10.
 - **검증 방법(T13)**: `dist/**/*.html`(루트 이동·404 제외)을 읽어 canonical·`og:url` = `site` + 경로, hreflang 3개(자기 포함, x-default = ja)가 짝 페이지와 같음, OG 속성이 하나씩, 파비콘 링크 3개, sitemap `<loc>` = 페이지 목록·`xhtml:link` = `<head>` 묶음, 404의 `noindex`와 canonical·hreflang·`og:url` 없음을 확인했다. T15에서 E2E(`tests/e2e/seo.chromium.spec.ts`)로 옮겼다. sitemap 완전성은 sitemap과 독립된 `dist/{ja,en}/**/index.html` 목록과 비교한다.
 
-### 테스트 (T15 결정)
+### 테스트 (T15 결정, T16 Lighthouse 추가)
 
 - **도구**: Playwright Test(`@playwright/test`)와 `@axe-core/playwright`(axe-core 4.14). 설정은 루트 `playwright.config.ts`, 테스트는 `tests/e2e/`다. Node 타입(`@types/node`, 2026-10-31 사용자 승인)은 테스트·설정 파일의 `pnpm check`에 쓴다.
 - **실행**: `pnpm build` 뒤 `pnpm test`(= `playwright test`). 테스트가 빌드하지 않으므로 소스를 바꾸면 먼저 빌드한다. `webServer`가 `astro preview --port 4329 --ignore-lock`으로 `dist/`를 띄운다. `--ignore-lock`은 Astro가 AI 에이전트 실행을 감지하면 미리보기를 백그라운드로 돌리고 잠금 파일로 두 번째 실행을 막는 동작을 끈다(Astro 7.4.4 `cli/preview` 코드 확인). 로컬은 이미 떠 있는 4329 서버를 다시 쓴다(`reuseExistingServer: !CI`).
@@ -146,6 +150,25 @@ Lighthouse CI는 T16, Workers 함수는 단계 8에 추가한다.
 - **접근성 트리 기준 파일**: `tests/e2e/__snapshots__/aria.chromium.spec.ts/<경로>.aria.yml`(19개). 위치 규칙(`expect.toMatchAriaSnapshot.pathTemplate`)에 플랫폼·프로젝트 이름이 없어 Linux CI와 Windows가 같은 파일을 쓴다. 원고·화면을 바꾸면 `pnpm test --project=chromium --update-snapshots`로 갱신하고 PR에서 diff를 리뷰한다(문구가 들어 있어 원고 반영 때 바뀌는 것은 의도된 diff).
 - **CI**: 빌드 뒤 브라우저 설치(캐시하지 않음, Playwright 공식 권장) → `pnpm test` → 취소되지 않았으면 `playwright-report/`를 artifact(7일)로 올린다. 실패하면 PR의 `check` 작업 artifact에서 HTML 보고서를 받아 `pnpm exec playwright show-report <폴더>`로 연다.
 - 무엇을 어느 파일이 보는지는 `docs/tasks/T15-e2e-tests.md` 범위 2와 T15 PR의 "파일 · 테스트 · 브라우저 · 폭" 표.
+- **Lighthouse 점수 기준 (T16)**
+  - **도구**: `lighthouse` 13.6.0(devDependency, 2026-11-01 사용자 결정). 실행 틀은 Playwright Test다: 설정 `playwright.lighthouse.config.ts`, 테스트 `tests/lighthouse/`. E2E(`pnpm test`)와 설정·폴더·미리보기 포트(4330)가 따로라 섞이지 않는다.
+  - **실행**: `pnpm build` 뒤 `pnpm lighthouse`(= `playwright test -c playwright.lighthouse.config.ts`). 프로젝트 `mobile`·`desktop`이 폼팩터다(`--project=mobile`로 한쪽만). `workers: 1`(측정끼리 CPU를 나누면 점수가 흔들림), `retries: 0`. T16 구현 환경(클라우드 컨테이너)에서 10페이지 × 3회가 폼팩터마다 약 6분(테스트 하나 약 35초) 걸렸다.
+  - **측정 방법**: 측정 1회마다 `lighthouse` CLI를 새 프로세스로 실행한다. CLI가 회차마다 새 프로필로 Chrome을 띄운다. 플래그는 `--chrome-flags="--headless=new --no-sandbox"`, 데스크톱만 `--preset=desktop`이고 스로틀링 등은 기본값이다. Playwright로 연 브라우저에 붙이지 않는 이유는 Playwright가 headless Chromium에 hover·pointer 종류를 바꾸는 `--blink-settings`를 더하기 때문이다(Playwright 1.64.1 코드 확인, 카드 틸트의 hover 조건에 영향).
+  - **Chrome**: Playwright가 설치한 Chromium(`chromium.executablePath()`)을 `CHROME_PATH`로 준다. 버전이 lockfile의 Playwright 버전으로 고정되어, 점수가 바뀌면 코드 변경 때문인지 알 수 있다. 브라우저를 내려받을 수 없는 환경은 E2E와 같은 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`를 쓴다.
+  - **측정 대상**: `sitePages()`에서 언어·페이지 종류(`pageKinds`)마다 sitemap 순서의 첫 페이지(ja·en × 5종류 = 10페이지). 조합이 하나라도 빠지면 테스트를 모을 때 실패한다. 404는 `noindex`라 SEO "크롤링 가능" 감사가 의도대로 실패하므로 넣지 않는다.
+  - **기준**(페이지 × 폼팩터마다 3회)
+
+    | 항목 | 기준 | 모으는 방법 |
+    | --- | --- | --- |
+    | Performance | 모바일 90 이상, 데스크톱 95 이상(T11) | 3회 중앙값 |
+    | CLS | 0.1 이하(T11) | 3회 중앙값 |
+    | 접근성·Best Practices·SEO | 100(T13·T14) | 3회 모두 |
+    | Agentic Browsing | 기준 없음(13.x에서 개발 중인 카테고리) | 기록만 |
+
+    성능 점수가 중앙값인 회차가 대표 회차다. 실패 메시지에 회차별 점수·지표, 점수를 깎은 감사 ID를 적는다.
+  - **결과 보기**: 끝에 Markdown 요약 표(판정·점수·LCP·CLS·TBT)를 콘솔과 GitHub Actions 작업 요약에 낸다(`tests/lighthouse/support/summary-reporter.ts`). Playwright HTML 보고서(`lighthouse-report/`, 커밋하지 않음)에 테스트마다 대표 회차의 Lighthouse HTML 보고서가 붙는다.
+  - **CI**: `lighthouse` 작업이 `check`와 동시에 폼팩터별로 두 번 돈다(`strategy.matrix`, `fail-fast: false`). 빌드 → Chromium 설치 → `pnpm lighthouse --project=<폼팩터>` → `lighthouse-report/`를 artifact(7일)로 올린다. 흔들림으로 보이는 실패는 재실행으로 넘기지 않고 회차별 값을 남겨 기준·회차 조정을 사용자와 정한다.
+  - **한계**: 미리보기 서버(`astro preview`, gzip)는 배포 환경(Cloudflare)과 압축 방식·캐시 헤더가 다를 수 있다. 배포 URL 측정은 단계 8이다. 같은 페이지라도 Lighthouse 13은 12보다 FCP·LCP가 낮게 나와(원인 미확인, T16 지시서 사전 측정) T11의 지표 값과 그대로 비교하지 않는다.
 
 ### 페이지 파일 방식 (T03 결정, T12 갱신)
 
@@ -208,6 +231,7 @@ T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는
 | A11 | 화면은 React + TypeScript, 페이지 구성·정적 빌드는 Astro(Vite 기반). 화면 컴포넌트(`src/components/**/*.tsx`)는 `client:*` 없이 빌드 때 HTML로만 렌더하고, 콘텐츠 조회·`<head>`·페이지 스크립트는 `.astro`(레이아웃·라우트)가 맡는다. 브라우저에서 실행하는 React는 A2대로 컨셉 3·4뿐 | 일본 채용 공고에서 React 수요가 크다(`docs/PLAN.md` §7). 정적 출력과 페이지 JS(헤더 스크립트 + 페이지 스크립트), T11 글꼴 통합(A10), content collections(A9), 문서 간 View Transitions, Cloudflare 정적 배포(A3)를 그대로 유지 | Astro 컴포넌트 유지(A1), Next.js 정적 출력(첫 로드 JS 약 136KB gzip, `next/link` 이동에서 문서 간 View Transitions 미동작, 글꼴 통합·콘텐츠 로더 재작성), React Router v7·Nuxt·SvelteKit(hydration으로 프레임워크 본체 JS를 보냄) | accepted (2026-10-31 사용자 결정, T12에서 전환. 스타일은 CSS Modules, §2 "화면 컴포넌트와 스타일") |
 | A12 | SEO: 절대 URL은 `astro.config.mjs`의 `site` 한 곳에서 `src/lib/seo.ts`로 만든다(도메인 결정 전에는 임시 값 + 빌드 경고). sitemap·robots는 엔드포인트, 404는 ja·en 안내를 함께 보여주는 `dist/404.html` 하나, 파비콘·공유 이미지는 `scripts/brand/`에서 만들어 커밋 | 도메인을 정할 때(단계 8) 값 하나만 바꾸면 된다. hreflang 묶음을 `<head>`와 sitemap이 같은 함수로 만들어 어긋나지 않는다. 새 의존성·빌드 시간 증가 없음. Astro는 언어 폴더 아래 404를 `ja/404/index.html`로 출력해 언어별 `404.html`을 바로 만들 수 없다 | `@astrojs/sitemap`(새 의존성, 기능 비교 안 함), 언어별 404(빌드 후 파일 이동 필요, 단계 8에 재검토), 빌드 때 공유 이미지 생성(satori 등 새 의존성), 페이지별 공유 이미지(원고 반영 뒤 검토) | accepted (T13, §2 "SEO") |
 | A13 | E2E는 Playwright Test로 Chromium·WebKit·Firefox 3개 브라우저에서 기능·키보드·axe를 돌리고, 화면 회귀는 픽셀 캡처 대신 접근성 트리(`toMatchAriaSnapshot`)·레이아웃 값으로 본다. 페이지 목록은 sitemap, 문구는 `ui.ts`·`commands.json`에서 가져온다 | 지시서마다 손으로 하던 확인을 PR마다 자동으로. 원고 반영 뒤 같은 테스트로 다시 확인(접근성 트리 기준만 갱신). OS에 따라 달라지는 기준 이미지가 없어 Windows에서도 같은 기준을 쓴다. Public 저장소라 CI 시간 비용 없음 | 픽셀 캡처 비교(기준 이미지를 Linux에서만 만들 수 있어 Windows는 Docker 필요), Chromium만(WebKit·Firefox 이월 항목이 남음) | accepted (2026-10-31 사용자 결정, T15, §2 "테스트") |
+| A14 | Lighthouse 점수 기준은 `lighthouse` 13.6.0 CLI를 Playwright Test에서 회차마다 새 프로세스로 실행해 검사한다. sitemap에서 언어·종류마다 1페이지(10페이지) × 모바일·데스크톱 × 3회, 성능·CLS는 중앙값, 접근성·Best Practices·SEO는 3회 모두 100. Chromium은 Playwright 버전으로 고정, CI는 폼팩터별 작업 2개 | 손으로 재던 T11·T13·T14 기준을 PR마다 자동으로. E2E의 페이지 목록·미리보기 서버·보고서 흐름을 그대로 씀. 새 의존성 1개, `pnpm audit` 경고 증가 moderate 1건. 점수 요약을 CI 작업 요약에서 바로 봄 | `@lhci/cli` 0.15.1(Lighthouse 12.6.1 고정, `pnpm audit` 경고 7건(high 5) 증가), 보고서 공개 업로드(`temporary-public-storage`), Playwright로 연 브라우저에 Lighthouse를 붙이기(hover·pointer 실행 옵션이 섞임), runner에 설치된 Chrome(이미지 갱신 때 버전이 바뀜) | accepted (2026-11-01 사용자 결정, T16, §2 "테스트") |
 
 직접 의존성은 정확한 버전으로 통일하고, 간접 의존성은 lockfile로 고정한다. CI는 `pnpm install --frozen-lockfile`을 사용한다. pnpm 버전은 `packageManager`로 고정한다.
 

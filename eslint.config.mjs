@@ -12,8 +12,9 @@ export default defineConfig(
       'dist/**',
       '.astro/**',
       'node_modules/**',
-      // Playwright 결과물(T15). 보고서에 번들된 JS가 들어 있다.
+      // Playwright 결과물(T15·T16). 보고서에 번들된 JS가 들어 있다.
       'playwright-report/**',
+      'lighthouse-report/**',
       'test-results/**',
     ],
   },

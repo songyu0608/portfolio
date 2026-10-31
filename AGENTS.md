@@ -55,7 +55,7 @@ Claude 전용 메모는 `CLAUDE.md`에 있지만, 규칙은 여기만 고친다.
 - 인터랙션: 기본은 `<script>`(TS 모듈)·CSS. 브라우저에서 실행하는 React는 상태가 많은 명령 팔레트·터미널(T10)뿐이고, 열 때 동적 import한다(island 아님). Motion / GSAP은 현재 쓰지 않는다
 - 호스팅: Cloudflare Workers 정적 자산 (무료 플랜). 동적 기능(연락 폼, 회사별 비공개 페이지)은 단계 8에서 Workers 함수로 추가
 - i18n: Astro 내장 i18n 라우팅 (`/ja`, `/en`)
-- 테스트: Playwright(E2E), Lighthouse CI
+- 테스트: Playwright(E2E), Lighthouse 13(점수 기준, Playwright Test에서 CLI 실행. T16, `docs/ARCHITECTURE.md` A14)
 
 ## 6. 명령어
 
@@ -71,13 +71,14 @@ pnpm check      # astro check (타입 체크)
 pnpm build      # 정적 빌드
 pnpm preview    # 빌드 결과 확인
 pnpm test       # E2E(Playwright, 3개 브라우저). pnpm build 뒤에 실행
+pnpm lighthouse # Lighthouse 점수 기준(모바일·데스크톱, 10페이지 × 3회). pnpm build 뒤에 실행
 ```
 
 `pnpm build`는 글꼴 범위 검사(`scripts/font-subset.mjs`, T11)를 함께 실행한다. 원고를 바꾼 뒤 빌드가 「남긴 @font-face가 덮지 않는 글자」로 실패하면 그 스크립트가 글자를 모으는 파일 범위를 확인한다.
 
-`pnpm test`는 빌드하지 않으므로 소스를 바꾸면 먼저 `pnpm build`를 한다. 처음 한 번 브라우저를 설치한다: `pnpm exec playwright install --with-deps chromium webkit firefox`(`--with-deps`는 Linux만). 브라우저를 내려받을 수 없는 환경은 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`로 Chromium 실행 파일을 주고 `pnpm test --project=chromium`만 돌린다. 원고·화면을 바꾸면 접근성 트리 기준을 `pnpm test --project=chromium --update-snapshots`로 갱신하고 diff를 PR에 올린다. 테스트 규칙(페이지 목록·문구를 하드코딩하지 않음 등)은 `docs/ARCHITECTURE.md` §2 "테스트".
+`pnpm test`는 빌드하지 않으므로 소스를 바꾸면 먼저 `pnpm build`를 한다. 처음 한 번 브라우저를 설치한다: `pnpm exec playwright install --with-deps chromium webkit firefox`(`--with-deps`는 Linux만). 브라우저를 내려받을 수 없는 환경은 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`로 Chromium 실행 파일을 주고 `pnpm test --project=chromium`만 돌린다. 원고·화면을 바꾸면 접근성 트리 기준을 `pnpm test --project=chromium --update-snapshots`로 갱신하고 diff를 PR에 올린다. 테스트 규칙(페이지 목록·문구를 하드코딩하지 않음 등)은 `docs/ARCHITECTURE.md` §2 "테스트". `pnpm lighthouse`도 같은 Chromium을 쓴다(없으면 `pnpm exec playwright install chromium`, 또는 같은 환경 변수). 한쪽만 재려면 `--project=mobile`.
 
-CI는 설치 → 포맷 → lint → 타입 체크 → 빌드 → E2E(브라우저 설치 → `pnpm test`) 순서로 실행한다.
+CI는 두 작업이 동시에 돈다. `check`: 설치 → 포맷 → lint → 타입 체크 → 빌드 → E2E(브라우저 설치 → `pnpm test`). `lighthouse`(폼팩터별 2개): 설치 → 빌드 → Chromium 설치 → `pnpm lighthouse --project=<mobile|desktop>`. Lighthouse 점수 요약은 CI 작업 요약에 나온다.
 
 줄바꿈은 `.gitattributes`(`* text=auto eol=lf`)로 LF에 고정되어 있다. Windows에서도 새로 clone하면 그대로 LF로 받는다. `.gitattributes`가 추가되기 전(2026-10-30)에 받아 둔 Windows 체크아웃은 CRLF 파일이 남아 `pnpm format:check`가 실패할 수 있으므로, 한 번만 아래처럼 다시 체크아웃한다(`reset --hard`는 커밋하지 않은 변경을 지우므로 먼저 커밋하거나 stash한다).
 
