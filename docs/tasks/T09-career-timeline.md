@@ -4,9 +4,9 @@
 | --- | --- |
 | 단계 | 5 |
 | 선행 작업 | T08 (PR #25) |
-| 담당 | - |
-| 상태 | todo |
-| 브랜치 | `<agent>/T09-career-timeline` (실행 환경이 이름을 정하면 그 이름을 쓰고 PR 제목에 `T09`를 넣는다) |
+| 담당 | claude |
+| 상태 | review |
+| 브랜치 | `claude/project-thread-n27zgi` (실행 환경이 지정한 이름. 원칙상 이름은 `<agent>/T09-career-timeline`) |
 
 ## 목표
 
@@ -31,7 +31,7 @@ About의 경력 타임라인에서, 페이지를 스크롤하면 세로선이 �
 
 1. **구현 방식 (기본안)**
    - **CSS 스크롤 기반 애니메이션(`animation-timeline: view()`)만 쓰고 JS는 추가하지 않는다.** React island·새 의존성도 쓰지 않는다.
-   - 이유: 효과가 "각 항목의 화면 안 위치 → 선·점 스타일" 한 가지라 상태가 필요 없고, 스크롤 이벤트·IntersectionObserver 스크립트 없이 브라우저가 합성 스레드에서 처리할 수 있다. 지원하지 않는 브라우저는 지금 화면(최종 상태) 그대로다.
+   - 이유: 효과가 "각 항목의 화면 안 위치 → 선·점 스타일" 한 가지라 상태가 필요 없고, 스크롤 이벤트·IntersectionObserver 스크립트 없이 브라우저가 스크롤 위치에 맞춰 스타일을 정한다(애니메이션하는 `background-size`·`border-color`는 합성 스레드 처리가 보장되지 않는다). 지원하지 않는 브라우저는 지금 화면(최종 상태) 그대로다.
    - 선(`::before`)과 점(`::after`)은 같은 항목(`li`)의 화면 안 위치를 따라야 한다. 의사 요소에 `animation-timeline: view()`를 직접 주면 각 의사 요소가 자기 박스를 추적하므로, `li`에 이름 있는 view timeline(`view-timeline: --timeline-item block`, 이름은 기본안)을 만들고 두 의사 요소가 `animation-timeline: --timeline-item`으로 공유한다([Chrome 가이드](https://developer.chrome.com/docs/modern-web-guidance/guides/ui-behaviors/scroll-entry-exit-effects), [MDN animation-timeline](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-timeline)).
    - 모든 규칙을 `@supports (animation-timeline: view()) and (animation-range: entry)`와 `@media (prefers-reduced-motion: no-preference)` 안에 둔다. 둘 중 하나라도 맞지 않으면 T05 화면과 같다.
    - 이 결정을 `docs/DESIGN.md` §3 공통 구현 규칙과 `docs/ARCHITECTURE.md` A2 비고에 반영한다(지시서 PR에서 반영 완료).
@@ -42,7 +42,7 @@ About의 경력 타임라인에서, 페이지를 스크롤하면 세로선이 �
    - 점 강조: 항목이 위 구간의 시작에 닿으면 점 테두리가 text-muted에서 accent로 바뀐다. 현재 재직 항목의 채운 점(accent)은 그대로 둔다. 짧은 구간(예: `entry 100%` 부근 10%)으로 바꿔 갑자기 깜박이지 않게 한다.
    - 스크롤을 되돌리면 선·점도 되돌아간다(스크롤 위치에 묶인 상태). 페이지를 맨 위에서 열 때 이미 화면 안에 있는 항목은 그 위치에 맞는 상태로 바로 보인다.
    - **글자는 흐리게 하거나 숨기지 않는다.** 기간·회사명·직무·성과는 언제나 지금과 같은 색·불투명도·위치다. 시안의 "불투명도 0.12에서 나타남"은 적용하지 않는다. 이유: 스크롤을 멈춘 위치에 따라 화면 안 항목 글자가 대비 기준(4.5:1) 아래로 남을 수 있고, 핵심 정보인 경력 문구가 흐리게 보이는 상태를 만들지 않기 위함이다. 사용자가 시안대로의 나타남 효과를 원하면 구현 PR에서 추가한다(메모 참고).
-   - 닿지 못하는 항목이 없어야 한다: 페이지 끝까지 스크롤했을 때 마지막 항목 바로 위 선까지 모두 채워지고 모든 점이 강조되어야 한다(타임라인 아래에 기술 스택·자격증 섹션이 있어 지금 구성에서는 닿는다). 1280×800, 1280×1200, 375×667에서 확인한다. 원고 반영 후 아래 섹션이 짧아져도 닿도록 구간을 `cover 50%`보다 늦게 잡지 않는다.
+   - 닿지 못하는 항목이 없어야 한다: 페이지 끝까지 스크롤했을 때 마지막 항목 바로 위 선까지 모두 채워지고 모든 점이 강조되어야 한다(타임라인 아래에 기술 스택·자격증 섹션이 있어 지금 구성에서는 닿는다). 1280×800, 1280×1200, 375×667에서 확인한다. ~~원고 반영 후 아래 섹션이 짧아져도 닿도록 구간을 `cover 50%`보다 늦게 잡지 않는다.~~ → 2026-10-31 사용자 결정: 구현에서 기준선을 화면 가운데로 바꿨다(선은 화면 가운데가 이 항목의 점에서 다음 점으로 갈 때 채워짐). 이 방식은 타임라인 아래 내용(기술 스택·자격증·푸터)이 화면 높이의 절반 이상이어야 마지막 점에 닿는다. 효과가 큰 화면에서도 보이는 쪽을 택하고, 원고 반영 때 위 세 크기에서 다시 확인한다(`docs/PLAN.md` §8).
 
 3. **접근성·레이아웃**
    - 새 요소를 넣을 때는 장식이므로 `aria-hidden="true"`이거나 의사 요소로 만든다. 접근성 트리·Tab 순서·HTML 구조(`<ol>`/`<li>`/h3)는 T05와 같다.
@@ -74,17 +74,17 @@ About의 경력 타임라인에서, 페이지를 스크롤하면 세로선이 �
 
 ## 완료 조건
 
-- [ ] 지원 브라우저(Chromium)에서 `/ja/about/`, `/en/about/`을 스크롤하면 타임라인 세로선이 위에서부터 accent로 채워지고, 지나간 항목의 점 테두리가 accent가 된다. 되돌리면 되돌아간다. 라이트·다크 모두 같다.
-- [ ] 1280×800, 1280×1200, 375×667에서 페이지 끝까지 스크롤하면 모든 선이 채워지고 모든 점이 강조된다.
-- [ ] 효과 중에도 기간·회사명·직무·성과의 색·불투명도·위치는 T05와 같다. 접근성 트리, Tab 순서, 빌드된 HTML의 타임라인 구조가 T05와 같다.
-- [ ] About의 CLS(Chromium Performance 측정)가 main과 같다. 320px·375px·1280px에서 가로 스크롤이 생기지 않는다.
-- [ ] `prefers-reduced-motion: reduce` 에뮬레이션, `animation-timeline` 미지원 브라우저(또는 해당 규칙을 지운 상태), JavaScript 끔, 인쇄 미리보기에서 T05와 같은 화면이다.
-- [ ] About이 받는 JS가 main과 같다(대체안을 썼으면 스크립트 크기를 압축 전·후로 적고 압축 전 1KB 이하). React island를 쓰지 않는다. 새 의존성이 없다(`package.json`, `pnpm-lock.yaml` 변경 없음).
-- [ ] CSS 스크롤 기반 애니메이션 브라우저 지원 범위를 공식 자료로 확인해 `docs/DESIGN.md`에 출처와 함께 적는다. 이 환경에서 확인하지 못한 브라우저(Firefox·Safari 실기 등)는 PR에 미확인으로 적는다.
-- [ ] PR 본문에 최신 커밋 기준 캡처가 있다: About ja 라이트 1280px(타임라인 일부만 채워진 스크롤 위치 1장, 끝까지 스크롤 1장), ja 다크 375px(채워지는 중), en 라이트 1280px reduced-motion(T05와 같은 화면).
-- [ ] `docs/DESIGN.md` §3·§6, `docs/ARCHITECTURE.md` §2가 갱신되어 있다.
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
-- [ ] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
+- [x] 지원 브라우저(Chromium)에서 `/ja/about/`, `/en/about/`을 스크롤하면 타임라인 세로선이 위에서부터 accent로 채워지고, 지나간 항목의 점 테두리가 accent가 된다. 되돌리면 되돌아간다. 라이트·다크 모두 같다.
+- [x] 1280×800, 1280×1200, 375×667에서 페이지 끝까지 스크롤하면 모든 선이 채워지고 모든 점이 강조된다.
+- [x] 효과 중에도 기간·회사명·직무·성과의 색·불투명도·위치는 T05와 같다. 접근성 트리, Tab 순서, 빌드된 HTML의 타임라인 구조가 T05와 같다.
+- [x] About의 CLS(Chromium Performance 측정)가 main과 같다. 320px·375px·1280px에서 가로 스크롤이 생기지 않는다.
+- [x] `prefers-reduced-motion: reduce` 에뮬레이션, `animation-timeline` 미지원 브라우저(또는 해당 규칙을 지운 상태), JavaScript 끔, 인쇄 미리보기에서 T05와 같은 화면이다.
+- [x] About이 받는 JS가 main과 같다(대체안을 썼으면 스크립트 크기를 압축 전·후로 적고 압축 전 1KB 이하). React island를 쓰지 않는다. 새 의존성이 없다(`package.json`, `pnpm-lock.yaml` 변경 없음).
+- [x] CSS 스크롤 기반 애니메이션 브라우저 지원 범위를 공식 자료로 확인해 `docs/DESIGN.md`에 출처와 함께 적는다. 이 환경에서 확인하지 못한 브라우저(Firefox·Safari 실기 등)는 PR에 미확인으로 적는다.
+- [x] PR 본문에 최신 커밋 기준 캡처가 있다: About ja 라이트 1280px(타임라인 일부만 채워진 스크롤 위치 1장, 끝까지 스크롤 1장), ja 다크 375px(채워지는 중), en 라이트 1280px reduced-motion(T05와 같은 화면).
+- [x] `docs/DESIGN.md` §3·§6, `docs/ARCHITECTURE.md` §2가 갱신되어 있다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
+- [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
 

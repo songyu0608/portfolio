@@ -1,7 +1,8 @@
 ---
 // 경력 타임라인. 최신이 위이고, 모든 항목을 펼쳐 보인다(정보를 숨기는 효과 금지).
 // 왼쪽 세로선과 점은 CSS 장식이라 접근성 트리에 나오지 않는다. 현재 재직 항목은 점을 채운다.
-// 단계 5 컨셉 5(스크롤 강조)는 .timeline__item을 감싸 강조만 더한다. 이 화면이 애니메이션 없는 최종 상태다.
+// 스크롤 강조(컨셉 5, T09)는 CSS 스크롤 기반 애니메이션으로 선·점 색만 바꾼다. 글자는 바꾸지 않으며,
+// 미지원 브라우저·reduced-motion에서는 이 화면이 그대로 최종 상태다.
 import type { CareerEntry } from '../lib/content';
 
 interface Props {
@@ -103,6 +104,58 @@ const { entries } = Astro.props;
     gap: var(--space-1);
     margin: var(--space-3) 0 0;
     padding-inline-start: 1.25em;
+  }
+
+  /* 스크롤 강조(컨셉 5): 항목마다 자기 view timeline을 만들고 선(::before)과 점(::after)이 함께 따른다.
+     의사 요소에 view()를 직접 주면 각자 자기 박스를 추적하므로 li의 이름 있는 timeline을 공유한다.
+     animation 단축 속성을 쓰면 빌드 압축이 animation-timeline까지 단축 속성에 합쳐 Chromium이 규칙을
+     버리므로 개별 속성으로 쓴다. 인쇄에서는 스크롤 위치와 무관한 기본 화면이 나오게 screen에만 적용한다. */
+  @supports (animation-timeline: view()) and (animation-range: entry) {
+    @media screen and (prefers-reduced-motion: no-preference) {
+      .timeline__item {
+        /* 위아래를 50%씩 줄여 화면 가운데 가로선을 기준으로 삼는다. cover 0% = 항목 위끝이 가운데, 100% = 아래끝이 가운데 */
+        view-timeline: --timeline-item block;
+        view-timeline-inset: 50%;
+      }
+
+      /* 선: 화면 가운데가 이 항목의 점에서 다음 항목의 점으로 가는 동안 위에서 아래로 accent가 채워진다. */
+      .timeline__item:not(:last-child)::before {
+        background:
+          linear-gradient(var(--color-accent), var(--color-accent)) top / 100%
+            0% no-repeat,
+          var(--color-border);
+        animation-name: timeline-line-fill;
+        animation-duration: auto;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: --timeline-item;
+        animation-range: cover 0% cover 100%;
+      }
+
+      /* 점: 화면 가운데가 점에 닿으면(앞 항목의 선이 다 채워질 때) 테두리가 accent가 된다. 현재 재직(채운 점)은 이미 accent다. */
+      .timeline__item:not(.timeline__item--current)::after {
+        animation-name: timeline-dot-reach;
+        animation-duration: auto;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: --timeline-item;
+        animation-range: cover 0% cover 2%;
+      }
+    }
+  }
+
+  @keyframes timeline-line-fill {
+    to {
+      background-size:
+        100% 100%,
+        auto;
+    }
+  }
+
+  @keyframes timeline-dot-reach {
+    to {
+      border-color: var(--color-accent);
+    }
   }
 
   @media (min-width: 40rem) {

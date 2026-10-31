@@ -275,7 +275,20 @@
 - 세로선: 폭 2px, border 색. 이 항목의 점 중심에서 다음 항목의 점 중심까지 잇고, 마지막 항목 아래로는 늘이지 않는다.
 - 선·점은 `::before`/`::after` 장식이라 접근성 트리에 나오지 않는다. 현재 재직 여부는 기간 문구(「現在」/`Present`)가 전한다.
 - 기간: 14px, text-muted, 글꼴 `'IBM Plex Mono', var(--font-sans)`. 「現在」 같은 일본어가 섞이므로 일반 `monospace`로 넘어가 일본어 Windows에서 MS ゴシック가 쓰이지 않게, 모노스페이스 글꼴 다음에 본문 글꼴로 넘긴다.
-- 모든 항목을 펼쳐 보인다. 단계 5 컨셉 5(스크롤 타임라인)는 `.timeline__item`에 강조만 더하며, 지금 화면이 애니메이션 없는 최종 상태다.
+- 모든 항목을 펼쳐 보인다. 아래 스크롤 강조는 선·점 색만 바꾸며, 효과가 없을 때의 화면(T05)이 최종 상태다.
+
+### 스크롤 강조 (컨셉 5, T09)
+
+`CareerTimeline.astro`의 CSS 스크롤 기반 애니메이션만 쓴다(JS 없음).
+
+- 기준선은 화면 가운데 가로선이다. 항목(`li`)마다 이름 있는 view timeline(`view-timeline: --timeline-item block`, `view-timeline-inset: 50%`)을 만들고 선(`::before`)과 점(`::after`)이 같은 timeline을 따른다. 의사 요소에 `view()`를 직접 주면 각자 자기 박스를 추적하기 때문이다.
+- 선: 화면 가운데가 이 항목의 점에서 다음 항목의 점으로 가는 동안(`animation-range: cover 0% cover 100%`) border 색 선 위에 accent 선이 위에서 아래로 채워진다(`background-size`, 크기·위치는 바뀌지 않음).
+- 점: 화면 가운데가 점에 닿으면(`cover 0%` ~ `cover 2%`) 테두리가 text-muted에서 accent가 된다. 앞 항목의 선이 다 채워지는 때와 같다. 현재 재직의 채운 점은 처음부터 accent다.
+- 스크롤 위치에 묶인 상태라 되돌리면 되돌아가고, 페이지를 열 때 이미 화면 가운데보다 위에 있는 항목은 채워진 채로 보인다. 페이지 끝에서는 모든 선·점이 강조된다(1280×800·1280×1200·375×667 확인). 타임라인 아래 내용(기술 스택·자격증·푸터)이 화면 높이의 절반보다 짧아지면 마지막 항목에 닿지 못할 수 있으므로 원고 반영 때 다시 확인한다(2026-10-31 사용자 결정으로 가운데 기준 유지, `docs/PLAN.md` §8).
+- 글자(기간·회사명·직무·성과)의 색·불투명도·위치는 바꾸지 않는다. 시안의 "흐린 글자가 나타남"은 멈춘 위치에서 대비 기준 아래로 남을 수 있어 적용하지 않았다.
+- 적용 조건: `@supports (animation-timeline: view()) and (animation-range: entry)`이고 `@media screen and (prefers-reduced-motion: no-preference)`. 지원하지 않는 브라우저, reduced-motion, 인쇄에서는 T05 화면 그대로다.
+- `animation` 단축 속성을 쓰면 빌드 압축(Lightning CSS)이 `animation-timeline`까지 단축 속성에 합쳐 Chromium이 규칙을 버린다(2026-10-31 확인). 개별 속성(`animation-name`, `animation-duration: auto` 등)으로 쓴다.
+- 브라우저 지원(MDN browser-compat-data `css.properties.animation-timeline`·`view-timeline`·`view-timeline-inset`·`animation-range`, 2026-10-31 확인): Chrome·Edge 115, Safari 26, Firefox 159. 출처: [MDN animation-timeline](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-timeline), [browser-compat-data](https://github.com/mdn/browser-compat-data/blob/main/css/properties/animation-timeline.json). 이 환경에서는 Chromium만 실제로 확인했다.
 
 ### 자격증 행 (`src/components/CertificationList.astro`)
 
@@ -294,12 +307,13 @@
 | 「学習中」 라벨, 이력서 테두리 버튼 글자·경계 | accent / background | 4.74 | 8.14 |
 | 이력서 주 버튼, 채운 태그(주력) | on-accent / accent | 5.00 | 8.14 |
 | 타임라인 점 테두리 | text-muted / background | 6.63 | 7.79 |
+| 타임라인 강조 점 테두리·채운 선(T09) | accent / background | 4.74 | 8.14 |
 
 - 타임라인 세로선, 분류 구분선, 자격증 구분선은 border(장식용, §2)다. 정보를 전하지 않으므로 UI 경계 기준(3:1)의 대상이 아니다.
 
 ### 모션
 
-새 전환 효과는 없다. 이력서 링크는 기존 `.button`(떠오름 120ms·그림자 200ms)을 그대로 쓰며 `prefers-reduced-motion: reduce`에서 꺼진다(T02).
+이력서 링크는 기존 `.button`(떠오름 120ms·그림자 200ms)을 그대로 쓰며 `prefers-reduced-motion: reduce`에서 꺼진다(T02). 경력 타임라인의 스크롤 강조(T09)는 시간 기반 전환이 아니라 스크롤 위치에 묶인 선·점 색 변화이며, reduced-motion에서 꺼진다(위 절).
 
 ## 7. Projects (T06)
 
