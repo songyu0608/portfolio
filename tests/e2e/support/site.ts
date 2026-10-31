@@ -61,7 +61,16 @@ export function localeOf(pagePath: string): Locale {
   return first as Locale;
 }
 
-export type PageKind = 'home' | 'about' | 'projects' | 'detail' | 'contact';
+/** 페이지 종류. Lighthouse 측정(T16)이 언어·종류마다 한 페이지가 빠짐없는지 확인하는 데도 쓴다. */
+export const pageKinds = [
+  'home',
+  'about',
+  'projects',
+  'detail',
+  'contact',
+] as const;
+
+export type PageKind = (typeof pageKinds)[number];
 
 /** 경로로 페이지 종류를 정한다. 경로 규칙은 src/i18n/paths.ts(pagePaths)와 같다. */
 export function kindOf(pagePath: string): PageKind {

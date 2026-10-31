@@ -53,9 +53,11 @@ pnpm check
 pnpm build
 pnpm preview
 pnpm test
+pnpm lighthouse
 ```
 
 - `pnpm format`은 소스와 설정 파일을 정리합니다. 기존 계획 문서와 lockfile은 포맷 대상에서 제외합니다.
 - `pnpm test`는 빌드 결과(`dist/`)로 E2E 테스트(Playwright, Chromium·WebKit·Firefox)를 돌립니다. `pnpm build` 뒤에 실행하고, 처음 한 번 브라우저를 설치합니다: `pnpm exec playwright install --with-deps chromium webkit firefox`(`--with-deps`는 Linux만). 자세한 내용은 `docs/ARCHITECTURE.md` §2 "테스트".
-- CI는 PR 및 main push에서 포맷·lint·타입·빌드·E2E를 검사합니다.
+- `pnpm lighthouse`는 빌드 결과로 Lighthouse 13을 돌려 성능·접근성·Best Practices·SEO 점수 기준을 검사합니다(10페이지 × 모바일·데스크톱 × 3회). Chromium은 E2E와 같은 것을 씁니다.
+- CI는 PR 및 main push에서 포맷·lint·타입·빌드·E2E와 Lighthouse 점수 기준을 검사합니다.
 - `dist/`는 정적 산출물입니다. 루트 이동은 정적 HTML의 meta refresh로 처리됩니다. Cloudflare Workers에는 단계 8에서 정적 자산으로 배포하며, 현재 배포 설정은 없습니다.

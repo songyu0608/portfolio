@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-11-01 (T16 지시서 작성)
+마지막 갱신: 2026-11-01 (T16 구현)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 7 테스트 — T16 Lighthouse CI 지시서 리뷰 |
-| 진행 중인 작업 | T16 지시서 리뷰(`docs/tasks/T16-lighthouse-ci.md`). merge 뒤 구현 담당을 정한다 |
-| 다음 작업 | T16 구현 → 단계 8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 7 테스트 — T16 리뷰 |
+| 진행 중인 작업 | T16 Lighthouse CI 구현 PR 리뷰(담당 claude, `docs/tasks/T16-lighthouse-ci.md`). Codex 교차 리뷰 → 사용자 merge |
+| 다음 작업 | T16 merge(단계 7 완료) → 단계 8 지시서. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -111,7 +111,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T13 | SEO (canonical·hreflang·OG·sitemap·robots·favicon·404) | 6 | T12 | claude | done | `docs/tasks/T13-seo.md` — 지시서 [PR #39](https://github.com/songyu0608/portfolio/pull/39), 구현 [PR #40](https://github.com/songyu0608/portfolio/pull/40) |
 | T14 | 접근성 점검·수정 (WCAG 2.2 AA 자동·수동 점검, 강제 색상 모드, 터미널 출력 스크롤) | 6 | T13 | claude | done | `docs/tasks/T14-accessibility.md` — 지시서 [PR #42](https://github.com/songyu0608/portfolio/pull/42), 구현 [PR #43](https://github.com/songyu0608/portfolio/pull/43) |
 | T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | done | `docs/tasks/T15-e2e-tests.md` — 지시서 [PR #45](https://github.com/songyu0608/portfolio/pull/45), 구현 [PR #46](https://github.com/songyu0608/portfolio/pull/46) |
-| T16 | Lighthouse CI (Lighthouse 13, 성능·접근성·Best Practices·SEO 점수 기준, CI) | 7 | T15 | - | review | `docs/tasks/T16-lighthouse-ci.md` |
+| T16 | Lighthouse CI (Lighthouse 13, 성능·접근성·Best Practices·SEO 점수 기준, CI) | 7 | T15 | claude | review | `docs/tasks/T16-lighthouse-ci.md` — 지시서 [PR #48](https://github.com/songyu0608/portfolio/pull/48) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -174,7 +174,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 ### T08 구현 시 발견한 항목
 
 - [x] 단계 6(T11): Home의 CLS가 Chromium 1280px에서 0.32~0.37이다(T07 main도 같음, 2026-10-31 측정). 원인은 IBM Plex Sans JP 글꼴 교체 때 히어로 줄바꿈이 바뀌어 아래 내용이 약 35px 올라가는 것이다. 글꼴 로딩 방식(`font-display`, preload, 대체 글꼴 크기 맞춤 등)을 단계 6에서 정한다. → T11: 일본어 페이지에서 가나 범위(400·700) 2개 preload로 Home 1280px CLS 0.298 → 0.001(Playwright 지연 150ms·1.6Mbps), Lighthouse 모든 측정 페이지 0.017 이하. 3G 수준 이하에서는 Home CLS 약 0.3이 남으며, 2026-10-31 사용자 결정으로 그대로 둔다(`docs/DESIGN.md` §2 한계).
-- [ ] 원고 반영 후: Home 한 줄 소개 길이가 바뀌면 Home CLS를 다시 잰다(T11 측정 방법, `docs/tasks/T11-performance.md`). 지금 값은 임시 문구가 `max-width: 34em`에 거의 꽉 차는 길이라 생긴 것이다.
+- [ ] 원고 반영 후: Home 한 줄 소개 길이가 바뀌면 Home CLS를 다시 잰다(T11 측정 방법, `docs/tasks/T11-performance.md`). 지금 값은 임시 문구가 `max-width: 34em`에 거의 꽉 차는 길이라 생긴 것이다. → T16: CI가 PR마다 Lighthouse로 Home CLS(모바일·데스크톱, 3회 중앙값 0.1 이하)를 잰다. T11의 Playwright 지연 조건(150ms·1.6Mbps, 1280·375px) 측정은 자동화하지 않아 원고 반영 때 따로 본다.
 
 ### T12 교차 리뷰에서 이월한 항목
 
@@ -268,3 +268,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-11-01 | T15 PR #46 merge 완료 반영(CI 3개 브라우저 397개 통과, E2E 단계 약 8분, Codex 교차 리뷰 수정 필요 없음). 이후 PR은 CI에서 E2E를 통과해야 merge한다. 남은 접근성·브라우저 확인(Safari 실기·스크린 리더·IME·Windows 고대비 실제 색, 문절 줄바꿈 위치)은 §8 | 지시서 없음 (문서만 변경) |
 | 2026-11-01 | 단계 7 Lighthouse 도구: `lighthouse` 13.6.0을 직접 쓰고 측정·판정 코드를 저장소에 둔다. `@lhci/cli` 0.15.1은 Lighthouse 12.6.1에 고정되어 있고 `pnpm audit` 경고가 7건(high 5) 늘어 고르지 않았다(`lighthouse` 13.6.0은 moderate 1건) | 사용자 결정 |
 | 2026-11-01 | T16 지시서 작성: 새 devDependency `lighthouse` 13.6.0(위 결정으로 승인). Playwright Test(`playwright.lighthouse.config.ts`, `tests/lighthouse/`)가 미리보기 서버를 띄우고 회차마다 Lighthouse CLI를 실행(Chromium은 Playwright 버전으로 고정). sitemap에서 언어·종류마다 1페이지(10페이지) × 모바일·데스크톱 × 3회. 기준: Performance 모바일 90·데스크톱 95 이상과 CLS 0.1 이하(3회 중앙값), 접근성·Best Practices·SEO 100(3회 모두), Agentic Browsing은 기록만. CI에 폼팩터별 `lighthouse` 작업 2개를 `check`와 동시에, 점수 요약은 작업 요약에 | T16 지시서 |
+| 2026-11-01 | T16 지시서 PR #48 merge(Codex 교차 리뷰 수정 필요 없음), T16 구현 담당 claude. 구현: Codex 개선 제안대로 측정 대상의 언어 × 페이지 종류 조합이 하나라도 빠지면 테스트를 모을 때 실패(`pageKinds`를 `tests/e2e/support/site.ts`에 둠). 대표 회차는 성능 점수 중앙값 회차, 요약 표는 Playwright reporter가 콘솔·CI 작업 요약에 쓴다. 미리보기 포트 4330 | 사용자 결정(담당), T16 구현 (`docs/ARCHITECTURE.md` A14) |

@@ -17,6 +17,7 @@ dist/
 
 # test / reports
 playwright-report/
+lighthouse-report/
 test-results/
 coverage/
 .lighthouseci/
