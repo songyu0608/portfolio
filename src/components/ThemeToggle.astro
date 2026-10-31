@@ -1,6 +1,6 @@
 ---
 // 버튼은 JS가 없으면 동작하지 않으므로 html.js일 때만 보인다(BaseLayout 인라인 스크립트가 붙임).
-// 아이콘은 적용 중인 테마를 CSS로 따라가고, aria-pressed는 아래 스크립트가 맞춘다.
+// 아이콘은 적용 중인 테마를 CSS로 따라가고, 클릭 처리와 aria-pressed는 SiteHeader.astro의 스크립트가 맡는다.
 import { ui, type Locale } from '../i18n/ui';
 
 interface Props {
@@ -34,20 +34,6 @@ const { locale } = Astro.props;
   </svg>
   <span class="sr-only">{ui[locale].theme.label}</span>
 </button>
-
-<script>
-  import { getTheme, onThemeChange, toggleTheme } from '../scripts/theme';
-
-  const buttons = document.querySelectorAll<HTMLButtonElement>('.theme-toggle');
-  const sync = () => {
-    const pressed = String(getTheme() === 'dark');
-    buttons.forEach((button) => button.setAttribute('aria-pressed', pressed));
-  };
-
-  buttons.forEach((button) => button.addEventListener('click', toggleTheme));
-  onThemeChange(sync);
-  sync();
-</script>
 
 <style>
   .theme-toggle {

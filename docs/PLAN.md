@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-10-31 (T10 지시서 작성)
+마지막 갱신: 2026-10-31 (T10 구현)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 5 인터랙션 — T10 지시서 작성 |
-| 진행 중인 작업 | T10 지시서(컨셉 3·4) 작성·리뷰 |
-| 다음 작업 | T10 구현(담당 미정) → 단계 6~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 5 인터랙션 — T10 구현 리뷰 |
+| 진행 중인 작업 | T10 구현(컨셉 3·4, claude) PR 리뷰 |
+| 다음 작업 | T10 merge 후 단계 5 완료 → 단계 6~8. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -105,7 +105,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T07 | Contact (연락 수단 목록·메일 복사 버튼·푸터 연락 링크, 임시 문구) | 4 | T06 | claude | done | `docs/tasks/T07-contact.md` — 지시서 [PR #21](https://github.com/songyu0608/portfolio/pull/21), 구현 [PR #22](https://github.com/songyu0608/portfolio/pull/22) |
 | T08 | Hero 디코딩·프로젝트 카드 틸트와 상세 전환 (인터랙션 컨셉 1·2) | 5 | T07 | claude | done | `docs/tasks/T08-hero-cards.md` — 지시서 [PR #24](https://github.com/songyu0608/portfolio/pull/24), 구현 [PR #25](https://github.com/songyu0608/portfolio/pull/25) |
 | T09 | 스크롤 경력 타임라인 (인터랙션 컨셉 5) | 5 | T08 | claude | done | `docs/tasks/T09-career-timeline.md` — 지시서 [PR #27](https://github.com/songyu0608/portfolio/pull/27), 구현 [PR #28](https://github.com/songyu0608/portfolio/pull/28) |
-| T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | - | todo | `docs/tasks/T10-command-palette-terminal.md` |
+| T10 | 명령 팔레트·터미널 모드 (인터랙션 컨셉 3·4) | 5 | T09 | claude | review | `docs/tasks/T10-command-palette-terminal.md` — 지시서 [PR #30](https://github.com/songyu0608/portfolio/pull/30) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 6~8. 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -139,7 +139,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 - [x] T04: Home 히어로 등 긴 일본어 제목은 Firefox·Safari(`auto-phrase` 미지원)에서 단어 중간에서 끊길 수 있다(T03 확인 화면 h1: 「読みやすさを、設計/する。」). 문절 단위 `<wbr>` 또는 `inline-block` span을 검토한다. BudouX(새 의존성)는 사용자 확인 후에만 도입한다. 근거: `docs/DESIGN.md` §2 타이포그래피. → T04: 콘텐츠에 문절 배열로 쓰고 `keep-all` + CSS 생성 U+200B로 문절 사이에서만 줄바꿈. `<wbr>`·`inline-block`은 Chromium 접근성 이름에 공백이 생겨 쓰지 않음. 결과는 `docs/DESIGN.md` §2.
 - [ ] 단계 7 또는 Firefox·WebKit을 쓸 수 있는 환경: `auto-phrase` 미지원 브라우저의 실제 줄바꿈과 T03 헤더 배치(320px·1280px)를 확인한다. T04 문절 처리(`Phrases.astro`)가 같은 위치에서 줄을 바꾸는지, 실제 스크린 리더(VoiceOver, NVDA)가 문절 사이에서 끊어 읽지 않는지도 함께 확인한다.
-- [x] `@astrojs/react` 통합 때문에 어느 페이지도 참조하지 않는 React 클라이언트 번들(`dist/_astro/client.*.js`, 220,749B)이 T01부터 빌드 결과에 생성된다. 페이지가 받는 JS에는 영향이 없다. → 2026-10-30 사용자 결정: 단계 5 인터랙션(A2)에서 React를 쓰므로 통합을 그대로 둔다. 단계 6 성능 점검 때 번들이 페이지에서 참조되지 않는지만 다시 확인한다.
+- [x] `@astrojs/react` 통합 때문에 어느 페이지도 참조하지 않는 React 클라이언트 번들(`dist/_astro/client.*.js`, 220,749B)이 T01부터 빌드 결과에 생성된다. 페이지가 받는 JS에는 영향이 없다. → 2026-10-30 사용자 결정: 단계 5 인터랙션(A2)에서 React를 쓰므로 통합을 그대로 둔다. 단계 6 성능 점검 때 번들이 페이지에서 참조되지 않는지만 다시 확인한다. → T10: React·ReactDOM 청크는 명령 팔레트를 처음 열 때 받는 청크로 쓰인다. 참조되지 않는 파일은 Astro React 렌더러 진입 파일(약 1.8KB)뿐이다(`docs/ARCHITECTURE.md` §2).
 
 ### T04 지시서 작성 시 추가한 항목
 
@@ -152,6 +152,11 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 ### T09 구현 시 추가한 항목
 
 - [ ] 원고 반영 후: About 경력 타임라인의 마지막 선·점이 페이지 끝에서 강조되는지 1280×800·1280×1200·375×667에서 확인한다. 기준선이 화면 가운데라 타임라인 아래 내용이 화면 높이의 절반보다 짧으면 닿지 못한다(2026-10-31 사용자 결정, `docs/DESIGN.md` §6 스크롤 강조).
+
+### T10 구현 시 발견한 항목
+
+- [ ] 헤더 스크립트(테마 버튼 + 팔레트 런처)가 압축 전 약 3.5KB로, 지시서의 "런처 1.5KB 이하"를 넘는다. 런처 자체는 약 0.8KB이고 약 1.7KB는 동적 import 의존 파일을 미리 불러오는 Vite 도우미다. `vite.build.modulePreload: false`가 Astro 빌드 설정에 밀려 적용되지 않았다. 단계 6 성능 점검에서 Lighthouse로 영향을 보고, 필요하면 Astro 설정(환경별 빌드 옵션) 또는 런처 구조를 다시 검토한다.
+- [ ] Firefox·Safari 실기, 실제 IME(일본어 입력 확정 Enter), 실제 스크린 리더(VoiceOver, NVDA)로 팔레트·터미널을 확인한다(단계 7 또는 해당 환경). 이 환경에서는 Chromium만 확인했다.
 
 ### T08 구현 시 발견한 항목
 
@@ -200,3 +205,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | T09 기준선은 화면 가운데로 유지(Codex 리뷰 PR #28: 지시서의 `cover 50%` 상한과 어긋남 지적). 지시서 조건을 바꾸고, 원고 반영 때 마지막 항목 도달을 다시 확인한다(§8) | 사용자 결정 |
 | 2026-10-31 | T09 PR #28 merge 완료 반영(CI 통과, Codex 교차 리뷰 수정 필요 1건(기준선 위치)은 사용자 결정으로 가운데 기준 유지·지시서 조건 갱신, 개선 제안 2건 반영 후 재검증 통과). 글자 나타남 효과 미적용은 지시서 기본안으로 merge | 지시서 없음 (문서만 변경) |
 | 2026-10-31 | T10 지시서 작성: 컨셉 3·4는 모든 페이지에 런처 스크립트만 넣고 열 때 React UI(동적 import, island 아님)와 언어별 정적 JSON(`/ja/commands.json` 등)을 불러온다. 명령 정의는 `src/components/interactive/commands.ts` 하나, 모달은 `<dialog>`, 새 의존성·Motion/GSAP 없음. 팔레트에 프로젝트 상세·시스템 설정 테마 포함, 터미널은 팔레트에서만 연다(기본안) | T10 지시서 (`docs/DESIGN.md` §3, `docs/ARCHITECTURE.md` A2 비고) |
+| 2026-10-31 | T10 지시서 PR #30 merge(Codex 수정 필요 1건·개선 제안 2건 반영), T10 구현 담당 claude. 구현: 테마 버튼 스크립트를 런처와 같은 헤더 스크립트(`SiteHeader.astro`)로 합쳐 페이지가 받는 JS 파일을 1개로 유지, 팔레트 CSS는 `?url`로 열 때 붙임(일반 import는 모든 페이지에 `<link>`가 생김). 헤더 스크립트가 런처 목표 크기(1.5KB)를 넘는 점은 §8 항목으로 이월 | 사용자 결정(담당), T10 구현 |

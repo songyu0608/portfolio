@@ -18,7 +18,7 @@ Cloudflare Workers (정적 자산)
 - 기본은 완전 정적. 서버 실행이 필요한 경로만 Workers 함수로 처리한다.
 - 단계 7까지는 Workers 함수가 없어도 사이트가 완성되어야 한다.
 
-## 2. 디렉터리 구조 (T07 기준)
+## 2. 디렉터리 구조 (T10 기준)
 
 ```text
 .
@@ -40,13 +40,15 @@ Cloudflare Workers (정적 자산)
 │  │  └─ paths.ts               ← 페이지·프로젝트 상세 경로, 언어 전환 경로 변환(astro:i18n 사용)
 │  ├─ layouts/BaseLayout.astro  ← 문서 골격, 전역 CSS·글꼴 로드, 테마 첫 적용 인라인 스크립트
 │  ├─ components/
-│  │  ├─ SiteHeader.astro / SiteFooter.astro / LanguageSwitch.astro / ThemeToggle.astro
+│  │  ├─ SiteHeader.astro / SiteFooter.astro / LanguageSwitch.astro / ThemeToggle.astro / CommandButton.astro
 │  │  ├─ SkillTag.astro / ProjectCard.astro ← 여러 페이지가 쓰는 기술 태그·프로젝트 카드
 │  │  ├─ PhaseList.astro        ← 担当工程 표시(카드·프로젝트 상세)
 │  │  ├─ CareerTimeline.astro / SkillStack.astro / CertificationList.astro ← About 화면 부품
 │  │  ├─ Phrases.astro          ← 일본어 문절 단위 줄바꿈 출력(docs/DESIGN.md §2)
-│  │  └─ pages/                 ← 페이지 화면 컴포넌트(레이아웃 + 본문). 언어만 props로 받음
-│  ├─ scripts/theme.ts          ← 테마 읽기·쓰기(헤더 버튼, 단계 5 명령 팔레트가 공유)
+│  │  ├─ pages/                 ← 페이지 화면 컴포넌트(레이아웃 + 본문). 언어만 props로 받음
+│  │  └─ interactive/           ← 명령 팔레트·터미널(T10): commands.ts(명령 정의, 순수 TS), mount.tsx·CommandUI·Palette·Terminal·Dialog(React), command-ui.css
+│  ├─ scripts/theme.ts          ← 테마 읽기·쓰기(헤더 버튼, 명령 팔레트·터미널이 공유)
+│  ├─ scripts/command-launcher.ts ← ⌘K / Ctrl+K·헤더 버튼 → 처음 열 때 팔레트 UI 동적 import(T10)
 │  ├─ scripts/hero-decode.ts    ← Home 한 줄 소개 디코딩(컨셉 1, T08)
 │  ├─ scripts/card-tilt.ts      ← 프로젝트 카드 틸트(컨셉 2, T08)
 │  ├─ styles/                   ← tokens.css(디자인 토큰), global.css(전역 스타일), view-transitions.css(카드 → 상세 전환, Home·Projects·상세만)
@@ -54,6 +56,7 @@ Cloudflare Workers (정적 자산)
 │     ├─ index.astro            ← /ja/로 이동
 │     ├─ ja/index.astro, about.astro, projects.astro, contact.astro
 │     ├─ ja/projects/[slug].astro ← 프로젝트 상세(getStaticPaths)
+│     ├─ ja/commands.json.ts     ← 팔레트·터미널 데이터 엔드포인트(빌드 시 정적 JSON, T10)
 │     └─ en/ (ja와 같은 구성)
 ├─ astro.config.mjs            ← 정적 출력, React, i18n
 ├─ tsconfig.json               ← Astro strict + React JSX
@@ -106,7 +109,7 @@ Cloudflare Workers (정적 자산)
 
 T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는 검사 도구의 지원 범위에 맞춰 6.0.3을 사용한다. 직접 의존성과 lockfile로 설치 버전을 기록한다. pnpm이 생성한 `pnpm-workspace.yaml`에는 이번 Astro 설치에 필요한 특정 버전의 release-age 예외만 기록한다.
 
-`output: 'static'` 빌드는 `dist/{ja,en}/index.html`, `dist/{ja,en}/{about,projects,contact}/index.html`(T03), 프로젝트 상세 `dist/{ja,en}/projects/<slug>/index.html`(T06), 루트 redirect HTML을 생성한다. React hydration은 없으며 서버 어댑터도 필요하지 않다. 페이지가 받는 JS는 테마 관련 인라인 스크립트 2개이고, Contact 페이지만 메일 복사 스크립트 1개(인라인 모듈, 약 0.6KB)를 더 받는다(T07). T08부터 Home은 디코딩(약 1.4KB)과 카드 틸트(약 1.1KB), Projects 목록은 카드 틸트 스크립트를 더 받는다(모두 인라인 모듈, 압축 전 크기). 카드 → 상세 전환과 About 경력 타임라인의 스크롤 강조(T09)는 CSS만 쓰며 About이 받는 JS는 T08과 같다. 다만 T09로 About 페이지 CSS가 Astro 인라인 기준(4KB)을 넘어 `_astro/AboutPage.*.css` 파일(압축 전 약 4.7KB)로 분리된다. 다만 `@astrojs/react` 통합 때문에 어느 페이지도 참조하지 않는 React 클라이언트 번들(`dist/_astro/client.*.js`, 약 220KB)이 T01부터 빌드 결과에 생성된다. 단계 5(A2)에서 React를 쓰므로 통합은 유지한다(2026-10-30 사용자 결정, PLAN §8). T10은 island가 아니라 동적 import로 React를 마운트하므로, 이 번들이 계속 필요한지는 T10 구현에서 다시 확인한다. `dist/`를 Workers 정적 자산 디렉터리로 지정할 수 있음을 [공식 문서](https://developers.cloudflare.com/workers/static-assets/binding/)와 출력 구조로 확인한다. 실제 배포·HTTP redirect 정책은 단계 8에서 검증한다.
+`output: 'static'` 빌드는 `dist/{ja,en}/index.html`, `dist/{ja,en}/{about,projects,contact}/index.html`(T03), 프로젝트 상세 `dist/{ja,en}/projects/<slug>/index.html`(T06), 루트 redirect HTML을 생성한다. React hydration은 없으며 서버 어댑터도 필요하지 않다. 페이지가 받는 JS는 테마 첫 적용 인라인 스크립트와 헤더 스크립트 1개(T10부터 외부 모듈, 아래)이고, Contact 페이지만 메일 복사 스크립트 1개(인라인 모듈, 약 0.6KB)를 더 받는다(T07). T08부터 Home은 디코딩(약 1.4KB)과 카드 틸트(약 1.1KB), Projects 목록은 카드 틸트 스크립트를 더 받는다(모두 인라인 모듈, 압축 전 크기). 카드 → 상세 전환과 About 경력 타임라인의 스크롤 강조(T09)는 CSS만 쓰며 About이 받는 JS는 T08과 같다. 다만 T09로 About 페이지 CSS가 Astro 인라인 기준(4KB)을 넘어 `_astro/AboutPage.*.css` 파일(압축 전 약 4.7KB)로 분리된다. T10부터 모든 페이지는 헤더 스크립트(`_astro/SiteHeader.*.js`, 테마 버튼 처리 + 명령 팔레트 런처, 압축 전 약 3.5KB·gzip 약 1.6KB)를 외부 모듈로 받는다. main(T09)의 테마 버튼 인라인 모듈(약 0.8KB)을 대신하므로 늘어난 양은 압축 전 약 2.7KB다. 이 중 약 1.7KB는 동적 import의 의존 파일을 미리 불러오는 Vite 도우미 코드다. `vite.build.modulePreload: false`로 없애려 했으나 Astro 빌드 설정이 우선해 적용되지 않았다(2026-10-31 확인). 팔레트를 처음 열 때만 `mount.*.js`(약 11KB, gzip 약 4KB), React·ReactDOM 청크 `client.*.js`(약 219KB, gzip 약 66KB), `command-ui.*.css`(약 5.6KB, gzip 약 1.4KB), `commands.json`(ja 약 4.2KB, gzip 약 1.8KB)을 받고, 다시 열 때는 받지 않는다(크기는 압축 전 기준. 모두 2026-10-31 빌드 측정). T01부터 "어느 페이지도 참조하지 않는 React 클라이언트 번들"로 남아 있던 React는 이제 팔레트 청크로 쓰인다. 참조되지 않는 파일은 Astro React 렌더러 진입 파일(`client.*.js` 중 약 1.8KB 쪽)뿐이며, `@astrojs/react` 통합(JSX 설정)은 유지한다(2026-10-30 사용자 결정, PLAN §8). `dist/`를 Workers 정적 자산 디렉터리로 지정할 수 있음을 [공식 문서](https://developers.cloudflare.com/workers/static-assets/binding/)와 출력 구조로 확인한다. 실제 배포·HTTP redirect 정책은 단계 8에서 검증한다.
 
 ## 3. 기술 결정 기록 (ADR 요약)
 

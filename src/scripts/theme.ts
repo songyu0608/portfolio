@@ -1,4 +1,4 @@
-// 테마 읽기·쓰기를 한 곳에 모은다. 헤더의 테마 버튼과 단계 5의 명령 팔레트가 함께 쓴다.
+// 테마 읽기·쓰기를 한 곳에 모은다. 헤더의 테마 버튼과 명령 팔레트·터미널(T10)이 함께 쓴다.
 // 첫 렌더 전에 저장 값을 적용하는 일은 BaseLayout.astro의 인라인 스크립트가 맡는다.
 
 export type Theme = 'light' | 'dark';
@@ -31,6 +31,23 @@ export function setTheme(theme: Theme): void {
     // 저장소 접근이 막히면 지금 페이지에만 적용한다.
   }
   document.dispatchEvent(new CustomEvent(THEME_CHANGE_EVENT));
+}
+
+/** 저장된 선택을 지우고 시스템 설정을 따르게 한다(명령 팔레트의 「システム設定に合わせる」). */
+export function clearTheme(): void {
+  delete document.documentElement.dataset.theme;
+  try {
+    localStorage.removeItem(THEME_STORAGE_KEY);
+  } catch {
+    // 저장소 접근이 막히면 지금 페이지에만 적용한다.
+  }
+  document.dispatchEvent(new CustomEvent(THEME_CHANGE_EVENT));
+}
+
+/** 사용자가 고른 테마. 고른 값이 없으면(시스템 설정을 따르면) 'system'. */
+export function getThemePreference(): Theme | 'system' {
+  const value = document.documentElement.dataset.theme;
+  return isTheme(value) ? value : 'system';
 }
 
 export function toggleTheme(): Theme {

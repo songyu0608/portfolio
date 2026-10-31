@@ -1,6 +1,7 @@
 ---
 import { localizePath, type PageKey } from '../i18n/paths';
 import { ui, type Locale } from '../i18n/ui';
+import CommandButton from './CommandButton.astro';
 import LanguageSwitch from './LanguageSwitch.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
@@ -46,11 +47,30 @@ const navItems = navPages.map((page) => {
       </ul>
     </nav>
     <div class="site-header__tools">
+      <CommandButton locale={locale} />
       <LanguageSwitch locale={locale} />
       <ThemeToggle locale={locale} />
     </div>
   </div>
 </header>
+
+<script>
+  // 헤더 도구의 스크립트를 한 모듈로 둔다. 명령 팔레트 UI(열 때 동적 import)가 theme.ts를 이 모듈에서
+  // 함께 가져다 쓰므로, 페이지가 받는 JS 파일이 이 모듈 하나로 끝난다(docs/ARCHITECTURE.md §2).
+  import { getTheme, onThemeChange, toggleTheme } from '../scripts/theme';
+  import '../scripts/command-launcher';
+
+  // 테마 버튼(ThemeToggle.astro): 클릭으로 전환하고 aria-pressed를 적용 테마에 맞춘다.
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.theme-toggle');
+  const sync = () => {
+    const pressed = String(getTheme() === 'dark');
+    buttons.forEach((button) => button.setAttribute('aria-pressed', pressed));
+  };
+
+  buttons.forEach((button) => button.addEventListener('click', toggleTheme));
+  onThemeChange(sync);
+  sync();
+</script>
 
 <style>
   .site-header {
