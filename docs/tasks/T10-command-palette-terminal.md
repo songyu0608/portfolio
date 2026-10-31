@@ -29,7 +29,7 @@
 포함:
 
 1. **구조와 로딩 (기본안)**
-   - **런처**: 작은 Astro `<script>` 모듈(`src/scripts/command-launcher.ts`)을 모든 페이지에 넣는다. ⌘K(macOS) / Ctrl+K(그 밖) 키 입력과 헤더 버튼 클릭을 받아, 처음 열 때 `import()`로 UI 모듈을 불러온 뒤 연다. 런처는 React를 import하지 않는다. 압축 전 1.5KB 이하.
+   - **런처**: 작은 Astro `<script>` 모듈(`src/scripts/command-launcher.ts`)을 모든 페이지에 넣는다. ⌘K(macOS) / Ctrl+K(그 밖) 키 입력과 헤더 버튼 클릭을 받아, 처음 열 때 `import()`로 UI 모듈을 불러온 뒤 연다. 런처는 React를 import하지 않는다. 런처는 테마 버튼 처리와 함께 헤더 스크립트 1개로 나가며, 헤더 스크립트는 압축 전 4KB 이하(처음 기준은 런처 1.5KB 이하였으나 Vite 동적 import 도우미 약 1.7KB를 설정으로 뺄 수 없어 2026-10-31 사용자 결정으로 변경).
    - **UI 모듈**: `src/components/interactive/` 아래 React 컴포넌트(팔레트, 터미널, 둘을 관리하는 루트)와 마운트 함수. 마운트는 `react-dom/client`의 `createRoot`로 `<body>` 끝에 만든 컨테이너에 한 번만 한다. Astro `client:*` 지시어(island)는 쓰지 않는다. 이유: `client:idle`·`client:visible`도 열지 않은 방문자에게 React를 받게 하므로, "열 때 불러온다"(DESIGN §3)를 지키려면 동적 import가 맞다.
    - **명령 정의**: `src/components/interactive/commands.ts` 하나가 팔레트 항목과 터미널 명령을 함께 정의한다(id, 묶음, 표시 이름, 검색어, 터미널 명령 이름, 실행 함수 또는 출력). React를 import하지 않는 순수 TypeScript로 둔다. 팔레트와 터미널은 이 목록만 읽고 각자 명령을 따로 정의하지 않는다.
    - **콘텐츠 데이터**: 터미널 출력과 프로젝트 항목에 필요한 값(프로필 이름·직함·한 줄 소개, 기술 스택 분류와 이름, 프로젝트 제목·상세 URL, 연락처, 이력서 링크)은 언어별 정적 JSON 엔드포인트(`src/pages/ja/commands.json.ts`, `src/pages/en/commands.json.ts` → `/ja/commands.json`, `/en/commands.json`)로 빌드 시 만들고 열 때 `fetch`한다. 페이지 4개(Home·About·Projects·Contact)의 목적지 URL도 서버의 `localizePath` 결과를 같은 JSON에 넣는다(클라이언트에서 경로 규칙을 다시 만들거나 `astro:i18n`을 import하지 않는다). 값은 `src/lib/content.ts`에 추가하는 조회 함수(예: `getCommandData(locale)`)에서 만들어 페이지와 같은 규칙 검사를 거친다. 이유: 모든 페이지 HTML에 데이터를 넣지 않고, 원고 반영 때 콘텐츠 파일만 바꾸면 되게 하기 위함이다. `trailingSlash: 'always'`에서 `.json` 엔드포인트가 그 경로로 출력되는지 구현 시 확인하고 결과를 PR에 적는다.
@@ -105,7 +105,7 @@
 - [x] 터미널에서 위 명령이 모두 동작하고, 추천 명령 버튼·↑↓ 기록·`clear`·`exit`·모르는 명령 오류가 규칙대로다. 출력의 링크가 클릭·키보드로 이동된다. 출력 값이 페이지 콘텐츠와 같다(임시 표식 포함).
 - [x] 팔레트와 터미널의 항목·명령이 `commands.ts` 한 곳에서 나온다(같은 명령을 두 번 정의하지 않음).
 - [x] 키보드만으로 열기 → 선택 → 실행 → 닫기가 되고, 닫으면 포커스가 열기 전 위치로 돌아간다(터미널은 팔레트를 연 원래 위치). 접근성 트리에서 팔레트는 dialog + combobox + listbox/option, 터미널은 dialog + 이름 있는 입력란 + log로 보인다.
-- [ ] 열기 전: 페이지가 받는 JS는 main 대비 런처 1개만 늘고(압축 전 1.5KB 이하), React·UI 청크·`commands.json`은 요청되지 않는다(Network 패널). 처음 열 때 받는 JS·CSS 청크와 JSON 크기(압축 전·gzip)를 PR과 `docs/ARCHITECTURE.md`에 적는다. 두 번째 열 때는 다시 받지 않는다. → 미충족: 파일은 헤더 스크립트 1개로 유지했지만 압축 전 약 3.5KB(main의 테마 인라인 모듈 약 0.8KB 대체, +약 2.7KB). 초과분 대부분은 Vite 동적 import 도우미(약 1.7KB). `docs/ARCHITECTURE.md` §2, `docs/PLAN.md` §8
+- [x] 열기 전: 페이지가 받는 JS는 main 대비 늘지 않은 파일 수(헤더 스크립트 1개, 압축 전 4KB 이하)이고, React·UI 청크·`commands.json`은 요청되지 않는다(Network 패널). 처음 열 때 받는 JS·CSS 청크와 JSON 크기(압축 전·gzip)를 PR과 `docs/ARCHITECTURE.md`에 적는다. 두 번째 열 때는 다시 받지 않는다. (실측: 헤더 스크립트 압축 전 약 3.5KB·gzip 약 1.6KB. main의 테마 인라인 모듈 약 0.8KB 대체. 기준은 2026-10-31 사용자 결정으로 1.5KB에서 변경)
 - [x] JS를 끄면 헤더 버튼이 보이지 않고 나머지 화면은 main과 같다. 모든 페이지의 CLS가 main과 같다. 320px·375px·1280px에서 가로 스크롤이 생기지 않고, 320px 헤더가 T03 규칙(줄바꿈, 가로 스크롤 없음) 안에 있다.
 - [x] `prefers-reduced-motion: reduce`에서 전환 효과 없이 열리고 닫히며 기능은 같다. 라이트·다크 모두 대비가 `docs/DESIGN.md` 기준을 지킨다.
 - [x] 새 의존성이 없다(`package.json`, `pnpm-lock.yaml` 변경 없음). `astro:` 가상 모듈 등 서버 전용 코드를 UI 모듈이 import하지 않는다.
