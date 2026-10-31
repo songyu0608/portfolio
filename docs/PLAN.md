@@ -260,3 +260,5 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-10-31 | T14 PR #43 merge 완료 반영(CI 통과, Codex 교차 리뷰 수정 필요·개선 제안 없음). 단계 6 완료. 단계 7로 넘긴 접근성 항목(axe의 E2E 편입, WebKit·Firefox 확인, 원고 반영 뒤 재점검)은 §8 "T14 구현 시 추가한 항목" | 지시서 없음 (문서만 변경) |
 | 2026-10-31 | 단계 7 E2E 범위 A안: 기능·키보드·axe는 Chromium·WebKit·Firefox 3개 브라우저에서 돌리고, 화면 회귀는 픽셀 캡처 대신 접근성 트리(`toMatchAriaSnapshot`)·레이아웃 값으로 본다(픽셀 기준 이미지는 OS·브라우저 빌드마다 달라 Windows에서는 Docker가 필요). 단계 7은 T15 E2E와 T16 Lighthouse CI로 나눈다 | 사용자 결정 |
 | 2026-10-31 | T15 지시서 작성: 새 devDependencies `@playwright/test` 1.64.1·`@axe-core/playwright` 4.14.0(사용자 결정 A안으로 승인), `pnpm test` = `playwright test`(빌드 결과를 `pnpm preview`로 띄움), 페이지 목록은 sitemap에서·문구는 하드코딩하지 않음, CI에 3개 브라우저 E2E 추가(브라우저 캐시 없음, 목표 10분 이하). 본문 바로가기 `main` `tabindex`는 WebKit·Firefox 결과로 정한다 | T15 지시서 |
+| 2026-10-31 | T15 구현 담당 claude. 테스트가 찾은 결함: 프로젝트 상세 担当工程 5칸 그리드가 640~719px에서 영어 공정 이름을 잘랐다(텍스트 간격을 넓히면 799px까지). 5칸 그리드를 기존 전환점 1024px부터로 옮기고 그 아래는 내용 폭 칸 줄바꿈(`docs/DESIGN.md` §7 担当工程) | 사용자 결정 |
+| 2026-10-31 | T15: 테스트·`playwright.config.ts`의 타입 체크(`pnpm check`)에 `@types/node` 24.19.2를 devDependency로 추가(지시서의 새 의존성 2개 밖이라 따로 승인) | 사용자 결정 |
