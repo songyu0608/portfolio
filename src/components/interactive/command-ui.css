@@ -1,0 +1,324 @@
+/*
+ * 명령 팔레트·터미널(T10). mount.tsx가 import하므로 처음 열 때 함께 불러온다.
+ * 색은 tokens.css의 토큰만 쓴다. 대비는 docs/DESIGN.md "명령 팔레트·터미널".
+ */
+
+.command-dialog {
+  max-width: calc(100% - 2 * var(--space-4));
+  max-height: calc(100dvh - 2 * var(--space-4));
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  color: var(--color-text);
+}
+
+.command-dialog::backdrop {
+  background: rgb(11 15 23 / 50%);
+}
+
+.command-dialog__body {
+  display: flex;
+  height: 100%;
+  max-height: inherit;
+  flex-direction: column;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .command-dialog[open] {
+    animation-name: command-dialog-in;
+    animation-duration: var(--duration-base);
+    animation-timing-function: var(--ease-standard);
+  }
+}
+
+@keyframes command-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* 팔레트 */
+
+.command-palette {
+  width: 35rem;
+  max-height: calc(100dvh - min(15vh, 7.5rem) - var(--space-4));
+  margin-top: min(15vh, 7.5rem);
+}
+
+.command-palette__search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-inline: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.command-palette__search svg,
+.command-terminal__close svg {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.command-palette__search svg {
+  color: var(--color-text-muted);
+}
+
+.command-palette__input {
+  min-width: 0;
+  min-height: 3.5rem;
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  outline: none;
+}
+
+.command-palette__input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.command-palette__list {
+  min-height: 0;
+  flex: 1;
+  padding: var(--space-2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.command-palette__group {
+  margin: var(--space-2) var(--space-3) var(--space-1);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+  font-weight: 700;
+}
+
+.command-palette__option {
+  display: flex;
+  min-height: 44px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+}
+
+/* 선택 표시는 배경색 외에 accent 테두리로도 구분한다(색만으로 전하지 않음). */
+.command-palette__option[aria-selected='true'] {
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface));
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.command-palette__hint {
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-label);
+  overflow-wrap: anywhere;
+}
+
+.command-palette__empty {
+  margin: 0;
+  padding: var(--space-4) var(--space-3);
+  color: var(--color-text-muted);
+}
+
+.command-palette__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-4);
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+}
+
+.command-palette__close {
+  min-height: 44px;
+  margin-inline-start: auto;
+  padding-inline: var(--space-3);
+  border: 0;
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* 터치 기기에는 키 안내가 쓸모없으므로 닫기 버튼만 남긴다. */
+@media (hover: none) {
+  .command-palette__footer > span {
+    display: none;
+  }
+}
+
+/* 터미널 */
+
+.command-terminal {
+  width: 55rem;
+  height: min(37.5rem, calc(100dvh - 2 * var(--space-4)));
+  font-family: var(--font-mono);
+  font-size: var(--font-size-small);
+}
+
+.command-terminal__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-inline: var(--space-4) var(--space-1);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.command-terminal__close {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.command-terminal__log {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  padding: var(--space-4) var(--space-4) var(--space-2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* 줄이 적을 때는 아래(입력란 쪽)에 붙인다. */
+.command-terminal__log > :first-child {
+  margin-top: auto;
+}
+
+.command-terminal__line {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.command-terminal__line[data-kind='input'] {
+  color: var(--color-accent);
+}
+
+.command-terminal__line[data-kind='muted'] {
+  color: var(--color-text-muted);
+}
+
+.command-terminal__line[data-kind='error'] {
+  color: var(--color-error);
+}
+
+.command-terminal__prompt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-inline: var(--space-4);
+}
+
+.command-terminal__prompt > span {
+  color: var(--color-accent);
+}
+
+.command-terminal__input {
+  min-width: 0;
+  min-height: 44px;
+  flex: 1;
+  border: 0;
+  background: transparent;
+  caret-color: var(--color-accent);
+  color: var(--color-text);
+  font: inherit;
+  outline: none;
+}
+
+.command-terminal__suggest {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.command-terminal__suggest > span {
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+}
+
+.command-terminal__suggest ul {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.command-terminal__suggest button {
+  width: 100%;
+  min-height: 44px;
+  padding-inline: var(--space-3);
+  border: 1px solid var(--color-text-muted);
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* 터치 기기에서 눌린 뒤 배경이 남지 않게 마우스가 있을 때만 바꾼다. */
+@media (hover: hover) {
+  .command-palette__close:hover,
+  .command-terminal__close:hover,
+  .command-terminal__suggest button:hover {
+    background: var(--color-background);
+  }
+}
+
+/* 입력란은 outline을 없앴으므로 프롬프트 줄 전체로 포커스를 보인다. */
+.command-palette__search:focus-within,
+.command-terminal__prompt:focus-within {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+/* 메일 복사 결과. 다이얼로그 밖(UI 루트)에 있고 비어 있으면 보이지 않는다. */
+.command-toast {
+  position: fixed;
+  bottom: var(--space-8);
+  left: 50%;
+  z-index: 20;
+  max-width: calc(100% - 2 * var(--space-4));
+  margin: 0;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-button);
+  background: var(--color-text);
+  color: var(--color-background);
+  font-size: var(--font-size-small);
+  transform: translateX(-50%);
+}
+
+.command-toast:empty {
+  padding: 0;
+}

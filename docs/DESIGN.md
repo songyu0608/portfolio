@@ -97,7 +97,7 @@
 ### 공통 구현 규칙
 
 - **명령 목록 공유**: 3(터미널)과 4(명령 팔레트)는 하나의 명령 정의 모듈(예: `src/components/interactive/commands.ts`)을 함께 쓴다.
-- **지연 로딩**: 3·4는 첫 화면에 필요 없으므로 사용자가 열 때(단축키, 버튼) 동적 import한다. 1·2는 React island 없이 Astro `<script>`(번들된 작은 모듈)와 CSS View Transitions로 만든다(T08). 5는 JS 없이 CSS 스크롤 기반 애니메이션(`animation-timeline: view()`)으로 만들고, 지원하지 않는 브라우저는 효과 없는 최종 상태다(T09). 3·4는 모든 페이지에 작은 런처 스크립트만 넣고, 열 때 React UI 모듈과 언어별 명령 데이터(`/ja/commands.json` 등)를 불러온다. Astro `client:*` island는 쓰지 않는다(T10 지시서).
+- **지연 로딩**: 3·4는 첫 화면에 필요 없으므로 사용자가 열 때(단축키, 버튼) 동적 import한다. 1·2는 React island 없이 Astro `<script>`(번들된 작은 모듈)와 CSS View Transitions로 만든다(T08). 5는 JS 없이 CSS 스크롤 기반 애니메이션(`animation-timeline: view()`)으로 만들고, 지원하지 않는 브라우저는 효과 없는 최종 상태다(T09). 3·4는 모든 페이지에 작은 런처(헤더 스크립트에 포함)만 넣고, 열 때 React UI 모듈·CSS와 언어별 명령 데이터(`/ja/commands.json` 등)를 불러온다. Astro `client:*` island는 쓰지 않는다(T10, §9).
 - **지시서 나눔**: T08 = 1·2, T09 = 5, T10 = 3·4 (2026-10-31 사용자 결정).
 - **reduced-motion**: `prefers-reduced-motion: reduce`이면 1·2·5의 애니메이션을 끄고 최종 상태를 바로 보여준다. 3·4는 기능은 유지하고 전환 효과만 끈다.
 - **키보드**: 모든 인터랙션은 키보드로도 동작한다. 팔레트·터미널은 Esc로 닫고, 닫으면 포커스를 원래 위치로 되돌린다.
@@ -105,13 +105,13 @@
 
 ## 4. 공통 레이아웃 (T03)
 
-모든 페이지는 `src/layouts/BaseLayout.astro`를 쓴다. 구성 순서: 본문 바로가기 → 헤더(사이트 이름, 주 내비게이션, 언어 전환, 테마 버튼) → `<main id="main">` → 푸터. 키보드 포커스도 이 순서로 이동한다.
+모든 페이지는 `src/layouts/BaseLayout.astro`를 쓴다. 구성 순서: 본문 바로가기 → 헤더(사이트 이름, 주 내비게이션, 명령 팔레트 버튼, 언어 전환, 테마 버튼) → `<main id="main">` → 푸터. 키보드 포커스도 이 순서로 이동한다.
 
 ### 헤더
 
 | 폭 | 배치 |
 | --- | --- |
-| 640px 미만 | 줄바꿈 배치. 1줄: 사이트 이름 + 내비게이션, 2줄: 언어 전환 + 테마 버튼(오른쪽 정렬). 항목 사이 간격 8px, 내비게이션 좌우 여백 8px. 글꼴이 대체 글꼴로 바뀌어 폭이 늘면 3줄로 늘어날 뿐 가로 스크롤은 생기지 않는다 |
+| 640px 미만 | 줄바꿈 배치. 1줄: 사이트 이름 + 내비게이션, 2줄: 명령 팔레트 버튼 + 언어 전환 + 테마 버튼(오른쪽 정렬, 팔레트 버튼은 T10). 항목 사이 간격 8px, 내비게이션 좌우 여백 8px. 글꼴이 대체 글꼴로 바뀌어 폭이 늘면 3줄로 늘어날 뿐 가로 스크롤은 생기지 않는다 |
 | 640px 이상 | 한 줄. 사이트 이름은 왼쪽, 내비게이션·언어 전환·테마 버튼은 오른쪽. 항목 사이 간격 16px, 내비게이션 좌우 여백 12px |
 
 - 햄버거 메뉴는 쓰지 않는다. 모든 항목을 항상 보여준다.
@@ -136,11 +136,11 @@
 
 - 라이트·다크 2단계 토글. 접근 가능한 이름은 「ダークモード」/「Dark mode」(시각적으로 숨긴 텍스트), 상태는 `aria-pressed`(다크면 `true`)로 전한다.
 - 아이콘은 적용 중인 테마를 나타낸다(라이트: 해, 다크: 달). 아이콘 표시는 CSS가 `data-theme`·시스템 설정을 보고 정하므로 첫 화면에서 아이콘이 바뀌어 보이지 않는다. 경계는 1px `text-muted`, 마우스를 올리면 `surface` 배경.
-- 우선순위: 저장된 선택(`localStorage`) → 없으면 시스템 설정. 저장 값이 없는 동안 시스템 설정이 바뀌면 화면과 `aria-pressed`가 따라간다. "시스템 설정으로 되돌리기"는 없다(단계 5 명령 팔레트에서 검토).
+- 우선순위: 저장된 선택(`localStorage`) → 없으면 시스템 설정. 저장 값이 없는 동안 시스템 설정이 바뀌면 화면과 `aria-pressed`가 따라간다. 헤더 버튼에는 "시스템 설정으로 되돌리기"가 없고, 명령 팔레트·터미널의 「システム設定に合わせる」/`theme system`이 저장 값을 지운다(T10, §9).
 - 저장 키: `theme`, 값 `light` / `dark`. 단계 5 명령 팔레트와 공유하므로 이름을 바꾸지 않는다. 키는 `src/scripts/theme.ts`의 `THEME_STORAGE_KEY` 한 곳에 있고, `<head>` 인라인 스크립트는 `define:vars`로 같은 값을 받는다.
 - 첫 렌더 전 적용: `<head>`의 인라인 스크립트가 저장 값을 `<html data-theme>`에 넣는다. `localStorage` 접근이 막히면 아무것도 하지 않아 시스템 설정을 따르고, 버튼으로 바꾼 값은 그 페이지에서만 유지된다.
 - JS가 꺼져 있으면 버튼을 숨긴다(인라인 스크립트가 붙이는 `html.js` 클래스가 있을 때만 표시). 이때는 시스템 설정만 적용된다.
-- 테마 읽기·쓰기 함수(`getTheme`, `setTheme`, `toggleTheme`, `onThemeChange`)는 `src/scripts/theme.ts`에 있다. 다른 곳에서 테마를 바꿀 때도 이 함수를 쓴다.
+- 테마 읽기·쓰기 함수(`getTheme`, `setTheme`, `toggleTheme`, `onThemeChange`, T10에서 추가한 `clearTheme`·`getThemePreference`)는 `src/scripts/theme.ts`에 있다. 다른 곳에서 테마를 바꿀 때도 이 함수를 쓴다. 버튼의 클릭 처리와 `aria-pressed` 동기화는 `SiteHeader.astro`의 헤더 스크립트가 맡는다(T10에서 `ThemeToggle.astro`에서 옮김, §9 로딩).
 
 ### 본문 바로가기·푸터
 
@@ -437,3 +437,59 @@
 ### 모션
 
 복사 버튼 배경 전환(120ms)만 있다. `prefers-reduced-motion: reduce`에서 끈다. 복사 후 문구 전환은 상태 표시라 유지한다.
+
+## 9. 명령 팔레트·터미널 (컨셉 3·4, T10)
+
+명령 정의는 `src/components/interactive/commands.ts` 하나이고, 팔레트(`Palette.tsx`)와 터미널(`Terminal.tsx`)은 그 목록만 쓴다. UI 문구는 `src/i18n/ui.ts`의 `command.*`, 콘텐츠 값과 URL은 `/<locale>/commands.json`(`src/lib/content.ts`의 `getCommandData`)에서 받는다. 시안: claude.ai 디자인 캔버스 "T10 명령 팔레트·터미널 시안"(비공개, 2026-10-31).
+
+### 로딩
+
+- 헤더 스크립트(`SiteHeader.astro`의 `<script>`: 테마 버튼 처리 + `src/scripts/command-launcher.ts`)가 모든 페이지에 들어간다. 런처는 ⌘K / Ctrl+K(Alt·Shift 없이, IME 변환 중 제외)와 헤더 버튼을 받아, 처음 열 때만 `mount.tsx`(React)와 `commands.json`을 함께 불러오고 CSS(`command-ui.css`)를 `<link>`로 붙인 뒤 연다. 두 번째부터는 다시 받지 않는다.
+- 테마 버튼 스크립트를 헤더 스크립트로 합친 이유: `theme.ts`를 팔레트 UI와 공유하므로, 따로 두면 테마 버튼 스크립트·런처·`theme.ts` 청크 세 파일을 받게 된다. 한 모듈로 두면 팔레트 UI가 이 모듈에서 `theme.ts`를 가져다 써서 페이지가 받는 파일이 하나다.
+- CSS를 일반 import하면 Astro가 런처를 넣은 모든 페이지에 `<link>`를 추가하므로 `?url`로 URL만 받아 열 때 붙인다.
+- 같은 페이지의 다른 언어 URL은 서버에서 `switchLocalePath`로 계산해 헤더 버튼의 `data-alternate`로 넘긴다. 데이터 URL은 `data-src`.
+- 실패하면(네트워크 등) 콘솔에 오류를 남기고, 다음에 열 때 다시 불러온다.
+
+### 헤더 버튼 (`src/components/CommandButton.astro`)
+
+- 44×44px 검색 아이콘 버튼, 경계 1px text-muted, 마우스를 올리면 surface 배경(테마 버튼과 같은 모양). 언어 전환 앞에 둔다. 접근 가능한 이름 「コマンドパレットを開く」/`Open command palette`, `aria-keyshortcuts="Meta+K Control+K"`.
+- JS가 없으면 동작하지 않으므로 `html.js`일 때만 보인다.
+
+### 팔레트
+
+- `<dialog>`를 `showModal()`로 연다(이름 「コマンドパレット」). 너비 35rem(좁은 화면은 좌우 16px 여백), 위 여백 `min(15vh, 7.5rem)`. 구성: 검색 줄(아이콘 + 입력란 56px) → 목록(넘치면 목록만 스크롤) → 아래 줄(키 안내 「↑↓ 選択 / Enter 実行 / Esc 閉じる」 + 「閉じる」 버튼). 터치 기기(`hover: none`)에서는 키 안내를 숨긴다.
+- 항목 묶음과 순서: 「ページ」(ホーム·経歴·プロジェクト·連絡先, 힌트는 경로) → 「プロジェクト」(목록 순서, 힌트는 상세 경로) → 「操作」(다른 언어로 전환, ライトモード·ダークモード·システム設定に合わせる(적용 중이면 힌트에 「· 適用中」), メールアドレスをコピー(클립보드를 쓸 수 있을 때만), 이력서 PDF(`profile.resumes`가 있을 때만), ターミナルを開く).
+- 검색: 공백으로 나눈 모든 단어가 표시 이름·힌트·검색어(`open about`, `terminal`, slug 등)에 부분 일치(대소문자 무시)하면 남긴다. 없으면 「「…」に一致する項目はありません」.
+- 조작: ↑↓ 선택(끝에서 멈춤), Enter 실행(IME 변환 중에는 ↑↓·Enter 모두 IME에 맡김), 클릭 실행, 마우스 이동으로 선택, Esc·배경 클릭·「閉じる」·⌘K / Ctrl+K로 닫기. 입력이 바뀌면 첫 항목을 선택한다.
+- 실행: 페이지·언어는 이동, 테마는 적용 후 닫기, 메일 복사는 닫은 뒤 화면 아래 알림(「コピーしました」 등, 2초, 다이얼로그 밖의 `role="status"`), 터미널은 팔레트를 닫고 터미널을 연다.
+- 접근성: [APG 콤보박스](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) 패턴. 입력란 `role="combobox"`(이름 「ページや操作を検索」, 시각적으로 숨긴 label), 목록 `role="listbox"`(이름 「候補」), 묶음 `role="group"`(묶음 이름), 항목 `role="option"` + `aria-selected`, 선택은 `aria-activedescendant`. 남은 항목 수는 시각적으로 숨긴 `role="status"`(「15 件」)로 알린다.
+- 선택 항목: accent 12%를 surface에 섞은 배경 + 2px accent 안쪽 외곽선(색만으로 구분하지 않음).
+
+### 터미널
+
+- 팔레트의 「ターミナルを開く」에서만 연다. `<dialog>`(이름 「ターミナル」), 너비 55rem, 높이 `min(37.5rem, 100dvh - 32px)`, 모노스페이스 14px. 구성: 제목 줄(`guest@choi: ~` 장식 + 닫기 버튼 44px) → 출력(`role="log"`, 줄이 적으면 아래에 붙음) → `$` 입력란(시각적으로 숨긴 label 「コマンド」) → 추천 명령 버튼(`help`·`whoami`·`skills`·`projects`·`contact`·`clear`, 높이 44px, 최소 폭 6.5rem 격자).
+- 명령: `help`, `whoami`, `skills`(주력 기술에 `*`), `projects`(상세 링크), `contact`(메일·GitHub·LinkedIn 링크), `open <home|about|projects|contact>`, `lang <ja|en>`(둘 다 「移動します: 」 + 목적지 링크를 출력하고 바로 이동), `theme <light|dark|system>`, `clear`, `exit`. 대소문자·앞뒤 공백 무시. 모르는 명령은 error 색 「command not found: …」, 인자가 틀리면 사용법.
+- 입력 줄(`$ 명령`)은 accent, 보조 출력은 text-muted. 링크는 실제 `<a>`(문자열로 HTML을 만들지 않음). ↑↓로 이번에 연 동안 실행한 명령을 불러온다(IME 변환 중 제외). 출력은 최근 200줄까지.
+- 처음 열면 입력란에 포커스. 닫으면(Esc·닫기 버튼·`exit`·⌘K / Ctrl+K) 팔레트를 연 원래 위치로 포커스를 돌려보낸다.
+
+### 대비 (T10)
+
+단위 `:1`. 선택 항목 배경(accent 12% + surface, 라이트 `#E2ECFF` / 다크 `#202B3E`)이 새 조합이다.
+
+| 요소 | 조합 | 라이트 | 다크 |
+| --- | --- | --- | --- |
+| 항목 이름, 터미널 출력 | text / surface | 18.19 | 14.72 |
+| 힌트, 묶음 제목, 키 안내, 보조 출력 | text-muted / surface | 7.00 | 7.09 |
+| 선택 항목 이름 | text / 선택 배경 | 15.31 | 12.00 |
+| 선택 항목 힌트 | text-muted / 선택 배경 | 5.89 | 5.78 |
+| 선택 항목 외곽선(UI) | accent / 선택 배경 | 4.21 | 6.04 |
+| 터미널 입력 줄·링크·프롬프트, 포커스 외곽선 | accent / surface | 5.00 | 7.41 |
+| 터미널 오류 | error / surface | 6.57 | 7.96 |
+| 추천 명령 버튼 경계(UI) | text-muted / surface | 7.00 | 7.09 |
+| 복사 결과 알림 | background / text (반전) | 17.25 | 16.18 |
+
+- 다이얼로그 테두리·구분선은 border(장식용)다. 다이얼로그 경계는 backdrop(`rgb(11 15 23 / 50%)`)으로 구분한다.
+
+### 모션
+
+열 때 불투명도 0 → 1, `translateY(-8px)` → 0, 200ms(`--duration-base`, `--ease-standard`). 닫을 때는 효과 없음. 헤더 버튼 배경 전환 120ms. `prefers-reduced-motion: reduce`에서는 모두 끄고 기능은 같다.

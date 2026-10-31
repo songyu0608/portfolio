@@ -4,9 +4,9 @@
 | --- | --- |
 | 단계 | 5 |
 | 선행 작업 | T09 (PR #28) |
-| 담당 | 미배정 |
-| 상태 | todo |
-| 브랜치 | `<agent>/T10-command-palette-terminal` (실행 환경이 이름을 강제하면 그 이름을 쓰고 PR 제목에 `T10`을 넣는다) |
+| 담당 | claude |
+| 상태 | review |
+| 브랜치 | `claude/project-thread-f9n3kf` (실행 환경이 지정한 이름. 원칙상 이름은 `<agent>/T10-command-palette-terminal`) |
 
 ## 목표
 
@@ -29,7 +29,7 @@
 포함:
 
 1. **구조와 로딩 (기본안)**
-   - **런처**: 작은 Astro `<script>` 모듈(`src/scripts/command-launcher.ts`)을 모든 페이지에 넣는다. ⌘K(macOS) / Ctrl+K(그 밖) 키 입력과 헤더 버튼 클릭을 받아, 처음 열 때 `import()`로 UI 모듈을 불러온 뒤 연다. 런처는 React를 import하지 않는다. 압축 전 1.5KB 이하.
+   - **런처**: 작은 Astro `<script>` 모듈(`src/scripts/command-launcher.ts`)을 모든 페이지에 넣는다. ⌘K(macOS) / Ctrl+K(그 밖) 키 입력과 헤더 버튼 클릭을 받아, 처음 열 때 `import()`로 UI 모듈을 불러온 뒤 연다. 런처는 React를 import하지 않는다. 런처는 테마 버튼 처리와 함께 헤더 스크립트 1개로 나가며, 헤더 스크립트는 압축 전 4KB 이하(처음 기준은 런처 1.5KB 이하였으나 Vite 동적 import 도우미 약 1.7KB를 설정으로 뺄 수 없어 2026-10-31 사용자 결정으로 변경).
    - **UI 모듈**: `src/components/interactive/` 아래 React 컴포넌트(팔레트, 터미널, 둘을 관리하는 루트)와 마운트 함수. 마운트는 `react-dom/client`의 `createRoot`로 `<body>` 끝에 만든 컨테이너에 한 번만 한다. Astro `client:*` 지시어(island)는 쓰지 않는다. 이유: `client:idle`·`client:visible`도 열지 않은 방문자에게 React를 받게 하므로, "열 때 불러온다"(DESIGN §3)를 지키려면 동적 import가 맞다.
    - **명령 정의**: `src/components/interactive/commands.ts` 하나가 팔레트 항목과 터미널 명령을 함께 정의한다(id, 묶음, 표시 이름, 검색어, 터미널 명령 이름, 실행 함수 또는 출력). React를 import하지 않는 순수 TypeScript로 둔다. 팔레트와 터미널은 이 목록만 읽고 각자 명령을 따로 정의하지 않는다.
    - **콘텐츠 데이터**: 터미널 출력과 프로젝트 항목에 필요한 값(프로필 이름·직함·한 줄 소개, 기술 스택 분류와 이름, 프로젝트 제목·상세 URL, 연락처, 이력서 링크)은 언어별 정적 JSON 엔드포인트(`src/pages/ja/commands.json.ts`, `src/pages/en/commands.json.ts` → `/ja/commands.json`, `/en/commands.json`)로 빌드 시 만들고 열 때 `fetch`한다. 페이지 4개(Home·About·Projects·Contact)의 목적지 URL도 서버의 `localizePath` 결과를 같은 JSON에 넣는다(클라이언트에서 경로 규칙을 다시 만들거나 `astro:i18n`을 import하지 않는다). 값은 `src/lib/content.ts`에 추가하는 조회 함수(예: `getCommandData(locale)`)에서 만들어 페이지와 같은 규칙 검사를 거친다. 이유: 모든 페이지 HTML에 데이터를 넣지 않고, 원고 반영 때 콘텐츠 파일만 바꾸면 되게 하기 위함이다. `trailingSlash: 'always'`에서 `.json` 엔드포인트가 그 경로로 출력되는지 구현 시 확인하고 결과를 PR에 적는다.
@@ -53,7 +53,7 @@
    - **여는 방법**: 팔레트의 「ターミナルを開く」 항목만(이스터에그). 헤더·푸터에 별도 버튼을 두지 않는다(기본안).
    - **화면**: 팔레트와 같은 `<dialog>` 방식의 창. 제목 줄(`guest@choi: ~` 같은 모노스페이스 장식 문구 + 닫기 버튼), 출력 영역, `$` 프롬프트 입력란, 그 아래 추천 명령 버튼 줄(`help`, `whoami`, `skills`, `projects`, `contact`, `clear`). 창 크기는 기본안 너비 `min(880px, 100% - 32px)`, 높이 `min(600px, 100dvh - 32px)`. 모노스페이스는 `--font-mono`. 색은 현재 테마 토큰(surface, text, text-muted, accent, error)을 쓰며 시안의 고정 어두운 색은 쓰지 않는다.
    - **명령 (기본안)**: `help`(명령 목록과 한 줄 설명), `whoami`(프로필 이름·직함·한 줄 소개), `skills`(기술 스택 분류별 이름, 주력 기술 표시), `projects`(프로젝트 제목 목록, 각각 상세 링크), `contact`(메일·GitHub·LinkedIn, 링크), `open <page>`(`home`·`about`·`projects`·`contact` 이동), `lang <ja|en>`, `theme <light|dark|system>`, `clear`, `exit`(닫기). 앞뒤 공백 무시, 대소문자 무시. 모르는 명령은 「command not found: … （「help」で一覧）」을 error 색으로 출력. 실행한 입력은 `$ 명령` 줄로 출력에 남긴다. 이 명령들은 `commands.ts`의 같은 정의에서 나온다(예: `open about`과 팔레트의 「経歴」은 같은 명령).
-   - **출력의 링크**: 프로젝트 제목, 연락처, 페이지 이동 안내는 실제 `<a href>`로 출력해 클릭·Tab으로 이동할 수 있게 한다.
+   - **출력의 링크**: 프로젝트 제목(`projects`), 연락처(`contact`)는 실제 `<a href>`로 출력해 클릭·Tab으로 이동할 수 있게 한다. `open <page>`·`lang <ja|en>`은 실행하면 바로 이동한다(팔레트의 같은 명령과 같음). 이동 전에 남기는 안내 「移動します: 」 뒤의 목적지는 다른 출력과 같은 모양의 `<a href>`로 표시하지만, 터미널이 바로 닫히므로 클릭·Tab 조작 대상이 아니다. (2026-10-31 Codex 리뷰 후 명확화)
    - **임시 문구**: 출력 값은 페이지와 같은 콘텐츠이며 임시 항목은 페이지와 같은 「（仮）」/`(placeholder)` 표식을 그대로 보인다. 터미널에만 있는 정보를 만들지 않는다.
    - **편의 기능**: ↑↓로 이전에 실행한 명령 불러오기(그 창을 연 동안만, 저장하지 않음). 출력은 최근 200줄까지만 유지. 자동 완성(Tab)은 하지 않는다(Tab은 포커스 이동에 둔다).
    - **접근성**: 이름은 「ターミナル」. 입력란은 시각적으로 숨긴 `<label>`(「コマンド」)을 가진다. 출력 영역은 `role="log"`(새 출력이 스크린 리더에 읽힘). 추천 명령 버튼은 실제 `<button>`이며 누르면 해당 명령을 실행하고 포커스를 입력란에 둔다. 처음 열면 입력란에 포커스, 첫 출력은 환영 문구 + 「`help` と入力するか、下のボタンを押してください。」. 닫으면 팔레트를 연 원래 위치로 포커스를 돌려보낸다(팔레트 자체가 아니라).
@@ -100,19 +100,19 @@
 
 ## 완료 조건
 
-- [ ] `/ja/`, `/en/`의 모든 페이지에서 ⌘K / Ctrl+K와 헤더 버튼으로 팔레트가 열리고, 검색·↑↓·Enter·클릭·Esc·배경 클릭이 위 규칙대로 동작한다. IME 변환 중 Enter는 실행하지 않는다.
-- [ ] 팔레트에서 모든 페이지·프로젝트 상세로 이동, 다른 언어의 같은 페이지로 전환(프로젝트 상세 포함), 라이트·다크·시스템 설정 테마 적용, 메일 복사, 터미널 열기가 된다. 테마 변경 후 헤더 테마 버튼의 아이콘·`aria-pressed`가 맞고, 새로고침해도 선택(시스템 설정은 저장 값 없음)이 유지된다. 이력서가 없는 지금은 이력서 항목이 보이지 않는다.
-- [ ] 터미널에서 위 명령이 모두 동작하고, 추천 명령 버튼·↑↓ 기록·`clear`·`exit`·모르는 명령 오류가 규칙대로다. 출력의 링크가 클릭·키보드로 이동된다. 출력 값이 페이지 콘텐츠와 같다(임시 표식 포함).
-- [ ] 팔레트와 터미널의 항목·명령이 `commands.ts` 한 곳에서 나온다(같은 명령을 두 번 정의하지 않음).
-- [ ] 키보드만으로 열기 → 선택 → 실행 → 닫기가 되고, 닫으면 포커스가 열기 전 위치로 돌아간다(터미널은 팔레트를 연 원래 위치). 접근성 트리에서 팔레트는 dialog + combobox + listbox/option, 터미널은 dialog + 이름 있는 입력란 + log로 보인다.
-- [ ] 열기 전: 페이지가 받는 JS는 main 대비 런처 1개만 늘고(압축 전 1.5KB 이하), React·UI 청크·`commands.json`은 요청되지 않는다(Network 패널). 처음 열 때 받는 JS·CSS 청크와 JSON 크기(압축 전·gzip)를 PR과 `docs/ARCHITECTURE.md`에 적는다. 두 번째 열 때는 다시 받지 않는다.
-- [ ] JS를 끄면 헤더 버튼이 보이지 않고 나머지 화면은 main과 같다. 모든 페이지의 CLS가 main과 같다. 320px·375px·1280px에서 가로 스크롤이 생기지 않고, 320px 헤더가 T03 규칙(줄바꿈, 가로 스크롤 없음) 안에 있다.
-- [ ] `prefers-reduced-motion: reduce`에서 전환 효과 없이 열리고 닫히며 기능은 같다. 라이트·다크 모두 대비가 `docs/DESIGN.md` 기준을 지킨다.
-- [ ] 새 의존성이 없다(`package.json`, `pnpm-lock.yaml` 변경 없음). `astro:` 가상 모듈 등 서버 전용 코드를 UI 모듈이 import하지 않는다.
-- [ ] PR 본문에 최신 커밋 기준 캡처가 있다: 팔레트 ja 라이트 1280px(열린 직후), 팔레트 ja 다크 375px(검색어 입력, 결과 일부), 팔레트 en 라이트 1280px(일치 없음), 터미널 ja 다크 1280px(`help`·`whoami` 실행 후), 터미널 ja 라이트 375px(추천 명령 버튼 보이는 상태), 헤더 ja 라이트 320px(버튼 배치).
-- [ ] `docs/DESIGN.md`, `docs/ARCHITECTURE.md`가 위 "문서" 항목대로 갱신되어 있다.
+- [x] `/ja/`, `/en/`의 모든 페이지에서 ⌘K / Ctrl+K와 헤더 버튼으로 팔레트가 열리고, 검색·↑↓·Enter·클릭·Esc·배경 클릭이 위 규칙대로 동작한다. IME 변환 중 Enter는 실행하지 않는다. (IME 변환 중에는 ↑↓·Enter 모두 처리하지 않음. `isComposing`·keyCode 229 코드 확인만. 실제 IME 입력은 미확인, `docs/PLAN.md` §8)
+- [x] 팔레트에서 모든 페이지·프로젝트 상세로 이동, 다른 언어의 같은 페이지로 전환(프로젝트 상세 포함), 라이트·다크·시스템 설정 테마 적용, 메일 복사, 터미널 열기가 된다. 테마 변경 후 헤더 테마 버튼의 아이콘·`aria-pressed`가 맞고, 새로고침해도 선택(시스템 설정은 저장 값 없음)이 유지된다. 이력서가 없는 지금은 이력서 항목이 보이지 않는다.
+- [x] 터미널에서 위 명령이 모두 동작하고, 추천 명령 버튼·↑↓ 기록·`clear`·`exit`·모르는 명령 오류가 규칙대로다. `projects`·`contact` 출력의 링크가 클릭·키보드로 이동된다(`open`·`lang`은 바로 이동). 출력 값이 페이지 콘텐츠와 같다(임시 표식 포함).
+- [x] 팔레트와 터미널의 항목·명령이 `commands.ts` 한 곳에서 나온다(같은 명령을 두 번 정의하지 않음).
+- [x] 키보드만으로 열기 → 선택 → 실행 → 닫기가 되고, 닫으면 포커스가 열기 전 위치로 돌아간다(터미널은 팔레트를 연 원래 위치). 접근성 트리에서 팔레트는 dialog + combobox + listbox/option, 터미널은 dialog + 이름 있는 입력란 + log로 보인다.
+- [x] 열기 전: 페이지가 받는 JS는 main 대비 늘지 않은 파일 수(헤더 스크립트 1개, 압축 전 4KB 이하)이고, React·UI 청크·`commands.json`은 요청되지 않는다(Network 패널). 처음 열 때 받는 JS·CSS 청크와 JSON 크기(압축 전·gzip)를 PR과 `docs/ARCHITECTURE.md`에 적는다. 두 번째 열 때는 다시 받지 않는다. (실측: 헤더 스크립트 압축 전 약 3.5KB·gzip 약 1.6KB. main의 테마 인라인 모듈 약 0.8KB 대체. 기준은 2026-10-31 사용자 결정으로 1.5KB에서 변경)
+- [x] JS를 끄면 헤더 버튼이 보이지 않고 나머지 화면은 main과 같다. 모든 페이지의 CLS가 main과 같다. 320px·375px·1280px에서 가로 스크롤이 생기지 않고, 320px 헤더가 T03 규칙(줄바꿈, 가로 스크롤 없음) 안에 있다.
+- [x] `prefers-reduced-motion: reduce`에서 전환 효과 없이 열리고 닫히며 기능은 같다. 라이트·다크 모두 대비가 `docs/DESIGN.md` 기준을 지킨다.
+- [x] 새 의존성이 없다(`package.json`, `pnpm-lock.yaml` 변경 없음). `astro:` 가상 모듈 등 서버 전용 코드를 UI 모듈이 import하지 않는다.
+- [x] PR 본문에 최신 커밋 기준 캡처가 있다: 팔레트 ja 라이트 1280px(열린 직후), 팔레트 ja 다크 375px(검색어 입력, 결과 일부), 팔레트 en 라이트 1280px(일치 없음), 터미널 ja 다크 1280px(`help`·`whoami` 실행 후), 터미널 ja 라이트 375px(추천 명령 버튼 보이는 상태), 헤더 ja 라이트 320px(버튼 배치).
+- [x] `docs/DESIGN.md`, `docs/ARCHITECTURE.md`가 위 "문서" 항목대로 갱신되어 있다.
 - [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
-- [ ] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
+- [x] `docs/PLAN.md`의 진행 상태와 작업 지시서 표 갱신, 비밀 값 미포함.
 
 ## 확인 방법
 

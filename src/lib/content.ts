@@ -3,7 +3,14 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { publicDir } from 'astro:config/server';
 import { CONTACT_LINKS, PHASES } from '../content.config';
-import { locales, type Locale } from '../i18n/ui';
+import type { CommandData } from '../components/interactive/commands';
+import {
+  localizePath,
+  localizeProjectPath,
+  pagePaths,
+  type PageKey,
+} from '../i18n/paths';
+import { localeNames, locales, ui, type Locale } from '../i18n/ui';
 
 export type Profile = CollectionEntry<'profile'>['data'];
 export type Skill =
@@ -567,6 +574,72 @@ export async function getContactContent(
     links: contact.links.map((link) => ({
       ...link,
       display: displayUrl(link.url),
+    })),
+  };
+}
+
+/** 문절 배열이면 이어 붙인다(터미널·팔레트는 한 줄 문자열로 보여준다). */
+const joinPhrases = (value: string | string[]) =>
+  Array.isArray(value) ? value.join('') : value;
+
+/**
+ * 명령 팔레트·터미널(T10)이 열 때 받는 데이터(/<locale>/commands.json). 페이지와 같은 콘텐츠·규칙 검사를 거친다.
+ * URL은 여기서 만들어 넘기므로 클라이언트는 경로 규칙을 다시 구현하지 않는다.
+ */
+export async function getCommandData(locale: Locale): Promise<CommandData> {
+  const text = ui[locale];
+  const [about, pages, contact] = await Promise.all([
+    getAboutContent(locale),
+    getProjectPages(locale),
+    getContactContent(locale),
+  ]);
+  const alternate = locales.find((code) => code !== locale) ?? locale;
+  const mark = (placeholder: boolean) =>
+    placeholder ? text.contact.placeholder : '';
+  const pageIds = Object.keys(pagePaths) as PageKey[];
+
+  return {
+    locale,
+    siteName: text.site.name,
+    text: text.command,
+    copy: text.contact.copy,
+    pages: pageIds.map((id) => ({
+      id,
+      name: id === 'home' ? text.command.palette.home : text.pages[id].name,
+      href: localizePath(locale, id),
+    })),
+    projects: pages.map(({ project }) => ({
+      slug: project.slug,
+      title: joinPhrases(project.title),
+      href: localizeProjectPath(locale, project.slug),
+    })),
+    alternate: { locale: alternate, name: localeNames[alternate] },
+    profile: {
+      name: about.profile.name,
+      role: about.profile.role,
+      tagline: joinPhrases(about.profile.tagline),
+    },
+    skills: about.skillCategories.map((category) => ({
+      name: category.name,
+      items: category.skills.map(({ name, primary }) => ({
+        name,
+        primary: primary ?? false,
+      })),
+    })),
+    contact: {
+      email: {
+        label: text.contact.method.email + mark(contact.email.placeholder),
+        address: contact.email.address,
+      },
+      links: contact.links.map((link) => ({
+        label: text.contact.method[link.id] + mark(link.placeholder),
+        url: link.url,
+        display: link.display,
+      })),
+    },
+    resumes: (about.profile.resumes ?? []).map((resume) => ({
+      label: resume.label,
+      href: resume.file,
     })),
   };
 }
