@@ -57,7 +57,7 @@
   - T03 확인(Chromium, 320px·375px·1280px): 사이트 이름(`choi`)과 준비 페이지 제목(経歴·プロジェクト·連絡先)은 한 줄이라 차이가 없다. Home 확인 화면 h1 「読みやすさを、設計する。」는 auto-phrase에서 「読みやすさを、/設計する。」, 기본 줄바꿈에서는 375px·1280px에서 「読みやすさを、設計/する。」로 단어 중간에서 끊긴다.
   - Firefox·WebKit 실제 화면은 확인하지 못했다(작업 환경에 해당 브라우저 없음). 위 기본 줄바꿈 결과는 Chromium에서 `word-break: normal`로 바꿔 근사한 것이다.
   - `text-wrap: balance`는 대안이 되지 않는다. 같은 h1이 「読みやすさ/を、設計する。」로 더 어색하게 끊겼다.
-  - T04 결정: 한 줄을 넘을 수 있는 일본어 제목·소개 문구(Home 한 줄 소개, 프로젝트 카드 제목)는 콘텐츠 파일에 문절 단위 배열로 쓰고, `src/components/Phrases.astro`가 문절마다 인라인 span으로 감싸 출력한다. 감싸는 span에 `word-break: keep-all`(문절 안 줄바꿈 금지)과 `overflow-wrap: anywhere`(문절 하나가 줄보다 길 때 넘침 방지)를 주고, 마지막이 아닌 문절 끝에 CSS 생성 콘텐츠로 폭 없는 공백(`::after { content: '\200B' }`)을 넣어 문절 사이에서만 줄이 바뀌게 한다. `auto-phrase`에 의존하지 않으므로 Firefox·Safari에서도 같은 규칙이 적용된다. 영어는 일반 문자열이다. 의존성을 추가하는 [BudouX](https://github.com/google/budoux)는 쓰지 않는다.
+  - T04 결정: 한 줄을 넘을 수 있는 일본어 제목·소개 문구(Home 한 줄 소개, 프로젝트 카드 제목)는 콘텐츠 파일에 문절 단위 배열로 쓰고, `src/components/Phrases.tsx`가 문절마다 인라인 span으로 감싸 출력한다. 감싸는 span에 `word-break: keep-all`(문절 안 줄바꿈 금지)과 `overflow-wrap: anywhere`(문절 하나가 줄보다 길 때 넘침 방지)를 주고, 마지막이 아닌 문절 끝에 CSS 생성 콘텐츠로 폭 없는 공백(`::after { content: '\200B' }`)을 넣어 문절 사이에서만 줄이 바뀌게 한다. `auto-phrase`에 의존하지 않으므로 Firefox·Safari에서도 같은 규칙이 적용된다. 영어는 일반 문자열이다. 의존성을 추가하는 [BudouX](https://github.com/google/budoux)는 쓰지 않는다.
   - 다른 방식을 쓰지 않은 이유(Chromium 접근성 트리로 확인): 문절마다 `display: inline-block` span으로 감싸거나 문절 사이에 `<wbr>`을 넣으면, 제목의 접근 가능한 이름이 「社内データ 連携基盤の 構築（仮）」처럼 문절 사이에 공백이 들어간다. 본문에 U+200B를 직접 넣으면 이름은 깨끗하지만 복사한 글자에 U+200B가 섞인다. CSS 생성 콘텐츠 방식은 이름에 일반 공백이 없고(U+200B만 포함), 복사·페이지 내 검색 결과는 원문과 같다. 실제 스크린 리더(VoiceOver, NVDA)의 읽기는 확인하지 못했다.
   - T04 확인(Chromium, 일본어 Home). `/`는 줄바꿈 위치다. 구현 결과는 `auto-phrase`를 켠 상태와 `word-break: normal`로 근사한 상태(Firefox·Safari 근사)에서 같았고, 아래 "문절 처리 없음"은 같은 문구를 나누지 않고 `word-break: normal`로 표시한 비교용이다.
 
@@ -100,7 +100,7 @@
 ### 공통 구현 규칙
 
 - **명령 목록 공유**: 3(터미널)과 4(명령 팔레트)는 하나의 명령 정의 모듈(예: `src/components/interactive/commands.ts`)을 함께 쓴다.
-- **지연 로딩**: 3·4는 첫 화면에 필요 없으므로 사용자가 열 때(단축키, 버튼) 동적 import한다. 1·2는 React island 없이 Astro `<script>`(번들된 작은 모듈)와 CSS View Transitions로 만든다(T08). 5는 JS 없이 CSS 스크롤 기반 애니메이션(`animation-timeline: view()`)으로 만들고, 지원하지 않는 브라우저는 효과 없는 최종 상태다(T09). 3·4는 모든 페이지에 작은 런처(헤더 스크립트에 포함)만 넣고, 열 때 React UI 모듈·CSS와 언어별 명령 데이터(`/ja/commands.json` 등)를 불러온다. Astro `client:*` island는 쓰지 않는다(T10, §9).
+- **지연 로딩**: 3·4는 첫 화면에 필요 없으므로 사용자가 열 때(단축키, 버튼) 동적 import한다. 1·2는 React island 없이 `<script>`(번들된 작은 TS 모듈, 페이지 레이아웃 `src/layouts/*Layout.astro`가 넣음)와 CSS View Transitions로 만든다(T08). 화면 컴포넌트는 React(`.tsx`)지만 빌드 때 HTML로만 렌더하므로 이 효과들에 React를 쓰지 않는다(T12). 5는 JS 없이 CSS 스크롤 기반 애니메이션(`animation-timeline: view()`)으로 만들고, 지원하지 않는 브라우저는 효과 없는 최종 상태다(T09). 3·4는 모든 페이지에 작은 런처(헤더 스크립트에 포함)만 넣고, 열 때 React UI 모듈·CSS와 언어별 명령 데이터(`/ja/commands.json` 등)를 불러온다. Astro `client:*` island는 쓰지 않는다(T10, §9).
 - **지시서 나눔**: T08 = 1·2, T09 = 5, T10 = 3·4 (2026-10-31 사용자 결정).
 - **reduced-motion**: `prefers-reduced-motion: reduce`이면 1·2·5의 애니메이션을 끄고 최종 상태를 바로 보여준다. 3·4는 기능은 유지하고 전환 효과만 끈다.
 - **키보드**: 모든 인터랙션은 키보드로도 동작한다. 팔레트·터미널은 Esc로 닫고, 닫으면 포커스를 원래 위치로 되돌린다.
@@ -143,7 +143,7 @@
 - 저장 키: `theme`, 값 `light` / `dark`. 단계 5 명령 팔레트와 공유하므로 이름을 바꾸지 않는다. 키는 `src/scripts/theme.ts`의 `THEME_STORAGE_KEY` 한 곳에 있고, `<head>` 인라인 스크립트는 `define:vars`로 같은 값을 받는다.
 - 첫 렌더 전 적용: `<head>`의 인라인 스크립트가 저장 값을 `<html data-theme>`에 넣는다. `localStorage` 접근이 막히면 아무것도 하지 않아 시스템 설정을 따르고, 버튼으로 바꾼 값은 그 페이지에서만 유지된다.
 - JS가 꺼져 있으면 버튼을 숨긴다(인라인 스크립트가 붙이는 `html.js` 클래스가 있을 때만 표시). 이때는 시스템 설정만 적용된다.
-- 테마 읽기·쓰기 함수(`getTheme`, `setTheme`, `toggleTheme`, `onThemeChange`, T10에서 추가한 `clearTheme`·`getThemePreference`)는 `src/scripts/theme.ts`에 있다. 다른 곳에서 테마를 바꿀 때도 이 함수를 쓴다. 버튼의 클릭 처리와 `aria-pressed` 동기화는 `SiteHeader.astro`의 헤더 스크립트가 맡는다(T10에서 `ThemeToggle.astro`에서 옮김, §9 로딩).
+- 테마 읽기·쓰기 함수(`getTheme`, `setTheme`, `toggleTheme`, `onThemeChange`, T10에서 추가한 `clearTheme`·`getThemePreference`)는 `src/scripts/theme.ts`에 있다. 다른 곳에서 테마를 바꿀 때도 이 함수를 쓴다. 버튼의 클릭 처리와 `aria-pressed` 동기화는 헤더 스크립트(`src/scripts/site-header.ts`, `BaseLayout.astro`가 넣음. 버튼은 `data-theme-toggle`로 찾는다)가 맡는다(T10에서 `ThemeToggle.astro`에서 옮김, T12에서 `SiteHeader.astro`의 `<script>`에서 파일로 옮김, §9 로딩).
 
 ### 본문 바로가기·푸터
 
@@ -171,7 +171,7 @@
 
 ## 5. Home (T04)
 
-`src/components/pages/HomePage.astro`. 콘텐츠 값은 `src/content/`(조회는 `src/lib/content.ts`), UI 문구는 `src/i18n/ui.ts`의 `home.*`·`skill.*`·`project.*`에서 가져온다.
+`src/components/pages/HomePage.tsx`(React 화면), 진입점 `src/layouts/HomeLayout.astro`(콘텐츠 조회·스크립트). 콘텐츠 값은 `src/content/`(조회는 `src/lib/content.ts`), UI 문구는 `src/i18n/ui.ts`의 `home.*`·`skill.*`·`project.*`에서 가져온다.
 
 ### 섹션 구성
 
@@ -197,7 +197,7 @@
 - 섹션 사이 64px, 섹션 제목과 본문 사이 24px, 카드 사이 24px.
 - 375×667px에서 이름·직함·한 줄 소개와 행동 링크가 첫 화면에 들어온다(T04 확인: 행동 링크 아래 끝 368px).
 
-### 프로젝트 카드 (`src/components/ProjectCard.astro`)
+### 프로젝트 카드 (`src/components/ProjectCard.tsx`)
 
 - 위에서부터 제목(h3, 문절 처리) → 한 줄 요약(14px, text-muted) → 구분선(border) → 정보 목록(`<dl>`): 期間(모노스페이스) / 担当工程(§7 `PhaseList`) / 役割 / 成果(목록, 700, accent 표시점) / 技術(테두리 태그 목록) → 「詳細を見る →」(14px, 700, accent, 카드 아래 끝). T06에서 担当工程과 「詳細を見る →」를 더했다.
 - 라벨(`<dt>`)은 값 위에 둔다(12px, 700, text-muted). 3열 카드와 320px 화면에서 값이 좁아지지 않게 하기 위함이다. 일본어 라벨은 모노스페이스를 쓰지 않는다.
@@ -247,7 +247,7 @@
 
 ## 6. About (T05)
 
-`src/components/pages/AboutPage.astro`와 하위 컴포넌트 `CareerTimeline.astro`, `SkillStack.astro`, `CertificationList.astro`. 콘텐츠 값은 `src/content/`(조회는 `src/lib/content.ts`의 `getAboutContent`), UI 문구는 `src/i18n/ui.ts`의 `pages.about.*`·`about.*`·`skill.*`에서 가져온다.
+`src/components/pages/AboutPage.tsx`(진입점 `src/layouts/AboutLayout.astro`)와 하위 컴포넌트 `CareerTimeline.tsx`, `SkillStack.tsx`, `CertificationList.tsx`. 콘텐츠 값은 `src/content/`(조회는 `src/lib/content.ts`의 `getAboutContent`), UI 문구는 `src/i18n/ui.ts`의 `pages.about.*`·`about.*`·`skill.*`에서 가져온다.
 
 ### 섹션 구성
 
@@ -273,7 +273,7 @@
 - 섹션 사이 64px, 섹션 제목(또는 범례)과 본문 사이 24px, 이름·직함 줄과 이력서 링크 사이 24px.
 - 1024px에서 바뀌는 배치는 없다.
 
-### 경력 타임라인 (`src/components/CareerTimeline.astro`)
+### 경력 타임라인 (`src/components/CareerTimeline.tsx`)
 
 - 점: 지름 14px, 중심을 기간 첫 줄 가운데에 맞춘다(위 6px). 현재 재직(`current: true`)은 accent로 채운 점, 나머지는 text-muted 2px 테두리 점이다.
 - 세로선: 폭 2px, border 색. 이 항목의 점 중심에서 다음 항목의 점 중심까지 잇고, 마지막 항목 아래로는 늘이지 않는다.
@@ -283,7 +283,7 @@
 
 ### 스크롤 강조 (컨셉 5, T09)
 
-`CareerTimeline.astro`의 CSS 스크롤 기반 애니메이션만 쓴다(JS 없음).
+`CareerTimeline.module.css`의 CSS 스크롤 기반 애니메이션만 쓴다(JS 없음).
 
 - 기준선은 화면 가운데 가로선이다. 항목(`li`)마다 이름 있는 view timeline(`view-timeline: --timeline-item block`, `view-timeline-inset: 50%`)을 만들고 선(`::before`)과 점(`::after`)이 같은 timeline을 따른다. 의사 요소에 `view()`를 직접 주면 각자 자기 박스를 추적하기 때문이다.
 - 선: 화면 가운데가 이 항목의 점에서 다음 항목의 점으로 가는 동안(`animation-range: cover 0% cover 100%`) border 색 선 위에 accent 선이 위에서 아래로 채워진다(`background-size`, 크기·위치는 바뀌지 않음).
@@ -294,7 +294,7 @@
 - `animation` 단축 속성을 쓰면 빌드 압축(Lightning CSS)이 `animation-timeline`까지 단축 속성에 합쳐 Chromium이 규칙을 버린다(2026-10-31 확인). 개별 속성(`animation-name`, `animation-duration: auto` 등)으로 쓴다.
 - 브라우저 지원(MDN browser-compat-data `css.properties.animation-timeline`·`view-timeline`·`view-timeline-inset`·`animation-range`, 2026-10-31 확인): Chrome·Edge 115, Safari 26, Firefox 159. 출처: [MDN animation-timeline](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-timeline), [browser-compat-data](https://github.com/mdn/browser-compat-data/blob/main/css/properties/animation-timeline.json). 이 환경에서는 Chromium만 실제로 확인했다.
 
-### 자격증 행 (`src/components/CertificationList.astro`)
+### 자격증 행 (`src/components/CertificationList.tsx`)
 
 - 행: 그리드 `7rem | 나머지`(열 간격 24px, 위아래 12px), 목록 위와 각 행 아래에 가는 구분선(border). 목록 최대 폭 48rem. 320px에서도 두 열을 유지한다.
 - 취득: `<dt>` 연월(모노스페이스 14px, text-muted), `<dd>` 이름.
@@ -321,7 +321,7 @@
 
 ## 7. Projects (T06)
 
-목록 `src/components/pages/ProjectsPage.astro`, 상세 `src/components/pages/ProjectDetailPage.astro`(`src/pages/{ja,en}/projects/[slug].astro`), 担当工程 `src/components/PhaseList.astro`. 콘텐츠 값은 `src/content/projects/`(조회는 `src/lib/content.ts`의 `getProjectsContent`·`getProjectPages`), UI 문구는 `src/i18n/ui.ts`의 `pages.projects.*`·`projects.*`·`project.*`에서 가져온다. 시안: claude.ai 디자인 캔버스 "T06 Projects 시안"(비공개, 2026-10-30 사용자 확인).
+목록 `src/components/pages/ProjectsPage.tsx`(진입점 `src/layouts/ProjectsLayout.astro`), 상세 `src/components/pages/ProjectDetailPage.tsx`(진입점 `src/layouts/ProjectDetailLayout.astro`, 라우트 `src/pages/{ja,en}/projects/[slug].astro`), 担当工程 `src/components/PhaseList.tsx`. 콘텐츠 값은 `src/content/projects/`(조회는 `src/lib/content.ts`의 `getProjectsContent`·`getProjectPages`), UI 문구는 `src/i18n/ui.ts`의 `pages.projects.*`·`projects.*`·`project.*`에서 가져온다. 시안: claude.ai 디자인 캔버스 "T06 Projects 시안"(비공개, 2026-10-30 사용자 확인).
 
 ### 목록 구성
 
@@ -362,7 +362,7 @@
 | 640px 미만 | 위 여백 24px. 개요 상자: 期間 전체 폭, 役割·チーム 2칸, 担当工程 칸은 줄바꿈으로 흐름. 절 번호는 h2 위. 지표 칸 1열. 技術 라벨은 값 위. 이전·다음 1열 |
 | 640px 이상 | 위 여백 32px. 개요 상자: 期間·役割·チーム 3칸 한 줄, 担当工程 5칸 같은 폭 그리드. 절 번호는 왼쪽 열(72px, 열 간격 16px). 지표 칸 2열. 技術 라벨 열 9rem. 이전·다음 2열(다음은 오른쪽 칸, 오른쪽 정렬) |
 
-### 担当工程 (`src/components/PhaseList.astro`)
+### 担当工程 (`src/components/PhaseList.tsx`)
 
 - 다섯 공정(要件定義・設計・開発・テスト・運用 / `Requirements`·`Design`·`Development`·`Testing`·`Operations`)을 `src/content.config.ts`의 `PHASES` 순서로 모두 보여 주는 `<ol>`이다. 콘텐츠 파일의 `phases` 순서와 무관하다(조회 함수가 정렬).
 - 맡은 공정: accent로 채운 칸, on-accent 글자 700, 앞에 체크 아이콘(인라인 SVG, `aria-hidden`). 맡지 않은 공정: 1px 점선 text-muted 테두리, text-muted 글자. 모서리 8px.
@@ -400,7 +400,7 @@
 
 ## 8. Contact (T07)
 
-`src/components/pages/ContactPage.astro`. 연락처 값은 `src/content/contact.yaml`(조회는 `src/lib/content.ts`의 `getContactContent`), UI 문구는 `src/i18n/ui.ts`의 `pages.contact.*`·`contact.*`에서 가져온다. 시안: claude.ai 디자인 캔버스 "T07 Contact 시안"(비공개, 2026-10-30 사용자 확인).
+`src/components/pages/ContactPage.tsx`(진입점 `src/layouts/ContactLayout.astro`). 연락처 값은 `src/content/contact.yaml`(조회는 `src/lib/content.ts`의 `getContactContent`), UI 문구는 `src/i18n/ui.ts`의 `pages.contact.*`·`contact.*`에서 가져온다. 시안: claude.ai 디자인 캔버스 "T07 Contact 시안"(비공개, 2026-10-30 사용자 확인).
 
 ### 구성
 
@@ -423,7 +423,7 @@
 
 - 테두리 버튼(accent 1px, accent 글자 14px 700, 모서리 8px, 높이 44px) + 복사 아이콘(인라인 SVG, `aria-hidden`). 보이는 문구 「コピー」/`Copy`, 접근 가능한 이름 「メールアドレスをコピー」/`Copy email address`(보이는 문구를 포함).
 - 누르면 `navigator.clipboard.writeText`로 주소를 복사하고 문구·아이콘을 「コピーしました」/`Copied` + 체크로 2초 바꾼 뒤 되돌린다. 실패하면 「コピーできませんでした」/`Couldn't copy`. 결과는 `role="status"` 영역(시각적으로 숨김)으로도 알린다.
-- 점진적 향상: HTML에는 `hidden`으로 두고, 클립보드 API를 쓸 수 있을 때(`navigator.clipboard`, 보안 컨텍스트)만 스크립트가 보인다. JS가 없으면 주소와 `mailto:` 링크만으로 연락할 수 있다. 스크립트는 Contact 페이지의 Astro `<script>`이며 React island를 쓰지 않는다.
+- 점진적 향상: HTML에는 `hidden`으로 두고, 클립보드 API를 쓸 수 있을 때(`navigator.clipboard`, 보안 컨텍스트)만 스크립트가 보인다. JS가 없으면 주소와 `mailto:` 링크만으로 연락할 수 있다. 스크립트는 `src/scripts/copy-button.ts`(Contact 레이아웃이 `<script>`로 넣음)이며 React island를 쓰지 않는다.
 
 ### 대비 (Contact)
 
@@ -448,13 +448,13 @@
 
 ### 로딩
 
-- 헤더 스크립트(`SiteHeader.astro`의 `<script>`: 테마 버튼 처리 + `src/scripts/command-launcher.ts`)가 모든 페이지에 들어간다. 런처는 ⌘K / Ctrl+K(Alt·Shift 없이, IME 변환 중 제외)와 헤더 버튼을 받아, 처음 열 때만 `mount.tsx`(React)와 `commands.json`을 함께 불러오고 CSS(`command-ui.css`)를 `<link>`로 붙인 뒤 연다. 두 번째부터는 다시 받지 않는다.
+- 헤더 스크립트(`src/scripts/site-header.ts`: 테마 버튼 처리 + `src/scripts/command-launcher.ts`, `BaseLayout.astro`의 `<script>`가 넣음)가 모든 페이지에 들어간다. 런처는 ⌘K / Ctrl+K(Alt·Shift 없이, IME 변환 중 제외)와 헤더 버튼을 받아, 처음 열 때만 `mount.tsx`(React)와 `commands.json`을 함께 불러오고 CSS(`command-ui.css`)를 `<link>`로 붙인 뒤 연다. 두 번째부터는 다시 받지 않는다.
 - 테마 버튼 스크립트를 헤더 스크립트로 합친 이유: `theme.ts`를 팔레트 UI와 공유하므로, 따로 두면 테마 버튼 스크립트·런처·`theme.ts` 청크 세 파일을 받게 된다. 한 모듈로 두면 팔레트 UI가 이 모듈에서 `theme.ts`를 가져다 써서 페이지가 받는 파일이 하나다.
 - CSS를 일반 import하면 Astro가 런처를 넣은 모든 페이지에 `<link>`를 추가하므로 `?url`로 URL만 받아 열 때 붙인다.
 - 같은 페이지의 다른 언어 URL은 서버에서 `switchLocalePath`로 계산해 헤더 버튼의 `data-alternate`로 넘긴다. 데이터 URL은 `data-src`.
 - 실패하면(네트워크 등) 콘솔에 오류를 남기고, 다음에 열 때 다시 불러온다.
 
-### 헤더 버튼 (`src/components/CommandButton.astro`)
+### 헤더 버튼 (`src/components/CommandButton.tsx`)
 
 - 44×44px 검색 아이콘 버튼, 경계 1px text-muted, 마우스를 올리면 surface 배경(테마 버튼과 같은 모양). 언어 전환 앞에 둔다. 접근 가능한 이름 「コマンドパレットを開く」/`Open command palette`, `aria-keyshortcuts="Meta+K Control+K"`.
 - JS가 없으면 동작하지 않으므로 `html.js`일 때만 보인다.

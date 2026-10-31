@@ -1,0 +1,125 @@
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition:
+    border-color var(--duration-base) var(--ease-standard),
+    transform var(--duration-base) var(--ease-standard);
+}
+
+.root:hover {
+  border-color: var(--color-accent);
+}
+
+/* 틸트(src/scripts/card-tilt.ts가 --tilt-x·--tilt-y와 전역 클래스 is-tilting을 넣는다). 포인터를 따라갈 때는 짧게 전환한다. */
+.root:global(.is-tilting) {
+  transform: perspective(800px) rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg)) translateY(-4px);
+  transition:
+    border-color var(--duration-base) var(--ease-standard),
+    transform var(--duration-fast) linear;
+}
+
+/* 키보드 포커스는 기울기 없이 떠오르기만 한다. */
+.root:has(.link:focus-visible) {
+  transform: translateY(-4px);
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 카드 전체를 누를 수 있게 링크 영역을 카드 크기로 늘린다. */
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-card);
+}
+
+/* 포커스 링은 링크 글자가 아니라 카드 전체에 그린다. */
+.link:focus-visible {
+  outline: none;
+}
+
+.link:focus-visible::after {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.root:hover .link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.summary {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+}
+
+.facts {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-size-small);
+}
+
+.facts dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-label);
+  font-weight: 700;
+}
+
+.facts dd {
+  margin: var(--space-1) 0 0;
+}
+
+.period {
+  font-family: var(--font-mono);
+}
+
+.highlights {
+  margin: 0;
+  padding-left: 1.25em;
+  font-weight: 700;
+}
+
+.highlights li::marker {
+  color: var(--color-accent);
+}
+
+.more {
+  margin-top: auto;
+  padding-top: var(--space-2);
+  color: var(--color-accent);
+  font-size: var(--font-size-small);
+  font-weight: 700;
+}
+
+/* 짧은 카드: 期間·役割 → 担当工程 → 技術. 640px 이상에서 期間·役割를 한 줄 2칸에 둔다. */
+@media (min-width: 40rem) {
+  .compact .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-6);
+  }
+
+  .compact .wide {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+
+  .root:global(.is-tilting),
+  .root:has(.link:focus-visible) {
+    transform: none;
+  }
+}

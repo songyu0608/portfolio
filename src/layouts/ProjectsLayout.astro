@@ -1,0 +1,25 @@
+---
+// Projects 목록 페이지 진입점(라우트 src/pages/{ja,en}/projects.astro가 언어만 넘긴다). 콘텐츠를 조회해
+// React 화면(src/components/pages/ProjectsPage.tsx)에 넘기고, 카드 틸트 스크립트(CardTiltScript)를 넣는다.
+import { ui, type Locale } from '../i18n/ui';
+import { getProjectsContent } from '../lib/content';
+// BaseLayout(전역 CSS)을 화면 컴포넌트보다 먼저 import한다. CSS가 import 순서대로 놓이므로, 이 순서여야
+// 같은 명시도에서 컴포넌트 CSS Modules 규칙이 전역 클래스(.tag-list 등)를 이긴다.
+import BaseLayout from './BaseLayout.astro';
+import ProjectsPage from '../components/pages/ProjectsPage';
+import CardTiltScript from './scripts/CardTiltScript.astro';
+import '../styles/view-transitions.css';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const { name, description } = ui[locale].pages.projects;
+const content = await getProjectsContent(locale);
+---
+
+<BaseLayout locale={locale} title={name} description={description}>
+  <ProjectsPage locale={locale} {...content} />
+  <CardTiltScript />
+</BaseLayout>
