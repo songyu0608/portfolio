@@ -5,7 +5,7 @@
 | 단계 | 6 |
 | 선행 작업 | T13 (PR #40) |
 | 담당 | claude |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T14-accessibility`) |
 
 ## 목표
@@ -221,7 +221,7 @@
 - [x] 페이지가 처음 받는 JS(헤더 스크립트·인라인 모듈)가 main과 같다. 팔레트를 열 때 받는 파일의 크기 변화를 PR에 적는다.
 - [x] 새 의존성이 없다(`package.json` 의존성 항목, `pnpm-lock.yaml` 변경 없음).
 - [x] 문서가 갱신되어 있다: `docs/DESIGN.md` §11, `docs/PLAN.md`(진행 상태·표·결정 기록·§8)
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`와 GitHub CI가 통과한다.
 - [x] 비밀 값 미포함
 
 ## 확인 방법
