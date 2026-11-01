@@ -2,16 +2,16 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-11-01 (T16 완료, 단계 7 완료, Home LCP 흔들림 수정)
+마지막 갱신: 2026-11-01 (T17 지시서 작성, 원고 반영 전 배포 공개 범위 결정)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 8 배포와 동적 기능 — 지시서 작성 전 |
-| 진행 중인 작업 | 없음. 다음은 단계 8 첫 지시서 작성 |
-| 다음 작업 | 단계 8 지시서(배포·동적 기능, §4·§8). 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
-| 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
+| 현재 단계 | 단계 8 배포와 동적 기능 — T17 배포 기반 지시서 리뷰 |
+| 진행 중인 작업 | T17 지시서 리뷰(`docs/tasks/T17-deploy-base.md`). merge 뒤 구현 담당을 정한다 |
+| 다음 작업 | T17 구현 → T18 연락 폼 → T19 회사별 비공개 페이지 → T20 방문 분석(안, T17 지시서 배경). 원고 반영은 맨 마지막(2026-10-31 사용자 결정). T17 구현 PR merge 전에 사용자 준비(Cloudflare 계정·API 토큰·GitHub 환경, T17 범위 6)가 필요하다 |
+| 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 공개 배포 전에 실제 원고로 교체해야 한다. 그 전의 배포는 Cloudflare Access로 choi만 본다(2026-11-01 사용자 결정) |
 
 ## 1. 개요
 
@@ -84,7 +84,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 5 | 인터랙션 구현: 컨셉 1~5 (T08 = 1·2, T09 = 5, T10 = 3·4) | done |
 | 6 | 품질: 성능(T11) → React 중심 전환(T12) → SEO(T13) → 접근성(T14) | done |
 | 7 | 테스트: E2E(Playwright, T15) → Lighthouse CI(T16) | done |
-| 8 | 배포와 동적 기능: Cloudflare, 도메인, HTTPS, 방문 분석, 연락 폼, 회사별 비공개 페이지 | todo |
+| 8 | 배포와 동적 기능: Cloudflare, 도메인, HTTPS, 방문 분석, 연락 폼, 회사별 비공개 페이지 | in-progress |
 | 9 | 운영: 콘텐츠 추가 절차 문서화, 카드 클릭률 확인 후 효과 조정 | todo |
 
 ## 6. 작업 지시서 목록
@@ -112,13 +112,14 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T14 | 접근성 점검·수정 (WCAG 2.2 AA 자동·수동 점검, 강제 색상 모드, 터미널 출력 스크롤) | 6 | T13 | claude | done | `docs/tasks/T14-accessibility.md` — 지시서 [PR #42](https://github.com/songyu0608/portfolio/pull/42), 구현 [PR #43](https://github.com/songyu0608/portfolio/pull/43) |
 | T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | done | `docs/tasks/T15-e2e-tests.md` — 지시서 [PR #45](https://github.com/songyu0608/portfolio/pull/45), 구현 [PR #46](https://github.com/songyu0608/portfolio/pull/46) |
 | T16 | Lighthouse CI (Lighthouse 13, 성능·접근성·Best Practices·SEO 점수 기준, CI) | 7 | T15 | claude | done | `docs/tasks/T16-lighthouse-ci.md` — 지시서 [PR #48](https://github.com/songyu0608/portfolio/pull/48), 구현 [PR #49](https://github.com/songyu0608/portfolio/pull/49) |
+| T17 | 배포 기반 (Cloudflare Workers 정적 자산, `/` 301·404·응답 헤더, GitHub Actions 배포, 공개 전 Access 잠금) | 8 | T16 | - | review | `docs/tasks/T17-deploy-base.md` |
 
-이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
+이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 8의 T18 연락 폼 → T19 회사별 비공개 페이지 → T20 방문 분석(안, `docs/tasks/T17-deploy-base.md` "단계 8 나누기"). SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
 ## 7. 미결 사항
 
-- [ ] 커스텀 도메인 구입 여부와 도메인 이름 (단계 8 전, 메일 발송 설정에 필요할 가능성 높음)
-- [ ] 콘텐츠 원고 (`docs/CONTENT.md` 체크리스트). 단계 4는 임시 문구로 진행하고, 단계 8 배포 전에 교체한다
+- [ ] 커스텀 도메인 구입 여부와 도메인 이름 (T18 연락 폼 전, 메일 발송 설정에 필요할 가능성 높음. T17은 `*.workers.dev`)
+- [ ] 콘텐츠 원고 (`docs/CONTENT.md` 체크리스트). 단계 4는 임시 문구로 진행하고, 공개 배포 전에 교체한다. 그 전의 배포는 Access로 잠근다(2026-11-01 사용자 결정)
 - [x] 패키지 매니저 확정: pnpm 11.25.0 (T01)
 - [x] React 중심 전환(A안, 2026-10-31 사용자 결정): Astro는 라우팅·빌드 틀로 두고, 화면 컴포넌트(`src/components/*.astro` 12개 + `src/components/pages/*.astro` 5개 = 17개. 처음 적은 18개는 오기)를 React(`.tsx`, 빌드 때 HTML로만 렌더하고 브라우저 JS는 늘리지 않음)로 바꾼다. 저장소·사이트의 소개(README, 기술 스택 표기)는 「React + TypeScript」를 중심에 두고 Astro는 정적 빌드 도구로 함께 적는다. 빌드는 Vite 기반이다(Astro가 Vite로 빌드하며, T11 글꼴 통합도 Vite 플러그인). 디코딩·틸트 같은 작은 효과는 지금처럼 가벼운 스크립트로 두는 것이 권고안이다(React로 바꾸면 그 페이지가 React 본체 gzip 약 66KB를 받음). 세부(스타일 방식, 남길 `.astro` 파일)는 `docs/tasks/T12-react-components.md`에서 정했고, `AGENTS.md` §5·§7과 `docs/ARCHITECTURE.md` A1·A2·A11은 T12 지시서 PR에서 갱신했다. 순서: T12 React 전환 → T13 SEO → T14 접근성(사용자 결정). → T12: 화면 컴포넌트 17개를 React(`.tsx`) + CSS Modules로 바꿨다. 콘텐츠 조회·`<head>`·페이지 스크립트는 `BaseLayout`과 페이지 진입점 `src/layouts/*Layout.astro`가 맡는다. main과 비교해 전체 페이지 캡처 45장·18페이지 접근성 트리가 같고, 페이지가 받는 JS는 같으며(헤더 스크립트 +6B), HTML·CSS는 모두 줄었다(`docs/ARCHITECTURE.md` §2 "화면 컴포넌트와 스타일").
   - 고른 이유: 일본 채용 공고에서 React 수요가 크다. 페이지 JS(약 2KB), T11 결과, View Transitions, Cloudflare 배포를 그대로 유지한다. React로 쓴 화면 코드는 나중에 Next.js로 옮길 때 대부분 그대로 쓸 수 있다.
@@ -132,7 +133,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 - Cloudflare Email Service: 공개 베타. 공식 문서는 발송을 Workers 유료 플랜 기능으로 안내한다는 조사 결과가 있다. 대안: Resend 무료 플랜(월 3,000통, 하루 100통, 확인 필요)
 - 발신 주소에 커스텀 도메인이 필수인지
-- Cloudflare Access 무료 한도 계산 방식 (Access를 쓸 경우만)
+- Cloudflare Access 무료 한도: T17부터 쓴다(원고 반영 전 잠금). Zero Trust Free 플랜은 사용자 50명까지(2026-11-01 요금 페이지). 가입 때 결제 수단이 필요한지는 확인 필요(T17 사용자 준비 4)
 - 무료 플랜 수치 전반 (Workers 하루 10만 요청, KV 하루 읽기 10만·쓰기 1,000 등): 2026년 조사 시점 기준이므로 배포 전에 재확인
 
 ### T01 교차 리뷰에서 이월한 항목
@@ -271,3 +272,5 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-11-01 | T16 지시서 PR #48 merge(Codex 교차 리뷰 수정 필요 없음), T16 구현 담당 claude. 구현: Codex 개선 제안대로 측정 대상의 언어 × 페이지 종류 조합이 하나라도 빠지면 테스트를 모을 때 실패(`pageKinds`를 `tests/e2e/support/site.ts`에 둠). 대표 회차는 성능 점수 중앙값 회차, 요약 표는 Playwright reporter가 콘솔·CI 작업 요약에 쓴다. 미리보기 포트 4330 | 사용자 결정(담당), T16 구현 (`docs/ARCHITECTURE.md` A14) |
 | 2026-11-01 | T16 PR #49 merge 완료 반영. 단계 7 완료. CI 세 작업 통과(`check` 8분 1초·E2E 397개, `lighthouse` 모바일 6분 23초·데스크톱 6분 29초, 동시에 돌아 run 전체 약 8분). 20개 모두 Performance 중앙값 100, 접근성·BP·SEO 3회 모두 100. 모바일 `/ja/`에서 3회 중 1회 85(원인과 처리는 다음 행). Codex 교차 리뷰 수정 필요 없음. 이후 PR은 CI에서 Lighthouse 기준도 통과해야 merge한다 | 지시서 없음 (문서만 변경) |
 | 2026-11-01 | Home 한 줄 소개 디코딩: 최종 문구를 투명하게 하지 않고 겹침 요소가 페이지 배경으로 덮는다. 디코딩 스크립트가 첫 페인트보다 먼저 실행되는 회차만 LCP가 재생 끝(모바일 Lighthouse 약 4.4s, Performance 85)으로 잡혀, 이 PR의 CI에서 `/ja/` 모바일이 기준(중앙값 90)을 넘지 못했다. 바꾼 뒤 로컬 10회 모두 100이고 화면 캡처는 픽셀 단위로 같다(`docs/DESIGN.md` §5 LCP). 고르지 않은 안: 디코딩을 첫 페인트 뒤에 시작(최종 문구가 한두 프레임 먼저 보일 수 있음), 기준·회차 조정 | 사용자 결정 |
+| 2026-11-01 | 원고 반영 전 배포의 공개 범위: `*.workers.dev`에 배포하고 Cloudflare Access로 choi만 볼 수 있게 한다. 공개 배포 때 잠금과 `noindex`를 푼다. 고르지 않은 안: 잠금 없이 `noindex`만(주소를 아는 사람은 임시 문구를 봄), 원고 반영 전에는 배포하지 않음(연락 폼 메일 발송 등을 공개 직전에야 실제로 시험) | 사용자 결정 |
+| 2026-11-01 | T17 지시서 작성: 단계 8을 T17 배포 기반 → T18 연락 폼(도메인·메일 발송 방식을 이때 정함) → T19 회사별 비공개 페이지 → T20 방문 분석 → 원고 반영 → 공개 배포로 나눈다(안). T17: 새 devDependency `wrangler` 4.156.0(설치 스크립트가 있는 `esbuild`·`workerd`는 `allowBuilds`에서 실행하지 않음), `wrangler.jsonc`(정적 자산만, `not_found_handling: "404-page"`), `public/_redirects`(`/` → `/ja/` 301), `public/_headers`(보안 헤더 3개, `X-Robots-Tag: noindex`, `/_astro/*` 1년 캐시), `wrangler dev`로 Cloudflare 동작 테스트(`pnpm test:workers`, CI `check`), main push에서 `check`·`lighthouse` 통과 뒤 `deploy` 작업(`pnpm exec wrangler deploy`, GitHub 환경 `production`의 비밀 값). `/`는 계속 `/ja/`로 보내므로 `x-default`는 ja URL 그대로 | T17 지시서 |
