@@ -8,12 +8,11 @@
    ▼
 Cloudflare Workers (정적 자산)
    ├─ /ja/*, /en/*   ← Astro 정적 빌드 결과 (HTML/CSS/최소 JS)
-   └─ /api/*         ← 단계 8: Workers 함수 (연락 폼, 회사별 페이지)
-                         ├─ Turnstile 검증
-                         ├─ 메일 발송 (Cloudflare Email Service 또는 Resend)
-                         ├─ D1 (연락 기록, 선택)
-                         └─ KV (회사별 토큰·열람 기록)
+   └─ /c/*           ← 단계 8(T18): Workers 함수 (회사별 비공개 페이지)
+                         └─ KV (회사 레코드·이력서 파일·열람 기록)
 ```
+
+- 연락 폼(Turnstile + 메일 발송)은 보류다(2026-11-01 사용자 결정, `docs/PLAN.md` §4). 메일 발송에 커스텀 도메인이 필요해서다.
 
 - 기본은 완전 정적. 서버 실행이 필요한 경로만 Workers 함수로 처리한다.
 - 단계 7까지는 Workers 함수가 없어도 사이트가 완성되어야 한다.
@@ -273,7 +272,7 @@ T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는
 | A2 | 인터랙션은 Astro `<script>`·CSS 기본, React는 컨셉 3·4만 열 때 동적 import (처음 결정: React island + Motion / GSAP. 여기서 React는 브라우저에서 실행하는 React다. 화면 컴포넌트를 React로 쓰고 빌드 때 HTML로만 렌더하는 것은 A11) | 필요한 코드만 필요할 때 받아 페이지는 가볍게 유지. 단, 상태가 필요 없는 효과(컨셉 1 디코딩·컨셉 2 틸트)는 Astro `<script>`, 페이지 전환은 CSS View Transitions로 만들고 컨셉 5 스크롤 타임라인은 JS 없이 CSS 스크롤 기반 애니메이션(T09 지시서)으로 만들며, React는 상태가 많은 컨셉 3·4(T10)에만 쓰되 island가 아니라 열 때 동적 import로 마운트하고, T10은 Motion / GSAP을 쓰지 않는다(2026-10-31, T08·T09·T10 지시서) | 전체 SPA | accepted |
 | A3 | Cloudflare Workers 정적 자산, 무료 플랜 | 정적 요청 무료, 동적 기능을 같은 플랫폼에서 추가 가능 | Cloudflare Pages, Vercel, Netlify | accepted |
 | A4 | i18n: `/ja`(기본), `/en` 경로 분리 | SEO(hreflang), 공유 링크가 언어를 유지 | 쿼리/쿠키 기반 전환 | accepted |
-| A5 | 회사별 비공개 페이지는 토큰 URL + KV | 채용 담당자에게 로그인 단계가 없음 | Cloudflare Access(이메일 OTP) | accepted (단계 8에 재검토) |
+| A5 | 회사별 비공개 페이지는 토큰 URL + KV | 채용 담당자에게 로그인 단계가 없음 | Cloudflare Access(이메일 OTP), 회사 정보 저장소 커밋(Public), D1 | accepted (T18 지시서에서 재검토 후 유지, `docs/tasks/T18-company-pages.md` "A5 재검토") |
 | A6 | 저장소 Public, 비밀 값은 Cloudflare Secrets / `.dev.vars` | 포트폴리오로서 코드 공개 가치 | Private 저장소 | accepted |
 | A7 | 패키지 매니저 pnpm 11.25.0 | T01 작업 환경에 설치된 버전으로 로컬·clean clone·CI 검증 완료. pnpm 12와 비교 평가해 선택한 것은 아니며, 업그레이드는 별도 검증 후 진행 | npm, pnpm 12 (미평가) | accepted (T01) |
 | A8 | 언어별 페이지 파일 + 공유 화면 컴포넌트, UI 문구는 `src/i18n/ui.ts`(일본어 기준 타입) | URL과 파일 경로가 대응하고 T01 구조를 이음. 영어 문구 누락을 타입 검사로 막음 | 동적 경로 `[locale]` + `getStaticPaths` | accepted (T03) |
