@@ -5,7 +5,7 @@
 | 단계 | 8 |
 | 선행 작업 | T16 (구현 PR #49, 완료 반영과 Home LCP 흔들림 수정 PR #50) |
 | 담당 | claude |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T17-deploy-base`) |
 
 ## 목표
@@ -94,7 +94,7 @@
     - 우선순위는 호스트 이름·경로 규칙 → Worker 규칙 → 계정 규칙이다. 좁은 규칙을 지우면 밑에 있던 넓은 규칙이 적용된다.
     - 정적 자산이 있는 Worker도 Access가 자산까지 막는다. 다만 내부 router가 `ctx.access`(로그인한 사용자 정보)를 사용자 Worker에 넘기지 않는다.
   - [workers.dev](https://developers.cloudflare.com/workers/configuration/routing/workers-dev/)(문서 갱신일 2026-09-22): "When enabled, your `workers.dev` URL is available publicly." 막으려면 Access가 필요하다.
-  - [Zero Trust 요금](https://www.cloudflare.com/plans/sase-zero-trust.md): Free 플랜 $0, 사용자 50명까지. 가입 때 결제 수단이 필요한지는 문서에 없다(확인 필요).
+  - [Zero Trust 요금](https://www.cloudflare.com/plans/sase-zero-trust.md): Free 플랜 $0, 사용자 50명까지. 가입 때 결제 수단이 필요한지는 문서에 없었다. → 사용자 준비 2에서 확인: Free 플랜도 결제 수단 등록과 "무료 한도를 넘는 사용분을 매달 청구" 동의가 필요했다(2026-11-01).
 
 ### 의존성 점검 (2026-11-01)
 
@@ -247,7 +247,7 @@
    | 순서 | 할 일 | 비고 |
    | --- | --- | --- |
    | 1 | Cloudflare 계정(무료)을 만들고 Workers 화면에서 workers.dev 하위 도메인을 정한다 | 하위 도메인은 공개 주소의 일부가 된다. 계정은 이 사이트 전용으로 쓴다(다른 공개 Worker가 있으면 메모 "계정을 다른 Worker와 같이 쓸 때") |
-   | 2 | Zero Trust를 켠다(Free 플랜) | 팀 이름을 정한다. 결제 수단이 필요한지는 확인 필요 |
+   | 2 | Zero Trust를 켠다(Free 플랜) | 팀 이름을 정한다. 결제 수단 등록이 필요하다(2026-11-01 확인, 아래 "결과") |
    | 3 | **첫 배포 전에** Workers & Pages › "Protect all Workers" › Enable Access: 범위 **All traffic**, 정책 "Cloudflare account"(계정 멤버는 choi 하나) | "Previews only"를 고르면 workers.dev 주소가 공개된다. 메일 하나로 줄이려면 만든 뒤 Zero Trust에서 Access 앱을 고친다 |
    | 4 | API 토큰: "Edit Cloudflare Workers" 템플릿, 계정 하나로 제한. 계정 ID를 확인한다 | |
    | 5 | GitHub 저장소 Settings › Environments에서 `production`을 만든다 | 배포 브랜치를 `main`만으로 제한하고, 환경 비밀 값 `CLOUDFLARE_API_TOKEN`·`CLOUDFLARE_ACCOUNT_ID`를 넣는다 |
@@ -299,17 +299,33 @@
 
 ## 완료 조건
 
-- [ ] `pnpm test:workers`가 로컬과 CI `check` 작업에서 통과한다. 범위 4 표를 모두 확인한다.
+- [x] `pnpm test:workers`가 로컬과 CI `check` 작업에서 통과한다. 범위 4 표를 모두 확인한다.
 - [x] 범위 4의 결함 주입 3건이 모두 해당 확인을 실패시킨다(PR 표, 결함은 커밋하지 않음).
 - [x] `pnpm exec wrangler deploy --dry-run`이 로그인 없이 통과한다. 읽은 자산 파일 수를 PR에 적는다.
 - [x] 새 의존성은 `wrangler` 하나다. `allowBuilds`는 `esbuild`·`workerd`를 실행하지 않는다. `pnpm audit` 변화와 lockfile의 기존 패키지 변경을 PR에 적는다.
 - [x] `dist/`가 main과 비교해 `_redirects`·`_headers` 두 파일만 다르다.
-- [ ] `deploy` 작업은 main push에서만 돈다. PR CI에서는 건너뛴 것으로 보인다. 비밀 값은 `production` 환경에서만 받는다.
+- [x] `deploy` 작업은 main push에서만 돈다. PR CI에서는 건너뛴 것으로 보인다. 비밀 값은 `production` 환경에서만 받는다.
 - [x] 문서가 갱신되어 있다: `docs/ARCHITECTURE.md`(§2 배포·SEO 404, 디렉터리 구조, §3 ADR), `AGENTS.md` §5·§6, `README.md`, `docs/PLAN.md`(진행 상태·표·결정 기록·§8)
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm test`, `pnpm lighthouse`, `pnpm test:workers`와 GitHub CI가 통과한다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm test`, `pnpm lighthouse`, `pnpm test:workers`와 GitHub CI가 통과한다.
 - [x] 비밀 값 미포함. 계정 ID·API 토큰은 GitHub 환경 비밀 값에만 둔다.
-- [ ] 구현 PR merge 전: 사용자 준비 1~5가 끝나 있다. 특히 3(계정 단위 Access, All traffic)이 첫 배포 전에 켜져 있다.
-- [ ] merge 뒤(사용자 준비 6): 첫 배포 성공, 시크릿 창에서 사이트 본문이 보이지 않음, 로그인 뒤 `/` 301·404 확인. 완료 반영 PR에 적는다.
+- [x] 구현 PR merge 전: 사용자 준비 1~5가 끝나 있다. 특히 3(계정 단위 Access, All traffic)이 첫 배포 전에 켜져 있다.
+- [x] merge 뒤(사용자 준비 6): 첫 배포 성공, 시크릿 창에서 사이트 본문이 보이지 않음, 로그인 뒤 `/` 301·404 확인. 완료 반영 PR에 적는다.
+
+## 결과 (2026-11-01, 완료 반영)
+
+- 구현 PR #52: PR CI에서 `check`(`pnpm test:workers` 포함)·`lighthouse` 통과, `deploy`는 건너뜀. Codex 교차 리뷰 수정 필요 없음.
+- 사용자 준비 1~5(choi, 2026-11-01 19:02~19:18 JST)
+  - 1: 하위 도메인 `songyu0608.workers.dev`. 사이트 주소는 `https://portfolio.songyu0608.workers.dev`
+  - 2: Zero Trust Free. 팀 이름은 자동으로 정해졌다(로그인 화면 주소 `<팀 이름>.cloudflareaccess.com`에만 쓰임). 결제 수단 등록과 초과 사용분 청구 동의가 필요했다. 좌석은 Access 로그인을 통과한 사용자만 쓰고, 정책이 "Cloudflare account"라 choi 1석이다.
+  - 3: "Protect all Workers"를 범위 All traffic, 정책 Cloudflare account(Allow), 세션 24시간으로 켰다. 켠 뒤 카드 문구는 "Every Worker is protected by an account-wide Access policy that covers production and preview traffic", Status Enabled.
+  - 4: API 토큰은 "Edit Cloudflare Workers" 템플릿, 계정 하나, Zone은 All zones(도메인 없음), IP 제한 없음(GitHub Actions IP가 바뀜), **만료 1년(2027-11-01경)**. 만료되면 main의 `deploy`가 실패하므로 새로 만들어 GitHub 비밀 값만 바꾼다.
+  - 5: GitHub 환경 `production`, 배포 브랜치 `main`만, 환경 비밀 값 `CLOUDFLARE_API_TOKEN`·`CLOUDFLARE_ACCOUNT_ID`
+- 첫 배포: PR #52 merge(19:18 JST) 뒤 main CI [run 41296927161](https://github.com/songyu0608/portfolio/actions/runs/41296927161)에서 `check`·`lighthouse` 통과 뒤 `deploy` 성공(19:28 JST, 작업 31초). `wrangler deploy` 로그: 자산 179개 업로드(`_redirects`·`_headers`는 설정 파일이라 자산에서 빠짐), Version ID `ee72deaa-87bd-4bc7-9453-d1a5aeef72f8`.
+- 사용자 준비 6(choi, 시크릿 창, 19:48~20:19 JST)
+  - 주소를 열면 Cloudflare Access 로그인 화면("Log in to All Workers", 로그인 수단 Cloudflare)이 나오고 사이트 본문은 보이지 않았다.
+  - 로그인 뒤 `/ja/`로 이동해 Home이 보였다.
+  - 없는 경로(`/aaa/`)는 404 페이지를 보였다. 일본어·영어 두 언어의 404 페이지(`dist/404.html`)가 그대로 나왔다(주소는 `/aaa/` 그대로).
+  - 응답 상태 코드(301·404)와 헤더는 배포 URL에서 직접 보지 못했다. 클라우드 작업 환경의 네트워크 정책이 `*.workers.dev` 연결을 막고, 브라우저 화면만 확인했다. 상태 코드·헤더는 `pnpm test:workers`(로컬·CI의 `wrangler dev`)로 확인한 값이다. 배포 URL에서의 확인은 공개 배포 때 Lighthouse·E2E와 함께 한다(`docs/PLAN.md` §8).
 
 ## 확인 방법
 
