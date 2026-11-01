@@ -4,9 +4,9 @@
 | --- | --- |
 | 단계 | 8 |
 | 선행 작업 | T16 (구현 PR #49, 완료 반영과 Home LCP 흔들림 수정 PR #50) |
-| 담당 | 미배정 |
-| 상태 | todo |
-| 브랜치 | `<agent>/T17-deploy-base` |
+| 담당 | claude |
+| 상태 | review |
+| 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T17-deploy-base`) |
 
 ## 목표
 
@@ -300,14 +300,14 @@
 ## 완료 조건
 
 - [ ] `pnpm test:workers`가 로컬과 CI `check` 작업에서 통과한다. 범위 4 표를 모두 확인한다.
-- [ ] 범위 4의 결함 주입 3건이 모두 해당 확인을 실패시킨다(PR 표, 결함은 커밋하지 않음).
-- [ ] `pnpm exec wrangler deploy --dry-run`이 로그인 없이 통과한다. 읽은 자산 파일 수를 PR에 적는다.
-- [ ] 새 의존성은 `wrangler` 하나다. `allowBuilds`는 `esbuild`·`workerd`를 실행하지 않는다. `pnpm audit` 변화와 lockfile의 기존 패키지 변경을 PR에 적는다.
-- [ ] `dist/`가 main과 비교해 `_redirects`·`_headers` 두 파일만 다르다.
+- [x] 범위 4의 결함 주입 3건이 모두 해당 확인을 실패시킨다(PR 표, 결함은 커밋하지 않음).
+- [x] `pnpm exec wrangler deploy --dry-run`이 로그인 없이 통과한다. 읽은 자산 파일 수를 PR에 적는다.
+- [x] 새 의존성은 `wrangler` 하나다. `allowBuilds`는 `esbuild`·`workerd`를 실행하지 않는다. `pnpm audit` 변화와 lockfile의 기존 패키지 변경을 PR에 적는다.
+- [x] `dist/`가 main과 비교해 `_redirects`·`_headers` 두 파일만 다르다.
 - [ ] `deploy` 작업은 main push에서만 돈다. PR CI에서는 건너뛴 것으로 보인다. 비밀 값은 `production` 환경에서만 받는다.
-- [ ] 문서가 갱신되어 있다: `docs/ARCHITECTURE.md`(§2 배포·SEO 404, 디렉터리 구조, §3 ADR), `AGENTS.md` §5·§6, `README.md`, `docs/PLAN.md`(진행 상태·표·결정 기록·§8)
+- [x] 문서가 갱신되어 있다: `docs/ARCHITECTURE.md`(§2 배포·SEO 404, 디렉터리 구조, §3 ADR), `AGENTS.md` §5·§6, `README.md`, `docs/PLAN.md`(진행 상태·표·결정 기록·§8)
 - [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm test`, `pnpm lighthouse`, `pnpm test:workers`와 GitHub CI가 통과한다.
-- [ ] 비밀 값 미포함. 계정 ID·API 토큰은 GitHub 환경 비밀 값에만 둔다.
+- [x] 비밀 값 미포함. 계정 ID·API 토큰은 GitHub 환경 비밀 값에만 둔다.
 - [ ] 구현 PR merge 전: 사용자 준비 1~5가 끝나 있다. 특히 3(계정 단위 Access, All traffic)이 첫 배포 전에 켜져 있다.
 - [ ] merge 뒤(사용자 준비 6): 첫 배포 성공, 시크릿 창에서 사이트 본문이 보이지 않음, 로그인 뒤 `/` 301·404 확인. 완료 반영 PR에 적는다.
 

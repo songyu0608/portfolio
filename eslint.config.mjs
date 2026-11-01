@@ -16,6 +16,8 @@ export default defineConfig(
       'playwright-report/**',
       'lighthouse-report/**',
       'test-results/**',
+      // wrangler dev 상태 파일(T17)
+      '.wrangler/**',
     ],
   },
   js.configs.recommended,

@@ -1,0 +1,12 @@
+# Cloudflare Workers 정적 자산 응답 헤더(T17, docs/ARCHITECTURE.md §2 "배포").
+# HTML의 Cache-Control은 Cloudflare 기본값(public, max-age=0, must-revalidate)을 그대로 쓴다.
+# X-Robots-Tag는 공개 배포 때 지운다. 잠금(Cloudflare Access)이 풀린 사이에도 검색에 올라가지 않게 한다.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  X-Robots-Tag: noindex
+
+# 파일 이름에 내용 해시가 있다(Astro 빌드).
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
