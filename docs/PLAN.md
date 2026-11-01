@@ -10,7 +10,7 @@
 | --- | --- |
 | 현재 단계 | 단계 8 배포와 동적 기능 — T17 배포 기반 지시서 리뷰 |
 | 진행 중인 작업 | T17 지시서 리뷰(`docs/tasks/T17-deploy-base.md`). merge 뒤 구현 담당을 정한다 |
-| 다음 작업 | T17 구현 → T18 연락 폼 → T19 회사별 비공개 페이지 → T20 방문 분석(안, T17 지시서 배경). 원고 반영은 맨 마지막(2026-10-31 사용자 결정). T17 구현 PR merge 전에 사용자 준비(Cloudflare 계정·API 토큰·GitHub 환경, T17 범위 6)가 필요하다 |
+| 다음 작업 | T17 구현 → T18 연락 폼 → T19 회사별 비공개 페이지 → T20 방문 분석(안, T17 지시서 배경). 원고 반영은 맨 마지막(2026-10-31 사용자 결정). T17 구현 PR merge 전에 사용자 준비(Cloudflare 계정, Zero Trust, 첫 배포 전 계정 단위 Access, API 토큰, GitHub 환경. T17 범위 6)가 필요하다 |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 공개 배포 전에 실제 원고로 교체해야 한다. 그 전의 배포는 Cloudflare Access로 choi만 본다(2026-11-01 사용자 결정) |
 
 ## 1. 개요
@@ -133,7 +133,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 - Cloudflare Email Service: 공개 베타. 공식 문서는 발송을 Workers 유료 플랜 기능으로 안내한다는 조사 결과가 있다. 대안: Resend 무료 플랜(월 3,000통, 하루 100통, 확인 필요)
 - 발신 주소에 커스텀 도메인이 필수인지
-- Cloudflare Access 무료 한도: T17부터 쓴다(원고 반영 전 잠금). Zero Trust Free 플랜은 사용자 50명까지(2026-11-01 요금 페이지). 가입 때 결제 수단이 필요한지는 확인 필요(T17 사용자 준비 4)
+- Cloudflare Access 무료 한도: T17부터 쓴다(원고 반영 전 잠금). Zero Trust Free 플랜은 사용자 50명까지(2026-11-01 요금 페이지). 가입 때 결제 수단이 필요한지는 확인 필요(T17 사용자 준비 2)
 - 무료 플랜 수치 전반 (Workers 하루 10만 요청, KV 하루 읽기 10만·쓰기 1,000 등): 2026년 조사 시점 기준이므로 배포 전에 재확인
 
 ### T01 교차 리뷰에서 이월한 항목
@@ -272,5 +272,5 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-11-01 | T16 지시서 PR #48 merge(Codex 교차 리뷰 수정 필요 없음), T16 구현 담당 claude. 구현: Codex 개선 제안대로 측정 대상의 언어 × 페이지 종류 조합이 하나라도 빠지면 테스트를 모을 때 실패(`pageKinds`를 `tests/e2e/support/site.ts`에 둠). 대표 회차는 성능 점수 중앙값 회차, 요약 표는 Playwright reporter가 콘솔·CI 작업 요약에 쓴다. 미리보기 포트 4330 | 사용자 결정(담당), T16 구현 (`docs/ARCHITECTURE.md` A14) |
 | 2026-11-01 | T16 PR #49 merge 완료 반영. 단계 7 완료. CI 세 작업 통과(`check` 8분 1초·E2E 397개, `lighthouse` 모바일 6분 23초·데스크톱 6분 29초, 동시에 돌아 run 전체 약 8분). 20개 모두 Performance 중앙값 100, 접근성·BP·SEO 3회 모두 100. 모바일 `/ja/`에서 3회 중 1회 85(원인과 처리는 다음 행). Codex 교차 리뷰 수정 필요 없음. 이후 PR은 CI에서 Lighthouse 기준도 통과해야 merge한다 | 지시서 없음 (문서만 변경) |
 | 2026-11-01 | Home 한 줄 소개 디코딩: 최종 문구를 투명하게 하지 않고 겹침 요소가 페이지 배경으로 덮는다. 디코딩 스크립트가 첫 페인트보다 먼저 실행되는 회차만 LCP가 재생 끝(모바일 Lighthouse 약 4.4s, Performance 85)으로 잡혀, 이 PR의 CI에서 `/ja/` 모바일이 기준(중앙값 90)을 넘지 못했다. 바꾼 뒤 로컬 10회 모두 100이고 화면 캡처는 픽셀 단위로 같다(`docs/DESIGN.md` §5 LCP). 고르지 않은 안: 디코딩을 첫 페인트 뒤에 시작(최종 문구가 한두 프레임 먼저 보일 수 있음), 기준·회차 조정 | 사용자 결정 |
-| 2026-11-01 | 원고 반영 전 배포의 공개 범위: `*.workers.dev`에 배포하고 Cloudflare Access로 choi만 볼 수 있게 한다. 공개 배포 때 잠금과 `noindex`를 푼다. 고르지 않은 안: 잠금 없이 `noindex`만(주소를 아는 사람은 임시 문구를 봄), 원고 반영 전에는 배포하지 않음(연락 폼 메일 발송 등을 공개 직전에야 실제로 시험) | 사용자 결정 |
+| 2026-11-01 | 원고 반영 전 배포의 공개 범위: `*.workers.dev`에 배포하고 Cloudflare Access로 choi만 볼 수 있게 한다. 공개 배포 때 잠금과 `noindex`를 푼다. 첫 배포 전에 계정 단위 Access("Protect all Workers", All traffic)를 켜 처음부터 잠긴 채 배포한다(PR #51 교차 리뷰 반영. 첫 배포 뒤에 켜면 몇 분 공개된다). 고르지 않은 안: 잠금 없이 `noindex`만(주소를 아는 사람은 임시 문구를 봄), 원고 반영 전에는 배포하지 않음(연락 폼 메일 발송 등을 공개 직전에야 실제로 시험) | 사용자 결정 |
 | 2026-11-01 | T17 지시서 작성: 단계 8을 T17 배포 기반 → T18 연락 폼(도메인·메일 발송 방식을 이때 정함) → T19 회사별 비공개 페이지 → T20 방문 분석 → 원고 반영 → 공개 배포로 나눈다(안). T17: 새 devDependency `wrangler` 4.156.0(설치 스크립트가 있는 `esbuild`·`workerd`는 `allowBuilds`에서 실행하지 않음), `wrangler.jsonc`(정적 자산만, `not_found_handling: "404-page"`), `public/_redirects`(`/` → `/ja/` 301), `public/_headers`(보안 헤더 3개, `X-Robots-Tag: noindex`, `/_astro/*` 1년 캐시), `wrangler dev`로 Cloudflare 동작 테스트(`pnpm test:workers`, CI `check`), main push에서 `check`·`lighthouse` 통과 뒤 `deploy` 작업(`pnpm exec wrangler deploy`, GitHub 환경 `production`의 비밀 값). `/`는 계속 `/ja/`로 보내므로 `x-default`는 ja URL 그대로 | T17 지시서 |

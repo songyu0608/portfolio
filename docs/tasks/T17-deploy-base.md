@@ -17,6 +17,7 @@
   - 끝 슬래시 이동
   - 응답 헤더
 - 원고를 반영하기 전에는 Cloudflare Access로 choi만 볼 수 있다(2026-11-01 사용자 결정).
+  - 첫 배포 **전에** 계정 단위 Access를 켜 둔다. 그래서 처음부터 잠긴 채 배포되고, 잠금 없이 열리는 때가 없다.
 
 ## 배경
 
@@ -41,7 +42,8 @@
 ### 결정 (2026-11-01 사용자 결정)
 
 - **원고 반영 전 배포는 Cloudflare Access로 choi만 볼 수 있게 한다.**
-  - workers.dev에 배포하고 Access로 choi 메일만 들어오게 한다.
+  - workers.dev에 배포하고 Access로 choi만 들어오게 한다.
+  - 첫 배포 전에 잠근다(PR #51 교차 리뷰 반영, 범위 6).
   - 공개 배포 때 잠금을 푼다.
 - 고르지 않은 안
   - 잠금 없이 `noindex`만 건다: 주소를 아는 사람은 임시 문구를 본다.
@@ -77,9 +79,21 @@
     - "Environments, environment secrets, and deployment protection rules are available in public repositories"
     - 환경의 비밀 값은 보호 규칙(배포 브랜치 제한 등)을 통과한 작업만 쓴다.
 - 잠금
-  - [One-click Cloudflare Access for Workers](https://developers.cloudflare.com/changelog/post/2025-10-03-one-click-access-for-workers/)
-    - Workers 설정 › Domains & Routes에서 workers.dev·Preview URL에 Access를 한 번에 켠다. 허용 메일은 "Manage Cloudflare Access"에서 바꾼다.
-    - Worker 코드에서 Access JWT를 검증하라고 권한다. 이 지시서는 Worker 코드가 없어 검증하지 않는다(메모).
+  - [Cloudflare Access](https://developers.cloudflare.com/workers/configuration/cloudflare-access/)(문서 갱신일 2026-10-12)
+    - 먼저 계정에 Zero Trust가 켜져 있어야 한다("Zero Trust enabled on your account").
+    - **Protect all Workers**(계정 단위)
+      - 계정의 모든 Worker에 로그인을 요구한다. 대상에는 "Workers you deploy in the future"도 들어간다. 그래서 첫 배포 전에 켤 수 있다.
+      - 범위는 "Previews only"와 "All traffic" 중에서 고른다.
+      - Workers & Pages 화면의 "Protect all Workers" 카드 › Enable Access에서 켠다.
+    - **Protect one Worker**: Worker의 Access 탭에서 켠다. workers.dev 주소와 미리보기를 포함해 그 Worker의 모든 도메인을 막는다. Worker가 있어야 켤 수 있다.
+    - **특정 호스트 이름·경로**: Zero Trust › Access › Applications에서 self-hosted 앱으로 만든다. workers.dev 호스트 이름도 대상이 된다. Worker가 먼저 있어야 하는지는 적혀 있지 않다.
+    - 로그인 정책
+      - "Cloudflare account"는 그 Cloudflare 계정의 멤버만 들인다.
+      - "Email domain"은 입력한 도메인의 확인된 메일 주소를 들인다.
+      - 메일 주소 하나만 허용하는 등의 세부 설정은 만든 뒤 Zero Trust에서 Access 앱을 고친다.
+    - 우선순위는 호스트 이름·경로 규칙 → Worker 규칙 → 계정 규칙이다. 좁은 규칙을 지우면 밑에 있던 넓은 규칙이 적용된다.
+    - 정적 자산이 있는 Worker도 Access가 자산까지 막는다. 다만 내부 router가 `ctx.access`(로그인한 사용자 정보)를 사용자 Worker에 넘기지 않는다.
+  - [workers.dev](https://developers.cloudflare.com/workers/configuration/routing/workers-dev/)(문서 갱신일 2026-09-22): "When enabled, your `workers.dev` URL is available publicly." 막으려면 Access가 필요하다.
   - [Zero Trust 요금](https://www.cloudflare.com/plans/sase-zero-trust.md): Free 플랜 $0, 사용자 50명까지. 가입 때 결제 수단이 필요한지는 문서에 없다(확인 필요).
 
 ### 의존성 점검 (2026-11-01)
@@ -166,7 +180,7 @@
      | `assets.not_found_handling` | `404-page` | T13 항목 |
      | `assets.html_handling` | `auto-trailing-slash` | 기본값이지만 `trailingSlash: 'always'`와 맞춘다는 뜻으로 적는다 |
      | `workers_dev` | `true` | |
-     | `preview_urls` | `false` | Access를 workers.dev 하나에만 걸면 된다 |
+     | `preview_urls` | `false` | 미리보기 배포를 쓰지 않는다(제외 항목) |
      | `send_metrics` | `false` | Wrangler 사용 정보를 보내지 않는다 |
 
      - `main`(Worker 스크립트)은 두지 않는다. 계정 ID는 적지 않는다(환경 변수로 준다).
@@ -216,27 +230,30 @@
      | --- | --- |
      | 조건 | `github.event_name == 'push' && github.ref == 'refs/heads/main'`. PR에서는 건너뛴다 |
      | `needs` | `[check, lighthouse]` |
-     | `environment` | `production`(GitHub 환경, 사용자 준비 3) |
+     | `environment` | `production`(GitHub 환경, 사용자 준비 5) |
      | `concurrency` | 작업 단위로는 두지 않는다. 워크플로 전체의 기존 설정(`cancel-in-progress: true`)으로 main에 새 push가 오면 이전 실행이 배포 작업까지 취소된다. 그래서 이전 커밋이 새 커밋보다 늦게 배포되지 않는다(메모) |
      | `timeout-minutes` | 예: 10 |
 
      - 단계: checkout → pnpm → Node(`.nvmrc`, pnpm 캐시) → `pnpm install --frozen-lockfile` → `pnpm build` → `pnpm exec wrangler deploy`
      - `CLOUDFLARE_API_TOKEN`·`CLOUDFLARE_ACCOUNT_ID`는 환경 비밀 값에서 그 단계의 `env`로만 준다.
      - `cloudflare/wrangler-action`은 쓰지 않는다. lockfile에 고정된 `wrangler`를 그대로 쓰고 외부 action을 늘리지 않는다(공식 예시와 다른 점, 메모).
-   - 배포한 URL을 CI에서 확인하지 않는다. Access 뒤라 서비스 토큰 없이는 열 수 없다. 사람이 확인한다(사용자 준비 5).
+   - 배포한 URL을 CI에서 확인하지 않는다. Access 뒤라 서비스 토큰 없이는 열 수 없다. 사람이 확인한다(사용자 준비 6).
 6. **사용자 준비(choi, Cloudflare·GitHub 화면)**
-   - 구현 PR merge 전에 1~3을 끝낸다. 3이 없으면 merge 뒤 main의 `deploy` 작업이 실패한다.
+   - 구현 PR merge 전에 1~5를 끝낸다.
+     - 3이 없으면 첫 배포가 잠금 없이 공개된다.
+     - 5가 없으면 merge 뒤 main의 `deploy` 작업이 실패한다.
    - 비밀 값은 저장소에 넣지 않는다(`AGENTS.md` §4-8).
 
    | 순서 | 할 일 | 비고 |
    | --- | --- | --- |
-   | 1 | Cloudflare 계정(무료)을 만들고 Workers 화면에서 workers.dev 하위 도메인을 정한다 | 하위 도메인은 공개 주소의 일부가 된다 |
-   | 2 | API 토큰: "Edit Cloudflare Workers" 템플릿, 계정 하나로 제한. 계정 ID를 확인한다 | |
-   | 3 | GitHub 저장소 Settings › Environments에서 `production`을 만든다 | 배포 브랜치를 `main`만으로 제한하고, 환경 비밀 값 `CLOUDFLARE_API_TOKEN`·`CLOUDFLARE_ACCOUNT_ID`를 넣는다 |
-   | 4 | 첫 배포 직후 Workers & Pages › `portfolio` › Settings › Domains & Routes › workers.dev에서 "Enable Cloudflare Access"를 누르고, 허용 메일을 choi 메일 하나로 한다 | 처음이면 Zero Trust 팀 만들기 안내가 나올 수 있다 |
-   | 5 | 시크릿 창으로 확인한다 | 주소를 열면 Access 로그인 화면이 나온다. 로그인하면 `/`가 `/ja/`로 가고, 없는 경로가 404 페이지를 보인다 |
+   | 1 | Cloudflare 계정(무료)을 만들고 Workers 화면에서 workers.dev 하위 도메인을 정한다 | 하위 도메인은 공개 주소의 일부가 된다. 계정은 이 사이트 전용으로 쓴다(다른 공개 Worker가 있으면 메모 "계정을 다른 Worker와 같이 쓸 때") |
+   | 2 | Zero Trust를 켠다(Free 플랜) | 팀 이름을 정한다. 결제 수단이 필요한지는 확인 필요 |
+   | 3 | **첫 배포 전에** Workers & Pages › "Protect all Workers" › Enable Access: 범위 **All traffic**, 정책 "Cloudflare account"(계정 멤버는 choi 하나) | "Previews only"를 고르면 workers.dev 주소가 공개된다. 메일 하나로 줄이려면 만든 뒤 Zero Trust에서 Access 앱을 고친다 |
+   | 4 | API 토큰: "Edit Cloudflare Workers" 템플릿, 계정 하나로 제한. 계정 ID를 확인한다 | |
+   | 5 | GitHub 저장소 Settings › Environments에서 `production`을 만든다 | 배포 브랜치를 `main`만으로 제한하고, 환경 비밀 값 `CLOUDFLARE_API_TOKEN`·`CLOUDFLARE_ACCOUNT_ID`를 넣는다 |
+   | 6 | 첫 배포 뒤 시크릿 창으로 확인한다 | 주소를 열면 Access 로그인 화면이 나오고 사이트 본문은 보이지 않는다. 로그인하면 `/`가 `/ja/`로 가고, 없는 경로가 404 페이지를 보인다 |
 
-   - 결과(배포 성공, 잠금 화면, 응답 확인)는 완료 반영 PR에 적는다.
+   - 결과(배포 성공, 비로그인 때 본문이 보이지 않음, 응답 확인)는 완료 반영 PR에 적는다.
 7. **문서**
    - `docs/ARCHITECTURE.md`
      - §2 새 하위 절 "배포 (T17 결정)": `wrangler.jsonc`, `_redirects`·`_headers`와 그 이유, `pnpm preview:workers`·`pnpm test:workers`, CI `deploy` 작업, GitHub 환경과 비밀 값, Access 잠금과 푸는 때
@@ -248,9 +265,9 @@
    - `docs/PLAN.md`
      - 진행 상태, 작업 지시서 표, 결정 기록
      - §8 항목 정리
-       - T01 301 항목·T13 `not_found_handling` 항목: 이 지시서로 처리. 배포 URL 확인은 사용자 준비 5
+       - T01 301 항목·T13 `not_found_handling` 항목: 이 지시서로 처리. 배포 URL 확인은 사용자 준비 6
        - T13 x-default 항목: 위 "루트 이동과 x-default"
-     - §8에 공개 배포 때 할 일을 더한다: Access 끄기, `X-Robots-Tag: noindex` 지우기, `site` 교체
+     - §8에 공개 배포 때 할 일을 더한다: 계정 단위 Access 끄기(메모 "Access가 보호 경계다"), `X-Robots-Tag: noindex` 지우기, `site` 교체
 
 제외:
 
@@ -291,7 +308,8 @@
 - [ ] 문서가 갱신되어 있다: `docs/ARCHITECTURE.md`(§2 배포·SEO 404, 디렉터리 구조, §3 ADR), `AGENTS.md` §5·§6, `README.md`, `docs/PLAN.md`(진행 상태·표·결정 기록·§8)
 - [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm test`, `pnpm lighthouse`, `pnpm test:workers`와 GitHub CI가 통과한다.
 - [ ] 비밀 값 미포함. 계정 ID·API 토큰은 GitHub 환경 비밀 값에만 둔다.
-- [ ] merge 뒤(사용자 준비 1~5): 첫 배포 성공, Access 잠금, 배포 URL에서 `/` 301·404 확인. 완료 반영 PR에 적는다.
+- [ ] 구현 PR merge 전: 사용자 준비 1~5가 끝나 있다. 특히 3(계정 단위 Access, All traffic)이 첫 배포 전에 켜져 있다.
+- [ ] merge 뒤(사용자 준비 6): 첫 배포 성공, 시크릿 창에서 사이트 본문이 보이지 않음, 로그인 뒤 `/` 301·404 확인. 완료 반영 PR에 적는다.
 
 ## 확인 방법
 
@@ -315,12 +333,15 @@ curl -sI http://localhost:8787/   # 301, Location: /ja/
   - [Versions & deployments](https://developers.cloudflare.com/workers/configuration/versions-and-deployments/)(2026-11-01 확인): 기본 동작은 "Workers creates a new version and immediately deploys it to 100% of traffic in a single step"이다. 업로드 도중 끊겼을 때 어떻게 되는지는 적혀 있지 않다(확인 필요). 이상하면 같은 문서의 롤백(이전 배포 버전으로 되돌리기)을 쓴다.
   - 작업 단위 `concurrency`(`cancel-in-progress: false`)를 따로 두어도 워크플로 단위 취소는 막지 못한다. 그리고 main 실행을 취소하지 않게 바꾸면 앞 실행이 늦게 끝날 때 이전 커밋이 나중에 배포될 수 있다. 그래서 지금 설정을 그대로 쓴다.
 - **GitHub Actions의 Node.js 20 경고**: CI 로그에 `actions/checkout@v4`·`actions/setup-node@v4`·`actions/upload-artifact@v4`·`pnpm/action-setup@v4`가 Node.js 20 기준이라 Node.js 24로 강제 실행한다는 경고가 나온다(PR #50 CI). `deploy` 작업도 기존 작업과 같은 판을 쓴다. 판 올리기는 이 지시서에서 하지 않는다(새 판이 있는지 확인 필요).
-- **첫 배포와 잠금 사이**
-  - Access는 Worker가 생긴 뒤에 켤 수 있다. 첫 배포부터 Access를 켤 때까지 몇 분은 주소를 아는 사람이 볼 수 있다(`noindex`).
-  - 주소는 어디에도 싣지 않으므로 이 틈은 받아들인다. 싫으면 첫 배포를 choi가 손으로 하고 바로 Access를 켠다.
-- **Access의 한계**
-  - 정적 자산만 있어 Access JWT를 검증할 Worker 코드가 없다. Access를 실수로 끄면 바로 공개된다. 공개 전까지 Access 설정은 choi만 바꾼다.
-  - T18부터 Worker 함수가 생기면 함수 쪽에서 JWT 검증이 필요한지 그때 정한다.
+- **첫 배포 전에 잠근다**(PR #51 교차 리뷰 반영)
+  - 처음 쓴 안은 첫 배포 뒤 Worker 단위로 Access를 켜는 것이었다. 이 안은 그 사이 몇 분 동안 잠금 없이 열린다. `noindex`나 주소를 알리지 않는 것은 접근 제한이 아니어서, 사용자 결정(choi만 열람)과 맞지 않았다.
+  - 계정 단위 "Protect all Workers"는 앞으로 배포할 Worker도 막는다. 그래서 사용자 준비 3을 첫 배포 전에 한다.
+  - 사용자 준비 3을 했는데도 시크릿 창에서 본문이 보이면, 바로 Workers & Pages에서 `portfolio`를 지우거나 `workers_dev: false`로 다시 배포한다. 그 뒤 원인을 PR에 적는다.
+- **계정을 다른 Worker와 같이 쓸 때**: 계정 단위 Access는 다른 공개 Worker도 잠근다. 그럴 때는 사용자 준비 3 대신 `portfolio.<하위 도메인>.workers.dev`의 호스트 이름 Access 앱을 첫 배포 전에 만든다. Worker가 없을 때 만들 수 있는지는 문서에 없다(확인 필요). 만들 수 없으면 사용자에게 다시 묻는다.
+- **Access가 보호 경계다**
+  - 정적 자산도 Access가 막는다. 저장소 코드에는 잠금이 없어서, Access 설정을 끄거나 규칙을 지우면 바로 공개된다. 공개 전까지 Access 설정은 choi만 바꾼다.
+  - 공개 배포 때 계정 단위 Access를 끈다. 이 계정에 잠가 둘 Worker가 따로 있으면, 계정 단위를 두고 이 Worker만 공개로 바꾸는 방법도 있다. 문서의 Worker 단위 우회 "Make a Worker public"이 그것이다.
+  - T18부터 Worker 함수가 생겨도 정적 자산이 있는 Worker는 `ctx.access`를 받지 못한다(문서). 함수에서 로그인 사용자를 확인해야 하면 그때 방법을 정한다.
 - **`wrangler-action` 대신 `pnpm exec wrangler deploy`**
   - 공식 예시는 `cloudflare/wrangler-action@v4`다. 이 저장소는 `wrangler`를 devDependency로 고정하므로 action 없이 같은 버전을 쓴다.
   - 리뷰에서 action을 쓰자는 의견이 있으면 바꿔도 된다.
