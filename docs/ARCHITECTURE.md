@@ -18,7 +18,7 @@ Cloudflare Workers (정적 자산)
 - 기본은 완전 정적. 서버 실행이 필요한 경로만 Workers 함수로 처리한다.
 - 단계 7까지는 Workers 함수가 없어도 사이트가 완성되어야 한다.
 
-## 2. 디렉터리 구조 (T16 기준)
+## 2. 디렉터리 구조 (T17 기준)
 
 ```text
 .
@@ -27,7 +27,8 @@ Cloudflare Workers (정적 자산)
 ├─ public/
 │  ├─ fonts/                    ← 글꼴 라이선스
 │  ├─ favicon.svg / favicon.ico / apple-touch-icon.png ← 파비콘(T13, scripts/brand/에서 만들어 커밋)
-│  └─ og/<ja|en>.png            ← 언어별 공유 이미지 1200×630(T13, scripts/brand/에서 만들어 커밋)
+│  ├─ og/<ja|en>.png            ← 언어별 공유 이미지 1200×630(T13, scripts/brand/에서 만들어 커밋)
+│  └─ _redirects / _headers     ← Cloudflare 리다이렉트(`/` → `/ja/` 301)·응답 헤더(T17, 아래 "배포"). 응답으로 내지 않는다
 ├─ src/
 │  ├─ content.config.ts          ← 콘텐츠 컬렉션 스키마(zod는 astro/zod)
 │  ├─ content/                   ← 페이지 본문 콘텐츠(아래 "콘텐츠 구조")
@@ -80,18 +81,21 @@ Cloudflare Workers (정적 자산)
 ├─ tests/lighthouse/          ← Lighthouse 점수 기준(T16, 아래 "테스트")
 │  ├─ lighthouse.spec.ts      ← 페이지 × 폼팩터마다 3회 측정·판정
 │  └─ support/                ← 측정 대상(targets.ts), Lighthouse CLI 실행(lighthouse.ts), 요약 표·reporter
+├─ tests/workers/cloudflare.spec.ts ← Cloudflare 동작 테스트(T17, wrangler dev에 요청만 보냄, 아래 "배포")
 ├─ playwright.config.ts        ← 브라우저 3개, 미리보기 서버, CI 설정, 스냅샷 위치(T15)
 ├─ playwright.lighthouse.config.ts ← Lighthouse용: 프로젝트 mobile·desktop, workers 1, 보고서 lighthouse-report/(T16)
+├─ playwright.workers.config.ts ← Cloudflare 동작 테스트용: wrangler dev(포트 8788), 브라우저 없음(T17)
+├─ wrangler.jsonc              ← Cloudflare Workers 설정: 정적 자산만(dist/), 404-page, workers.dev(T17)
 ├─ astro.config.mjs            ← 정적 출력, site(절대 주소, 임시 값이면 빌드 경고), React, i18n, 글꼴 통합
 ├─ tsconfig.json               ← Astro strict + React JSX
 ├─ eslint.config.mjs            ← JS, TypeScript, Astro, React, Hooks
 ├─ .prettierrc.json / .prettierignore / .editorconfig
 ├─ package.json / pnpm-lock.yaml / pnpm-workspace.yaml
 ├─ .nvmrc / .npmrc              ← Node 버전 및 엔진 검사
-└─ .github/workflows/ci.yml      ← check: 포맷 → lint → 타입 → 빌드 → E2E(T15). lighthouse: 빌드 → Lighthouse(mobile·desktop 두 작업, T16)
+└─ .github/workflows/ci.yml      ← check: 포맷 → lint → 타입 → 빌드 → E2E(T15) → Cloudflare 동작(T17). lighthouse: 빌드 → Lighthouse(mobile·desktop 두 작업, T16). deploy: main push에서 둘 다 통과하면 배포(T17)
 ```
 
-Workers 함수는 단계 8에 추가한다.
+Workers 함수는 T18부터 추가한다. T17까지는 정적 자산만 배포한다.
 
 ### 글꼴 로딩 (T11 결정)
 
@@ -131,7 +135,7 @@ Workers 함수는 단계 8에 추가한다.
 
 - **`noindex` prop**: 켜면 `<meta name="robots" content="noindex">`를 넣고 canonical·hreflang·`og:url`은 넣지 않는다. 지금은 404만 쓴다. 단계 8의 회사별 비공개 페이지도 이 prop을 쓴다.
 - **sitemap·robots**: `src/pages/sitemap.xml.ts`·`robots.txt.ts` 엔드포인트가 빌드 때 정적 파일이 된다(`commands.json.ts`와 같은 방식, 새 의존성 없음). sitemap은 18페이지(`pagePaths` × 언어 + `getProjectPages`)의 `<loc>`와 `<head>`와 같은 함수로 만든 `xhtml:link` 3개를 가진다. 루트 이동 페이지·404·`commands.json`과 `lastmod`(정확한 수정일을 낼 방법이 없음)는 넣지 않는다. robots는 전체 허용과 `Sitemap:` 한 줄이며, 누구나 읽으므로 비공개 경로를 적지 않는다.
-- **404**: `src/pages/404.astro` → `dist/404.html` 하나다. `NotFoundLayout`(`BaseLayout` `locale="ja"` + `noindex`)과 `NotFoundPage`가 일본어 안내(h1) 뒤에 영어 안내(`lang="en"`, h2)를 함께 그린다. 없는 경로마다 같은 파일이 나가므로 링크는 절대 경로만 쓴다. 언어별 404를 두지 않는 이유: Astro는 언어 폴더 아래 404를 `ja/404/index.html`로 출력해 Cloudflare가 찾는 `ja/404.html`을 바로 만들 수 없고, 그 동작은 배포 전에는 확인할 수 없다(`docs/tasks/T13-seo.md` 메모). `pnpm preview`는 끝 슬래시가 있는 없는 경로에 이 파일을 404 상태로 보낸다. Cloudflare에서는 `not_found_handling = "404-page"`가 필요하다(단계 8).
+- **404**: `src/pages/404.astro` → `dist/404.html` 하나다. `NotFoundLayout`(`BaseLayout` `locale="ja"` + `noindex`)과 `NotFoundPage`가 일본어 안내(h1) 뒤에 영어 안내(`lang="en"`, h2)를 함께 그린다. 없는 경로마다 같은 파일이 나가므로 링크는 절대 경로만 쓴다. 언어별 404를 두지 않는 이유: Astro는 언어 폴더 아래 404를 `ja/404/index.html`로 출력해 Cloudflare가 찾는 `ja/404.html`을 바로 만들 수 없고, 그 동작은 배포 전에는 확인할 수 없다(`docs/tasks/T13-seo.md` 메모). `pnpm preview`는 끝 슬래시가 있는 없는 경로에 이 파일을 404 상태로 보낸다. Cloudflare에서는 `wrangler.jsonc`의 `not_found_handling: "404-page"`로 없는 경로마다 이 파일을 404 상태로 낸다(T17, `pnpm test:workers`가 확인, 아래 "배포").
 - **파비콘·공유 이미지**: `public/`에 커밋한 파일이다. 원본과 만드는 스크립트는 `scripts/brand/`(README.md)이며, 실행 환경의 Playwright Chromium으로 그린다. 빌드에서는 만들지 않는다(빌드에 브라우저가 필요해지고 새 의존성이 생기므로). 모양은 `docs/DESIGN.md` §10.
 - **검증 방법(T13)**: `dist/**/*.html`(루트 이동·404 제외)을 읽어 canonical·`og:url` = `site` + 경로, hreflang 3개(자기 포함, x-default = ja)가 짝 페이지와 같음, OG 속성이 하나씩, 파비콘 링크 3개, sitemap `<loc>` = 페이지 목록·`xhtml:link` = `<head>` 묶음, 404의 `noindex`와 canonical·hreflang·`og:url` 없음을 확인했다. T15에서 E2E(`tests/e2e/seo.chromium.spec.ts`)로 옮겼다. sitemap 완전성은 sitemap과 독립된 `dist/{ja,en}/**/index.html` 목록과 비교한다.
 
@@ -150,6 +154,7 @@ Workers 함수는 단계 8에 추가한다.
 - **접근성 트리 기준 파일**: `tests/e2e/__snapshots__/aria.chromium.spec.ts/<경로>.aria.yml`(19개). 위치 규칙(`expect.toMatchAriaSnapshot.pathTemplate`)에 플랫폼·프로젝트 이름이 없어 Linux CI와 Windows가 같은 파일을 쓴다. 원고·화면을 바꾸면 `pnpm test --project=chromium --update-snapshots`로 갱신하고 PR에서 diff를 리뷰한다(문구가 들어 있어 원고 반영 때 바뀌는 것은 의도된 diff).
 - **CI**: 빌드 뒤 브라우저 설치(캐시하지 않음, Playwright 공식 권장) → `pnpm test` → 취소되지 않았으면 `playwright-report/`를 artifact(7일)로 올린다. 실패하면 PR의 `check` 작업 artifact에서 HTML 보고서를 받아 `pnpm exec playwright show-report <폴더>`로 연다.
 - 무엇을 어느 파일이 보는지는 `docs/tasks/T15-e2e-tests.md` 범위 2와 T15 PR의 "파일 · 테스트 · 브라우저 · 폭" 표.
+- **Cloudflare 동작 (T17)**: `pnpm test:workers`. 아래 "배포".
 - **Lighthouse 점수 기준 (T16)**
   - **도구**: `lighthouse` 13.6.0(devDependency, 2026-11-01 사용자 결정). 실행 틀은 Playwright Test다: 설정 `playwright.lighthouse.config.ts`, 테스트 `tests/lighthouse/`. E2E(`pnpm test`)와 설정·폴더·미리보기 포트(4330)가 따로라 섞이지 않는다.
   - **실행**: `pnpm build` 뒤 `pnpm lighthouse`(= `playwright test -c playwright.lighthouse.config.ts`). 프로젝트 `mobile`·`desktop`이 폼팩터다(`--project=mobile`로 한쪽만). `workers: 1`(측정끼리 CPU를 나누면 점수가 흔들림), `retries: 0`. T16 구현 환경(클라우드 컨테이너)에서 10페이지 × 3회가 폼팩터마다 약 6분(테스트 하나 약 35초) 걸렸다.
@@ -169,6 +174,52 @@ Workers 함수는 단계 8에 추가한다.
   - **결과 보기**: 끝에 Markdown 요약 표(판정·점수·LCP·CLS·TBT)를 콘솔과 GitHub Actions 작업 요약에 낸다(`tests/lighthouse/support/summary-reporter.ts`). Playwright HTML 보고서(`lighthouse-report/`, 커밋하지 않음)에 테스트마다 대표 회차의 Lighthouse HTML 보고서가 붙는다.
   - **CI**: `lighthouse` 작업이 `check`와 동시에 폼팩터별로 두 번 돈다(`strategy.matrix`, `fail-fast: false`). 빌드 → Chromium 설치 → `pnpm lighthouse --project=<폼팩터>` → `lighthouse-report/`를 artifact(7일)로 올린다. 흔들림으로 보이는 실패는 재실행으로 넘기지 않고 회차별 값을 남겨 기준·회차 조정을 사용자와 정한다.
   - **한계**: 미리보기 서버(`astro preview`, gzip)는 배포 환경(Cloudflare)과 압축 방식·캐시 헤더가 다를 수 있다. 배포 URL 측정은 단계 8이다. 같은 페이지라도 Lighthouse 13은 12보다 FCP·LCP가 낮게 나와(원인 미확인, T16 지시서 사전 측정) T11의 지표 값과 그대로 비교하지 않는다.
+
+### 배포 (T17 결정)
+
+- **방식**: Cloudflare Workers 정적 자산(A3). Worker 스크립트(`main`) 없이 `dist/`만 올린다. 설정은 루트 `wrangler.jsonc`이고, `wrangler`(4.156.0, devDependency)가 로컬 확인과 배포를 함께 맡는다.
+
+  | 키 | 값 | 이유 |
+  | --- | --- | --- |
+  | `name` | `portfolio` | 주소가 `portfolio.<계정 하위 도메인>.workers.dev`가 된다 |
+  | `compatibility_date` | `2026-10-23` | 설치한 `workerd`(1.20261023.1)가 지원하는 가장 늦은 날짜. `wrangler`를 올릴 때 함께 검토한다 |
+  | `assets.directory` | `./dist` | |
+  | `assets.not_found_handling` | `404-page` | 맞는 파일이 없으면 `dist/404.html`을 404 상태로(§2 SEO "404") |
+  | `assets.html_handling` | `auto-trailing-slash` | 기본값. `trailingSlash: 'always'`와 맞춘다는 뜻으로 적는다 |
+  | `workers_dev` | `true` | |
+  | `preview_urls` | `false` | 미리보기 배포를 쓰지 않는다 |
+  | `send_metrics` | `false` | Wrangler 사용 정보를 보내지 않는다 |
+
+  계정 ID는 적지 않는다(CI는 환경 변수). `pnpm-workspace.yaml`의 `allowBuilds`에서 `wrangler`의 하위 의존성 `esbuild`·`workerd`의 설치 스크립트를 실행하지 않는다(pnpm 11은 허용 목록에 없으면 설치를 멈춘다). 실행 파일은 선택적 의존성에서 찾아 스크립트 없이 동작한다.
+- **Cloudflare가 정하는 동작**: `public/_redirects`·`public/_headers`가 빌드 때 `dist/`로 복사된다. 두 파일은 응답으로 내지 않는다(404).
+  - 루트: `_redirects`의 `/ /ja/ 301`. 대상 언어는 `astro.config.mjs`의 `i18n.defaultLocale`과 같아야 한다. 자산(`dist/index.html`)이 있어도 리다이렉트가 먼저 적용된다. `dist/index.html`(2초 meta refresh)은 `astro preview`(E2E·Lighthouse)용으로 남긴다. `/`는 언어와 관계없이 ja로 보내므로 `hreflang="x-default"`는 ja URL 그대로다.
+  - 끝 슬래시: `html_handling`이 `/ja/about` 같은 주소를 끝 슬래시 주소로 307 이동한다. `/ja/index.html`도 `/ja/`로 이동한다.
+  - 응답 헤더(`_headers`, 정적 자산 응답에만 붙는다. T18의 Worker 함수 응답 헤더는 코드에서 정한다)
+
+    | 경로 | 헤더 | 이유 |
+    | --- | --- | --- |
+    | `/*` | `X-Content-Type-Options: nosniff` | MIME 추측 금지 |
+    | `/*` | `Referrer-Policy: strict-origin-when-cross-origin` | 다른 사이트로 가는 링크에 전체 경로를 보내지 않는다 |
+    | `/*` | `X-Frame-Options: DENY` | 다른 사이트의 frame에 넣지 않는다 |
+    | `/*` | `X-Robots-Tag: noindex` | **공개 배포 때 지운다.** 잠금이 풀린 사이에도 검색에 올라가지 않게 한다 |
+    | `/_astro/*` | `Cache-Control: public, max-age=31536000, immutable` | 파일 이름에 내용 해시가 있다 |
+
+    HTML의 `Cache-Control`은 Cloudflare 기본값(`public, max-age=0, must-revalidate`, `ETag`)이다. CSP·HSTS는 아직 두지 않는다(CSP는 인라인 스크립트의 해시가 필요해 공개 배포 전에, HSTS는 커스텀 도메인과 함께 정한다).
+- **로컬 확인**: `pnpm build` 뒤 `pnpm preview:workers`(= `wrangler dev`, `http://localhost:8787`, 로그인 없음). 상태 파일 `.wrangler/`는 커밋하지 않고 lint·포맷·타입 체크에서 뺀다.
+- **Cloudflare 동작 테스트**: `pnpm test:workers`(= `playwright test -c playwright.workers.config.ts`)가 `wrangler dev`를 포트 8788에 띄우고, 브라우저 없이 요청만 보낸다(리다이렉트를 따라가지 않음, `retries: 0`).
+  - 확인하는 것: `/` 301과 Location, sitemap의 모든 페이지 200과 `/*` 헤더 4개(HTML은 `immutable`이 아님), 끝 슬래시를 뗀 주소의 307, 없는 경로(언어 Home·프로젝트 목록 아래와 루트 아래)의 404와 본문 = `dist/404.html`, `/_astro/` 파일의 1년 캐시, `/_redirects`·`/_headers`의 404
+  - 기본 언어는 `dist/index.html`(Astro i18n이 만든 이동 페이지)의 이동 대상에서, 페이지 경로는 sitemap에서 가져온다. 헤더 기대값은 `_headers`를 읽지 않고 테스트에 적는다. 파일을 읽으면 줄이 빠져도 통과하기 때문이다.
+  - T17 결함 주입(`_redirects` 줄 삭제, `not_found_handling` 삭제, `_headers` 한 줄 삭제)이 모두 실패를 냈다(T17 PR).
+- **CI 배포**: `.github/workflows/ci.yml`의 `deploy` 작업
+  - main push에서만 돈다. `check`·`lighthouse`가 모두 통과해야 시작한다(`needs`). PR에서는 건너뛴다.
+  - `environment: production`(GitHub 환경, 배포 브랜치 main만)의 비밀 값을 배포 단계의 `env`로만 준다(§4).
+  - 단계: 설치 → 빌드 → `pnpm exec wrangler deploy`. `cloudflare/wrangler-action`을 쓰지 않고 lockfile에 고정한 `wrangler`를 그대로 쓴다.
+  - 워크플로 `concurrency`(`cancel-in-progress: true`)가 main의 이전 실행을 `deploy`까지 취소한다. 그래서 이전 커밋이 새 커밋보다 늦게 배포되지 않는다. 배포 도중 취소될 때 이전 버전이 그대로 남는지는 공식 문서에 없다(확인 필요). 이상하면 Cloudflare의 이전 버전으로 되돌린다.
+  - 배포 URL은 CI에서 확인하지 않는다(Access 뒤). 사람이 확인한다(T17 사용자 준비 6).
+- **공개 전 잠금**: 계정 단위 Cloudflare Access "Protect all Workers"(범위 All traffic, 정책 "Cloudflare account")를 첫 배포 **전에** 켠다(2026-11-01 사용자 결정, T17 지시서 PR #51 교차 리뷰). 앞으로 배포할 Worker도 막으므로 잠금 없이 열리는 때가 없다. 저장소 코드에는 잠금이 없어 Access 설정이 보호 경계다. 끄거나 규칙을 지우면 바로 공개된다.
+  - 공개 배포 때 할 일: 계정 단위 Access 끄기, `_headers`의 `X-Robots-Tag` 줄 지우기, `site` 교체(`docs/PLAN.md` §8).
+  - 정적 자산이 있는 Worker는 내부 router가 `ctx.access`(로그인 사용자 정보)를 사용자 Worker에 넘기지 않는다([공식 문서](https://developers.cloudflare.com/workers/configuration/cloudflare-access/)). T18에서 함수가 로그인 사용자를 확인해야 하면 그때 방법을 정한다.
+- **한계**: 로컬 `wrangler dev`(miniflare, `@cloudflare/workers-shared`)와 배포 환경은 압축 방식(로컬 gzip), HTTP/2·3, 캐시 동작이 다를 수 있다(확인 필요). 배포 URL의 Lighthouse·E2E는 Access 뒤라 공개 배포 때 한다.
 
 ### 페이지 파일 방식 (T03 결정, T12 갱신)
 
@@ -210,7 +261,7 @@ Workers 함수는 단계 8에 추가한다.
 
 T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는 검사 도구의 지원 범위에 맞춰 6.0.3을 사용한다. 직접 의존성과 lockfile로 설치 버전을 기록한다. pnpm이 생성한 `pnpm-workspace.yaml`에는 이번 Astro 설치에 필요한 특정 버전의 release-age 예외만 기록한다.
 
-`output: 'static'` 빌드는 `dist/{ja,en}/index.html`, `dist/{ja,en}/{about,projects,contact}/index.html`(T03), 프로젝트 상세 `dist/{ja,en}/projects/<slug>/index.html`(T06), 루트 redirect HTML을 생성한다. React hydration은 없으며 서버 어댑터도 필요하지 않다. 모든 페이지는 공통 CSS `_astro/BaseLayout.*.css`를 `<head>`에서 받는다. T11부터 글꼴 `@font-face`를 쓰는 글자의 범위로 줄여 압축 전 52,819B(gzip 10,369B)이고(T10까지 357,926B, 이 절의 "글꼴 로딩"), T12에서 Astro scoped style의 `[data-astro-cid-*]` 선택자가 CSS Modules 클래스로 바뀌어 51,350B다. 페이지 전용 CSS는 T12부터 모든 페이지에서 4KB 이하라 HTML 인라인 `<style>`로 들어간다(T11까지 About·프로젝트 상세는 외부 CSS 파일을 따로 받음). 일본어 페이지는 가나 범위 글꼴 2개를 preload한다. 페이지가 받는 JS는 테마 첫 적용 인라인 스크립트와 헤더 스크립트 1개(T10부터 외부 모듈, 아래)이고, Contact 페이지만 메일 복사 스크립트 1개(인라인 모듈, 약 0.6KB)를 더 받는다(T07). T08부터 Home은 디코딩(약 1.4KB)과 카드 틸트(약 1.1KB), Projects 목록은 카드 틸트 스크립트를 더 받는다(모두 인라인 모듈, 압축 전 크기). 카드 → 상세 전환과 About 경력 타임라인의 스크롤 강조(T09)는 CSS만 쓰며 About이 받는 JS는 T08과 같다. 다만 T09로 About 페이지 CSS가 Astro 인라인 기준(4KB)을 넘어 `_astro/AboutPage.*.css` 파일(압축 전 약 4.7KB)로 분리된다. T10부터 모든 페이지는 헤더 스크립트(T12부터 `_astro/BaseLayout.astro_astro_type_script_index_0_lang.*.js`, T11까지 `_astro/SiteHeader.*.js`. 테마 버튼 처리 + 명령 팔레트 런처, 압축 전 약 3.5KB·gzip 약 1.6KB)를 외부 모듈로 받는다. main(T09)의 테마 버튼 인라인 모듈(약 0.8KB)을 대신하므로 늘어난 양은 압축 전 약 2.7KB다. 이 중 약 1.7KB는 동적 import의 의존 파일을 미리 불러오는 Vite 도우미 코드다. `vite.build.modulePreload: false`로 없애려 했으나 Astro 빌드 설정이 우선해 적용되지 않았다(2026-10-31 확인). T11에서 `astro:build:setup` 훅으로 client 환경 설정에 `modulePreload: false`를 넣어 보았으나 의존 파일 목록(약 150B)만 빠지고 도우미 함수는 남았고, 팔레트를 처음 열 때 React 청크를 미리 받지 않아 `mount.*.js` 다음에 직렬로 받게 되므로 적용하지 않았다. 헤더 스크립트는 압축 전 3,531B·gzip 1,625B이고 Lighthouse의 "사용하지 않는 JavaScript" 진단에 나오지 않으며 TBT는 모든 페이지에서 0ms다(2026-10-31 확인). 팔레트를 처음 열 때만 `mount.*.js`(약 11KB, gzip 약 4KB), React·ReactDOM 청크 `client.*.js`(약 219KB, gzip 약 66KB), `command-ui.*.css`(약 5.6KB, gzip 약 1.4KB), `commands.json`(ja 약 4.2KB, gzip 약 1.8KB)을 받고, 다시 열 때는 받지 않는다(크기는 압축 전 기준. 모두 2026-10-31 빌드 측정). T01부터 "어느 페이지도 참조하지 않는 React 클라이언트 번들"로 남아 있던 React는 이제 팔레트 청크로 쓰인다. 참조되지 않는 파일은 Astro React 렌더러 진입 파일(`client.*.js` 중 약 1.8KB 쪽)뿐이며, `@astrojs/react` 통합(JSX 설정)은 유지한다(2026-10-30 사용자 결정, PLAN §8). T12부터 이 통합은 화면 컴포넌트를 빌드 때 HTML로 렌더하는 데도 쓰인다. `dist/`를 Workers 정적 자산 디렉터리로 지정할 수 있음을 [공식 문서](https://developers.cloudflare.com/workers/static-assets/binding/)와 출력 구조로 확인한다. 실제 배포·HTTP redirect 정책은 단계 8에서 검증한다.
+`output: 'static'` 빌드는 `dist/{ja,en}/index.html`, `dist/{ja,en}/{about,projects,contact}/index.html`(T03), 프로젝트 상세 `dist/{ja,en}/projects/<slug>/index.html`(T06), 루트 redirect HTML을 생성한다. React hydration은 없으며 서버 어댑터도 필요하지 않다. 모든 페이지는 공통 CSS `_astro/BaseLayout.*.css`를 `<head>`에서 받는다. T11부터 글꼴 `@font-face`를 쓰는 글자의 범위로 줄여 압축 전 52,819B(gzip 10,369B)이고(T10까지 357,926B, 이 절의 "글꼴 로딩"), T12에서 Astro scoped style의 `[data-astro-cid-*]` 선택자가 CSS Modules 클래스로 바뀌어 51,350B다. 페이지 전용 CSS는 T12부터 모든 페이지에서 4KB 이하라 HTML 인라인 `<style>`로 들어간다(T11까지 About·프로젝트 상세는 외부 CSS 파일을 따로 받음). 일본어 페이지는 가나 범위 글꼴 2개를 preload한다. 페이지가 받는 JS는 테마 첫 적용 인라인 스크립트와 헤더 스크립트 1개(T10부터 외부 모듈, 아래)이고, Contact 페이지만 메일 복사 스크립트 1개(인라인 모듈, 약 0.6KB)를 더 받는다(T07). T08부터 Home은 디코딩(약 1.4KB)과 카드 틸트(약 1.1KB), Projects 목록은 카드 틸트 스크립트를 더 받는다(모두 인라인 모듈, 압축 전 크기). 카드 → 상세 전환과 About 경력 타임라인의 스크롤 강조(T09)는 CSS만 쓰며 About이 받는 JS는 T08과 같다. 다만 T09로 About 페이지 CSS가 Astro 인라인 기준(4KB)을 넘어 `_astro/AboutPage.*.css` 파일(압축 전 약 4.7KB)로 분리된다. T10부터 모든 페이지는 헤더 스크립트(T12부터 `_astro/BaseLayout.astro_astro_type_script_index_0_lang.*.js`, T11까지 `_astro/SiteHeader.*.js`. 테마 버튼 처리 + 명령 팔레트 런처, 압축 전 약 3.5KB·gzip 약 1.6KB)를 외부 모듈로 받는다. main(T09)의 테마 버튼 인라인 모듈(약 0.8KB)을 대신하므로 늘어난 양은 압축 전 약 2.7KB다. 이 중 약 1.7KB는 동적 import의 의존 파일을 미리 불러오는 Vite 도우미 코드다. `vite.build.modulePreload: false`로 없애려 했으나 Astro 빌드 설정이 우선해 적용되지 않았다(2026-10-31 확인). T11에서 `astro:build:setup` 훅으로 client 환경 설정에 `modulePreload: false`를 넣어 보았으나 의존 파일 목록(약 150B)만 빠지고 도우미 함수는 남았고, 팔레트를 처음 열 때 React 청크를 미리 받지 않아 `mount.*.js` 다음에 직렬로 받게 되므로 적용하지 않았다. 헤더 스크립트는 압축 전 3,531B·gzip 1,625B이고 Lighthouse의 "사용하지 않는 JavaScript" 진단에 나오지 않으며 TBT는 모든 페이지에서 0ms다(2026-10-31 확인). 팔레트를 처음 열 때만 `mount.*.js`(약 11KB, gzip 약 4KB), React·ReactDOM 청크 `client.*.js`(약 219KB, gzip 약 66KB), `command-ui.*.css`(약 5.6KB, gzip 약 1.4KB), `commands.json`(ja 약 4.2KB, gzip 약 1.8KB)을 받고, 다시 열 때는 받지 않는다(크기는 압축 전 기준. 모두 2026-10-31 빌드 측정). T01부터 "어느 페이지도 참조하지 않는 React 클라이언트 번들"로 남아 있던 React는 이제 팔레트 청크로 쓰인다. 참조되지 않는 파일은 Astro React 렌더러 진입 파일(`client.*.js` 중 약 1.8KB 쪽)뿐이며, `@astrojs/react` 통합(JSX 설정)은 유지한다(2026-10-30 사용자 결정, PLAN §8). T12부터 이 통합은 화면 컴포넌트를 빌드 때 HTML로 렌더하는 데도 쓰인다. `dist/`는 T17부터 `wrangler.jsonc`의 `assets.directory`로 Workers 정적 자산에 올린다. 루트 이동·404·응답 헤더는 아래 "배포".
 
 ## 3. 기술 결정 기록 (ADR 요약)
 
@@ -232,6 +283,7 @@ T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는
 | A12 | SEO: 절대 URL은 `astro.config.mjs`의 `site` 한 곳에서 `src/lib/seo.ts`로 만든다(도메인 결정 전에는 임시 값 + 빌드 경고). sitemap·robots는 엔드포인트, 404는 ja·en 안내를 함께 보여주는 `dist/404.html` 하나, 파비콘·공유 이미지는 `scripts/brand/`에서 만들어 커밋 | 도메인을 정할 때(단계 8) 값 하나만 바꾸면 된다. hreflang 묶음을 `<head>`와 sitemap이 같은 함수로 만들어 어긋나지 않는다. 새 의존성·빌드 시간 증가 없음. Astro는 언어 폴더 아래 404를 `ja/404/index.html`로 출력해 언어별 `404.html`을 바로 만들 수 없다 | `@astrojs/sitemap`(새 의존성, 기능 비교 안 함), 언어별 404(빌드 후 파일 이동 필요, 단계 8에 재검토), 빌드 때 공유 이미지 생성(satori 등 새 의존성), 페이지별 공유 이미지(원고 반영 뒤 검토) | accepted (T13, §2 "SEO") |
 | A13 | E2E는 Playwright Test로 Chromium·WebKit·Firefox 3개 브라우저에서 기능·키보드·axe를 돌리고, 화면 회귀는 픽셀 캡처 대신 접근성 트리(`toMatchAriaSnapshot`)·레이아웃 값으로 본다. 페이지 목록은 sitemap, 문구는 `ui.ts`·`commands.json`에서 가져온다 | 지시서마다 손으로 하던 확인을 PR마다 자동으로. 원고 반영 뒤 같은 테스트로 다시 확인(접근성 트리 기준만 갱신). OS에 따라 달라지는 기준 이미지가 없어 Windows에서도 같은 기준을 쓴다. Public 저장소라 CI 시간 비용 없음 | 픽셀 캡처 비교(기준 이미지를 Linux에서만 만들 수 있어 Windows는 Docker 필요), Chromium만(WebKit·Firefox 이월 항목이 남음) | accepted (2026-10-31 사용자 결정, T15, §2 "테스트") |
 | A14 | Lighthouse 점수 기준은 `lighthouse` 13.6.0 CLI를 Playwright Test에서 회차마다 새 프로세스로 실행해 검사한다. sitemap에서 언어·종류마다 1페이지(10페이지) × 모바일·데스크톱 × 3회, 성능·CLS는 중앙값, 접근성·Best Practices·SEO는 3회 모두 100. Chromium은 Playwright 버전으로 고정, CI는 폼팩터별 작업 2개 | 손으로 재던 T11·T13·T14 기준을 PR마다 자동으로. E2E의 페이지 목록·미리보기 서버·보고서 흐름을 그대로 씀. 새 의존성 1개, `pnpm audit` 경고 증가 moderate 1건. 점수 요약을 CI 작업 요약에서 바로 봄 | `@lhci/cli` 0.15.1(Lighthouse 12.6.1 고정, `pnpm audit` 경고 7건(high 5) 증가), 보고서 공개 업로드(`temporary-public-storage`), Playwright로 연 브라우저에 Lighthouse를 붙이기(hover·pointer 실행 옵션이 섞임), runner에 설치된 Chrome(이미지 갱신 때 버전이 바뀜) | accepted (2026-11-01 사용자 결정, T16, §2 "테스트") |
+| A15 | 배포: main push에서 CI(`check`·`lighthouse`)가 통과하면 GitHub Actions `deploy` 작업이 lockfile에 고정한 `wrangler`로 `wrangler deploy`한다. 정적 자산만, 루트 301은 `_redirects`, 404는 `not_found_handling`, 응답 헤더는 `_headers`. Cloudflare 동작은 `wrangler dev` 위의 요청 테스트로 PR마다 확인하고, 공개 전에는 첫 배포 전부터 계정 단위 Cloudflare Access로 잠근다 | 배포가 반드시 E2E·Lighthouse를 거친다. 로컬 확인과 배포가 같은 `wrangler` 버전이다. 외부 action·연동 서비스를 늘리지 않는다. Cloudflare 비밀 값은 GitHub 환경에서 main 배포 단계만 받는다. 새 의존성 1개(`wrangler`), `pnpm audit` 변화 없음 | Workers Builds(Cloudflare가 push마다 따로 빌드한다. GitHub CI 통과를 배포 조건으로 거는 방법은 확인하지 않았다. Free 월 3,000분·동시 1개), `cloudflare/wrangler-action@v4`(공식 예시. 외부 action이 늘고 `wrangler` 버전을 따로 맞춰야 한다), 손으로 배포(CI를 건너뛰거나 잊을 수 있다), 첫 배포 뒤 Worker 단위 Access(몇 분 공개되는 틈) | accepted (2026-11-01 사용자 결정(잠금), T17, §2 "배포") |
 
 직접 의존성은 정확한 버전으로 통일하고, 간접 의존성은 lockfile로 고정한다. CI는 `pnpm install --frozen-lockfile`을 사용한다. pnpm 버전은 `packageManager`로 고정한다.
 
@@ -240,4 +292,4 @@ T01 환경: Node 24.19.0, pnpm 11.25.0, Astro 7.4.4, React 19.3.1. TypeScript는
 - 저장소에 커밋 금지: API 키, Turnstile secret, 메일 API 키, 회사별 토큰, 개인 전화번호 등
 - 로컬: `.dev.vars` (gitignore됨). 필요한 키 이름은 `.dev.vars.example`에 값 없이 적는다 (단계 8).
 - 배포: `wrangler secret put` 또는 Cloudflare 대시보드
-- CI: GitHub Actions Secrets
+- CI: GitHub 환경 `production`(배포 브랜치 main만)의 비밀 값. T17: `CLOUDFLARE_API_TOKEN`("Edit Cloudflare Workers", 계정 하나로 제한)·`CLOUDFLARE_ACCOUNT_ID`. `deploy` 작업의 배포 단계만 받는다

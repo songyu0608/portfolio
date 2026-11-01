@@ -1,0 +1,21 @@
+// Cloudflare Workers 설정(T17, docs/ARCHITECTURE.md §2 "배포"). Worker 스크립트(main) 없이
+// 빌드 결과(dist/)를 정적 자산으로만 낸다. 계정 ID는 적지 않는다(CI는 환경 변수 CLOUDFLARE_ACCOUNT_ID).
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "portfolio",
+  // 설치한 workerd(1.20261023.1)가 지원하는 가장 늦은 날짜. wrangler를 올릴 때 함께 검토한다.
+  "compatibility_date": "2026-10-23",
+  "assets": {
+    "directory": "./dist",
+    // 맞는 파일이 없으면 dist/404.html을 404 상태로 낸다(T13 이월).
+    "not_found_handling": "404-page",
+    // 기본값이지만 astro.config.mjs의 trailingSlash: 'always'와 맞춘다는 뜻으로 적는다.
+    "html_handling": "auto-trailing-slash",
+  },
+  // 주소: portfolio.<계정 하위 도메인>.workers.dev. 공개 배포 전까지 Cloudflare Access로 잠근다.
+  "workers_dev": true,
+  // 미리보기 배포는 쓰지 않는다(docs/tasks/T17-deploy-base.md 제외 항목).
+  "preview_urls": false,
+  // Wrangler 사용 정보를 Cloudflare에 보내지 않는다.
+  "send_metrics": false,
+}

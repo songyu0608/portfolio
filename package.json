@@ -11,12 +11,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "preview:workers": "wrangler dev",
     "check": "astro check",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "playwright test",
-    "lighthouse": "playwright test -c playwright.lighthouse.config.ts"
+    "lighthouse": "playwright test -c playwright.lighthouse.config.ts",
+    "test:workers": "playwright test -c playwright.workers.config.ts"
   },
   "dependencies": {
     "@astrojs/react": "7.1.2",
@@ -43,6 +45,7 @@
     "prettier": "3.9.10",
     "prettier-plugin-astro": "1.1.2",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.72.1"
+    "typescript-eslint": "8.72.1",
+    "wrangler": "4.156.0"
   }
 }

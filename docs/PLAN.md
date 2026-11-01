@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-11-01 (T17 지시서 작성, 원고 반영 전 배포 공개 범위 결정)
+마지막 갱신: 2026-11-01 (T17 구현)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 8 배포와 동적 기능 — T17 배포 기반 지시서 리뷰 |
-| 진행 중인 작업 | T17 지시서 리뷰(`docs/tasks/T17-deploy-base.md`). merge 뒤 구현 담당을 정한다 |
-| 다음 작업 | T17 구현 → T18 연락 폼 → T19 회사별 비공개 페이지 → T20 방문 분석(안, T17 지시서 배경). 원고 반영은 맨 마지막(2026-10-31 사용자 결정). T17 구현 PR merge 전에 사용자 준비(Cloudflare 계정, Zero Trust, 첫 배포 전 계정 단위 Access, API 토큰, GitHub 환경. T17 범위 6)가 필요하다 |
+| 현재 단계 | 단계 8 배포와 동적 기능 — T17 배포 기반 구현 리뷰 |
+| 진행 중인 작업 | T17 구현 PR 리뷰(`docs/tasks/T17-deploy-base.md`, 담당 claude). merge 전에 사용자 준비 1~5가 필요하다 |
+| 다음 작업 | T17 merge 뒤 첫 배포 확인(사용자 준비 6)과 완료 반영 → T18 연락 폼 → T19 회사별 비공개 페이지 → T20 방문 분석(안, T17 지시서 배경). 원고 반영은 맨 마지막(2026-10-31 사용자 결정). T17 구현 PR merge 전에 사용자 준비(Cloudflare 계정, Zero Trust, 첫 배포 전 계정 단위 Access, API 토큰, GitHub 환경. T17 범위 6)가 필요하다 |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 공개 배포 전에 실제 원고로 교체해야 한다. 그 전의 배포는 Cloudflare Access로 choi만 본다(2026-11-01 사용자 결정) |
 
 ## 1. 개요
@@ -112,7 +112,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T14 | 접근성 점검·수정 (WCAG 2.2 AA 자동·수동 점검, 강제 색상 모드, 터미널 출력 스크롤) | 6 | T13 | claude | done | `docs/tasks/T14-accessibility.md` — 지시서 [PR #42](https://github.com/songyu0608/portfolio/pull/42), 구현 [PR #43](https://github.com/songyu0608/portfolio/pull/43) |
 | T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | done | `docs/tasks/T15-e2e-tests.md` — 지시서 [PR #45](https://github.com/songyu0608/portfolio/pull/45), 구현 [PR #46](https://github.com/songyu0608/portfolio/pull/46) |
 | T16 | Lighthouse CI (Lighthouse 13, 성능·접근성·Best Practices·SEO 점수 기준, CI) | 7 | T15 | claude | done | `docs/tasks/T16-lighthouse-ci.md` — 지시서 [PR #48](https://github.com/songyu0608/portfolio/pull/48), 구현 [PR #49](https://github.com/songyu0608/portfolio/pull/49) |
-| T17 | 배포 기반 (Cloudflare Workers 정적 자산, `/` 301·404·응답 헤더, GitHub Actions 배포, 공개 전 Access 잠금) | 8 | T16 | - | review | `docs/tasks/T17-deploy-base.md` |
+| T17 | 배포 기반 (Cloudflare Workers 정적 자산, `/` 301·404·응답 헤더, GitHub Actions 배포, 공개 전 Access 잠금) | 8 | T16 | claude | review | `docs/tasks/T17-deploy-base.md` — 지시서 [PR #51](https://github.com/songyu0608/portfolio/pull/51) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 8의 T18 연락 폼 → T19 회사별 비공개 페이지 → T20 방문 분석(안, `docs/tasks/T17-deploy-base.md` "단계 8 나누기"). SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -138,7 +138,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 ### T01 교차 리뷰에서 이월한 항목
 
-- [ ] 단계 8: `/` → `/ja/`를 HTTP 301로 처리해 현재 정적 HTML의 2초 meta refresh를 대체한다. 언어 정책이 바뀌면 상태 코드도 재검토한다. 배포 URL에서 응답 상태와 Location을 확인한다.
+- [ ] 단계 8: `/` → `/ja/`를 HTTP 301로 처리해 현재 정적 HTML의 2초 meta refresh를 대체한다. 언어 정책이 바뀌면 상태 코드도 재검토한다. 배포 URL에서 응답 상태와 Location을 확인한다. → T17: `public/_redirects`(`/ /ja/ 301`), `pnpm test:workers`로 `wrangler dev`에서 확인. 배포 URL 확인은 T17 사용자 준비 6(완료 반영 때 체크).
 - [ ] 다음 의존성 갱신: `pnpm-workspace.yaml`의 `minimumReleaseAgeExclude`에 있는 특정 버전 예외를 재검토한다. 대기 기간 경과 또는 의존성 교체 후 예외 없이 설치·CI가 통과하는 것을 확인하고 불필요한 항목을 삭제한다.
 - 근거: [PR #4 교차 리뷰](https://github.com/songyu0608/portfolio/pull/4#issuecomment-6497967214). 나머지 설정·문서 개선은 T01-followup에서 처리한다.
 
@@ -186,8 +186,8 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 ### T13 구현 시 추가한 항목 (단계 8 배포 전)
 
 - [ ] `astro.config.mjs`의 `site`를 실제 주소(`*.workers.dev` 또는 커스텀 도메인)로 바꾸고, 빌드 로그에 `[portfolio:site-placeholder]` 경고가 없는지 확인한다. T04 항목(임시 문구 0건 확인)과 같은 때 한다.
-- [ ] Workers 설정에 `not_found_handling = "404-page"`를 넣고, 배포 URL에서 없는 경로(`/ja/xyz/`, `/en/projects/xyz/`)가 404 상태로 `404.html`을 보이는지 확인한다.
-- [ ] 루트 `/` 이동은 T01 항목(HTTP 301)과 같은 일이다. 서버 이동으로 바꾸면 Home의 `x-default`를 `/`로 바꿀지 다시 정한다. Google이 검색 결과 파비콘을 `/` → `/ja/` 이동 뒤 페이지에서 찾는지는 확인하지 못했다(확인 필요, `/favicon.ico`는 루트에 있음).
+- [ ] Workers 설정에 `not_found_handling = "404-page"`를 넣고, 배포 URL에서 없는 경로(`/ja/xyz/`, `/en/projects/xyz/`)가 404 상태로 `404.html`을 보이는지 확인한다. → T17: `wrangler.jsonc`에 넣고 `pnpm test:workers`로 확인. 배포 URL 확인은 T17 사용자 준비 6.
+- [ ] 루트 `/` 이동은 T01 항목(HTTP 301)과 같은 일이다. 서버 이동으로 바꾸면 Home의 `x-default`를 `/`로 바꿀지 다시 정한다. → T17: `/`는 언어와 관계없이 ja로 보내므로 `x-default`는 ja URL 그대로 둔다(`docs/ARCHITECTURE.md` §2 "배포"). Google이 검색 결과 파비콘을 `/` → `/ja/` 이동 뒤 페이지에서 찾는지는 확인하지 못했다(확인 필요, `/favicon.ico`는 루트에 있음).
 - [ ] 공유 미리보기(LINE·Slack·LinkedIn·X 등)를 실제 URL로 확인한다. X 카드(`summary_large_image`)의 이미지 조건은 공식 문서를 찾지 못해 1200×630으로 두었다(확인 필요). sitemap을 Search Console에 제출할지 정한다.
 - [ ] 회사별 비공개 페이지(§4)는 `BaseLayout`의 `noindex`로 두고 sitemap에 넣지 않는다. 경로를 `robots.txt`에 적지 않는다(누구나 읽을 수 있어 토큰 경로가 드러남).
 - [ ] 커스텀 도메인으로 옮기면 `*.workers.dev` 주소의 처리(이동 또는 비활성화)를 정한다.
@@ -200,6 +200,16 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 - [ ] Windows 고대비 테마의 실제 색으로 강제 색상 화면(주력 태그 채움, 포커스 표시)을 확인한다. Playwright 강제 색상 에뮬레이션은 실제 테마 색과 다를 수 있다.
 - [ ] 원고 반영 뒤 axe·키보드·리플로·텍스트 간격 점검을 다시 한다. 문구 길이가 바뀌면 결과가 달라질 수 있다.
 - 근거: `docs/tasks/T14-accessibility.md` "단계 7로 넘기는 일", `docs/DESIGN.md` §11.
+
+### T17 구현 시 추가한 항목 (공개 배포 때)
+
+- [ ] 계정 단위 Cloudflare Access("Protect all Workers")를 끈다. 계정에 잠가 둘 다른 Worker가 있으면 이 Worker만 공개로 바꾼다("Make a Worker public").
+- [ ] `public/_headers`의 `X-Robots-Tag: noindex`를 지운다.
+- [ ] `site` 교체(위 T13 항목), 배포 URL에서 Lighthouse·E2E
+- [ ] `Content-Security-Policy`를 정한다(인라인 스크립트: 테마 첫 적용, Home·Projects·Contact 페이지 스크립트, 동적 import 청크). `Strict-Transport-Security`는 커스텀 도메인과 함께 정한다.
+- [ ] 로컬 `wrangler dev`와 배포 환경의 차이(압축 방식, HTTP/2·3, 캐시)를 배포 URL에서 확인한다.
+- [ ] GitHub Actions의 Node.js 20 경고(`actions/checkout@v4` 등 4개). 새 판이 있는지 확인하고 올린다.
+- 근거: `docs/tasks/T17-deploy-base.md` 범위 7·메모, `docs/ARCHITECTURE.md` §2 "배포".
 
 ### T05 지시서 작성 시 추가한 항목
 
@@ -274,3 +284,5 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-11-01 | Home 한 줄 소개 디코딩: 최종 문구를 투명하게 하지 않고 겹침 요소가 페이지 배경으로 덮는다. 디코딩 스크립트가 첫 페인트보다 먼저 실행되는 회차만 LCP가 재생 끝(모바일 Lighthouse 약 4.4s, Performance 85)으로 잡혀, 이 PR의 CI에서 `/ja/` 모바일이 기준(중앙값 90)을 넘지 못했다. 바꾼 뒤 로컬 10회 모두 100이고 화면 캡처는 픽셀 단위로 같다(`docs/DESIGN.md` §5 LCP). 고르지 않은 안: 디코딩을 첫 페인트 뒤에 시작(최종 문구가 한두 프레임 먼저 보일 수 있음), 기준·회차 조정 | 사용자 결정 |
 | 2026-11-01 | 원고 반영 전 배포의 공개 범위: `*.workers.dev`에 배포하고 Cloudflare Access로 choi만 볼 수 있게 한다. 공개 배포 때 잠금과 `noindex`를 푼다. 첫 배포 전에 계정 단위 Access("Protect all Workers", All traffic)를 켜 처음부터 잠긴 채 배포한다(PR #51 교차 리뷰 반영. 첫 배포 뒤에 켜면 몇 분 공개된다). 고르지 않은 안: 잠금 없이 `noindex`만(주소를 아는 사람은 임시 문구를 봄), 원고 반영 전에는 배포하지 않음(연락 폼 메일 발송 등을 공개 직전에야 실제로 시험) | 사용자 결정 |
 | 2026-11-01 | T17 지시서 작성: 단계 8을 T17 배포 기반 → T18 연락 폼(도메인·메일 발송 방식을 이때 정함) → T19 회사별 비공개 페이지 → T20 방문 분석 → 원고 반영 → 공개 배포로 나눈다(안). T17: 새 devDependency `wrangler` 4.156.0(설치 스크립트가 있는 `esbuild`·`workerd`는 `allowBuilds`에서 실행하지 않음), `wrangler.jsonc`(정적 자산만, `not_found_handling: "404-page"`), `public/_redirects`(`/` → `/ja/` 301), `public/_headers`(보안 헤더 3개, `X-Robots-Tag: noindex`, `/_astro/*` 1년 캐시), `wrangler dev`로 Cloudflare 동작 테스트(`pnpm test:workers`, CI `check`), main push에서 `check`·`lighthouse` 통과 뒤 `deploy` 작업(`pnpm exec wrangler deploy`, GitHub 환경 `production`의 비밀 값). `/`는 계속 `/ja/`로 보내므로 `x-default`는 ja URL 그대로 | T17 지시서 |
+| 2026-11-01 | T17 지시서 PR #51 merge(Codex 교차 리뷰 반영: 첫 배포 전에 계정 단위 Access로 잠근다), T17 구현 담당 claude | 사용자 결정(담당) |
+| 2026-11-01 | T17 구현: `wrangler` 4.156.0(새 패키지 55개, 기존 패키지 버전 변경 없음, `pnpm audit` 2건 그대로), `wrangler.jsonc`(`compatibility_date` 2026-10-23 = 설치한 `workerd`가 지원하는 가장 늦은 날짜), `public/_redirects`·`_headers`, Cloudflare 동작 테스트 45개(`pnpm test:workers`, 결함 주입 3건 모두 실패 확인), CI `check`에 `pnpm test:workers`, `deploy` 작업(`environment: production`, checkout은 `persist-credentials: false`). 빌드 결과는 main과 `_redirects`·`_headers` 두 파일만 다르다 | T17 구현 (`docs/ARCHITECTURE.md` A15) |

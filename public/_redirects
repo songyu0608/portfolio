@@ -1,0 +1,3 @@
+# Cloudflare Workers 정적 자산 리다이렉트(T17). 자산이 있어도 먼저 적용된다.
+# 대상 언어는 astro.config.mjs의 i18n.defaultLocale과 같아야 한다(tests/workers가 dist/index.html과 비교한다).
+/ /ja/ 301

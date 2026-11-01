@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .astro/
+.wrangler/
 pnpm-lock.yaml
 # Existing planning documents keep their original formatting.
 docs/

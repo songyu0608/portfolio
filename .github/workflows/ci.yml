@@ -8,6 +8,8 @@ on:
 permissions:
   contents: read
 
+# main에 새 push가 오면 이전 실행을 deploy 작업까지 취소한다. 그래서 이전 커밋이 새 커밋보다
+# 늦게 배포되지 않는다(T17, docs/tasks/T17-deploy-base.md 메모 "main 실행 취소와 배포").
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -34,6 +36,9 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium webkit firefox
       - name: E2E tests
         run: pnpm test
+      # Cloudflare에서만 정해지는 동작(T17): wrangler dev로 `/` 301·404·응답 헤더를 확인한다.
+      - name: Cloudflare behavior tests
+        run: pnpm test:workers
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -74,3 +79,30 @@ jobs:
           name: lighthouse-report-${{ matrix.form-factor }}
           path: lighthouse-report/
           retention-days: 7
+
+  # 배포(T17, docs/ARCHITECTURE.md §2 "배포"). main push에서 check·lighthouse가 모두 통과한 뒤에만 돈다.
+  # PR에서는 건너뛴다. 비밀 값은 GitHub 환경 production(배포 브랜치 main만)에서 받는다.
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [check, lighthouse]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # 배포 단계에 GitHub 토큰을 남기지 않는다.
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      # cloudflare/wrangler-action 대신 lockfile에 고정한 wrangler를 그대로 쓴다(T17 지시서 메모).
+      - name: Deploy to Cloudflare Workers
+        run: pnpm exec wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
