@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-11-01 (T17 완료)
+마지막 갱신: 2026-11-01 (T18 지시서)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 8 배포와 동적 기능 — T17 배포 기반 완료, T18 지시서 작성 전 |
-| 진행 중인 작업 | 없음. T17 완료: main merge 뒤 `https://portfolio.songyu0608.workers.dev`에 자동 배포되고, 계정 단위 Cloudflare Access로 choi만 볼 수 있다(`docs/tasks/T17-deploy-base.md` "결과") |
-| 다음 작업 | T18 연락 폼 지시서(커스텀 도메인과 메일 발송 방식을 이때 정한다, §7·§8) → T19 회사별 비공개 페이지 → T20 방문 분석(안, T17 지시서 배경). 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 8 배포와 동적 기능 — T18 회사별 비공개 페이지 지시서 리뷰 |
+| 진행 중인 작업 | T18 지시서 리뷰(`docs/tasks/T18-company-pages.md`). T17 완료: main merge 뒤 `https://portfolio.songyu0608.workers.dev`에 자동 배포되고, 계정 단위 Cloudflare Access로 choi만 볼 수 있다 |
+| 다음 작업 | T18 구현(담당 결정, 사용자 준비 1·3 필요) → T19 방문 분석 → 원고 반영 → 공개 배포. 연락 폼은 보류(2026-11-01 사용자 결정, §4) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 공개 배포 전에 실제 원고로 교체해야 한다. 그 전의 배포는 Cloudflare Access로 choi만 본다(2026-11-01 사용자 결정) |
 
 ## 1. 개요
@@ -65,8 +65,8 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 | 기능 | 상태 | 구성 |
 | --- | --- | --- |
-| 연락 폼 | 채택 | Turnstile + Workers 함수 + 메일 발송(Cloudflare Email Service 또는 Resend) + D1(선택) |
-| 회사별 비공개 페이지 | 채택(선택) | 추측 불가능한 회사별 토큰 URL + Workers + KV 열람 기록. 로그인 없음 |
+| 연락 폼 | 보류(2026-11-01 사용자 결정) | Turnstile + Workers 함수 + 메일 발송. 메일 발송에 커스텀 도메인이 필요하다(Cloudflare Email Sending은 보내는 주소가 내 도메인이어야 하고, Resend는 도메인 없이는 테스트 용도만). 방문자는 지금처럼 메일 주소를 복사·`mailto:`로 보낸다(메일 주소는 계속 보임). 도메인을 사면 다시 검토 |
+| 회사별 비공개 페이지 | 채택(T18) | 추측 불가능한 회사별 토큰 URL + Workers + KV 열람 기록. 로그인 없음. 회사명·인사말·강조 프로젝트·이력서 PDF(`docs/tasks/T18-company-pages.md`) |
 | AI 챗봇 | 보류 | API 키를 숨길 서버 필요, 사용료 발생 |
 | 좋아요·방명록 등 | 제외 | 채용 목적과 관련 낮음 |
 
@@ -113,12 +113,13 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | done | `docs/tasks/T15-e2e-tests.md` — 지시서 [PR #45](https://github.com/songyu0608/portfolio/pull/45), 구현 [PR #46](https://github.com/songyu0608/portfolio/pull/46) |
 | T16 | Lighthouse CI (Lighthouse 13, 성능·접근성·Best Practices·SEO 점수 기준, CI) | 7 | T15 | claude | done | `docs/tasks/T16-lighthouse-ci.md` — 지시서 [PR #48](https://github.com/songyu0608/portfolio/pull/48), 구현 [PR #49](https://github.com/songyu0608/portfolio/pull/49) |
 | T17 | 배포 기반 (Cloudflare Workers 정적 자산, `/` 301·404·응답 헤더, GitHub Actions 배포, 공개 전 Access 잠금) | 8 | T16 | claude | done | `docs/tasks/T17-deploy-base.md` — 지시서 [PR #51](https://github.com/songyu0608/portfolio/pull/51), 구현 [PR #52](https://github.com/songyu0608/portfolio/pull/52) |
+| T18 | 회사별 비공개 페이지 (토큰 URL, Worker + KV, 이력서 PDF, 열람 기록) | 8 | T17 | 미배정 | todo | `docs/tasks/T18-company-pages.md` |
 
-이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 8의 T18 연락 폼 → T19 회사별 비공개 페이지 → T20 방문 분석(안, `docs/tasks/T17-deploy-base.md` "단계 8 나누기"). SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
+이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 8의 T19 방문 분석(2026-11-01 연락 폼 보류로 T18 = 회사별 비공개 페이지, `docs/tasks/T17-deploy-base.md` "단계 8 나누기"의 번호를 하나씩 당김). SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
 ## 7. 미결 사항
 
-- [ ] 커스텀 도메인 구입 여부와 도메인 이름 (T18 연락 폼 전, 메일 발송 설정에 필요할 가능성 높음. T17은 `*.workers.dev`)
+- [ ] 커스텀 도메인 구입 여부와 도메인 이름 (공개 배포 전에 정한다. 지금은 `portfolio.songyu0608.workers.dev`. 연락 폼은 도메인이 필요해 보류했다, §4. Cloudflare Registrar는 원가 판매로 .com 연 약 $10~11이라는 제3자 자료가 있다, 확인 필요)
 - [ ] 콘텐츠 원고 (`docs/CONTENT.md` 체크리스트). 단계 4는 임시 문구로 진행하고, 공개 배포 전에 교체한다. 그 전의 배포는 Access로 잠근다(2026-11-01 사용자 결정)
 - [x] 패키지 매니저 확정: pnpm 11.25.0 (T01)
 - [x] React 중심 전환(A안, 2026-10-31 사용자 결정): Astro는 라우팅·빌드 틀로 두고, 화면 컴포넌트(`src/components/*.astro` 12개 + `src/components/pages/*.astro` 5개 = 17개. 처음 적은 18개는 오기)를 React(`.tsx`, 빌드 때 HTML로만 렌더하고 브라우저 JS는 늘리지 않음)로 바꾼다. 저장소·사이트의 소개(README, 기술 스택 표기)는 「React + TypeScript」를 중심에 두고 Astro는 정적 빌드 도구로 함께 적는다. 빌드는 Vite 기반이다(Astro가 Vite로 빌드하며, T11 글꼴 통합도 Vite 플러그인). 디코딩·틸트 같은 작은 효과는 지금처럼 가벼운 스크립트로 두는 것이 권고안이다(React로 바꾸면 그 페이지가 React 본체 gzip 약 66KB를 받음). 세부(스타일 방식, 남길 `.astro` 파일)는 `docs/tasks/T12-react-components.md`에서 정했고, `AGENTS.md` §5·§7과 `docs/ARCHITECTURE.md` A1·A2·A11은 T12 지시서 PR에서 갱신했다. 순서: T12 React 전환 → T13 SEO → T14 접근성(사용자 결정). → T12: 화면 컴포넌트 17개를 React(`.tsx`) + CSS Modules로 바꿨다. 콘텐츠 조회·`<head>`·페이지 스크립트는 `BaseLayout`과 페이지 진입점 `src/layouts/*Layout.astro`가 맡는다. main과 비교해 전체 페이지 캡처 45장·18페이지 접근성 트리가 같고, 페이지가 받는 JS는 같으며(헤더 스크립트 +6B), HTML·CSS는 모두 줄었다(`docs/ARCHITECTURE.md` §2 "화면 컴포넌트와 스타일").
@@ -288,3 +289,5 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-11-01 | T17 지시서 PR #51 merge(Codex 교차 리뷰 반영: 첫 배포 전에 계정 단위 Access로 잠근다), T17 구현 담당 claude | 사용자 결정(담당) |
 | 2026-11-01 | T17 구현: `wrangler` 4.156.0(새 패키지 55개, 기존 패키지 버전 변경 없음, `pnpm audit` 2건 그대로), `wrangler.jsonc`(`compatibility_date` 2026-10-23 = 설치한 `workerd`가 지원하는 가장 늦은 날짜), `public/_redirects`·`_headers`, Cloudflare 동작 테스트 45개(`pnpm test:workers`, 결함 주입 3건 모두 실패 확인), CI `check`에 `pnpm test:workers`, `deploy` 작업(`environment: production`, checkout은 `persist-credentials: false`). 빌드 결과는 main과 `_redirects`·`_headers` 두 파일만 다르다 | T17 구현 (`docs/ARCHITECTURE.md` A15) |
 | 2026-11-01 | T17 구현 PR #52 merge, 첫 배포 성공(main CI `deploy`, 자산 179개). 사용자 준비: 하위 도메인 `songyu0608.workers.dev`, Zero Trust Free(결제 수단 등록 필요), 계정 단위 Access(All traffic, Cloudflare account), API 토큰 1년 만료, GitHub 환경 `production`(main만). 시크릿 창에서 Access 로그인 화면만 보이고, 로그인 뒤 `/ja/`·404 페이지 확인 | 사용자 준비(choi), T17 완료 |
+| 2026-11-01 | 연락 폼 보류: 메일 발송에 커스텀 도메인이 필요하다(Cloudflare Email Sending은 인증한 본인 주소로는 Workers Free에서도 무료지만 보내는 주소가 내 도메인이어야 함, Resend는 도메인 없이 테스트 용도만). 메일 주소는 지금처럼 보이고 `mailto:`·복사로 연락받는다. 단계 8 번호를 당겨 T18 = 회사별 비공개 페이지, T19 = 방문 분석 | 사용자 결정 |
+| 2026-11-01 | T18 지시서: 회사별 비공개 페이지를 `/c/<토큰>/`(128비트 토큰, KV 키는 SHA-256 해시)로, Astro 템플릿 페이지(`noindex`)를 Worker가 HTMLRewriter로 채운다(회사명·인사말은 텍스트로만). 이력서 PDF는 KV, 열람 기록은 KV(대략값). 회사 정보는 choi PC의 `private/`(gitignore)에서 `pnpm company:publish`로 올린다. 만료 기본 90일. A5 재검토 후 유지 | T18 지시서 (내용 기본안은 사용자 확인 대기) |
