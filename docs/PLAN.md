@@ -2,15 +2,15 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-11-01 (T16 구현)
+마지막 갱신: 2026-11-01 (T16 완료, 단계 7 완료, Home LCP 흔들림 수정)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
-| 현재 단계 | 단계 7 테스트 — T16 리뷰 |
-| 진행 중인 작업 | T16 Lighthouse CI 구현 PR 리뷰(담당 claude, `docs/tasks/T16-lighthouse-ci.md`). Codex 교차 리뷰 → 사용자 merge |
-| 다음 작업 | T16 merge(단계 7 완료) → 단계 8 지시서. 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 현재 단계 | 단계 8 배포와 동적 기능 — 지시서 작성 전 |
+| 진행 중인 작업 | 없음. 다음은 단계 8 첫 지시서 작성 |
+| 다음 작업 | 단계 8 지시서(배포·동적 기능, §4·§8). 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 배포(단계 8) 전에 실제 원고로 교체해야 한다 |
 
 ## 1. 개요
@@ -83,7 +83,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 4 | 페이지 구현: Home → About/경력 → Projects → Contact(정적 부분) | done |
 | 5 | 인터랙션 구현: 컨셉 1~5 (T08 = 1·2, T09 = 5, T10 = 3·4) | done |
 | 6 | 품질: 성능(T11) → React 중심 전환(T12) → SEO(T13) → 접근성(T14) | done |
-| 7 | 테스트: E2E(Playwright, T15) → Lighthouse CI(T16) | in-progress |
+| 7 | 테스트: E2E(Playwright, T15) → Lighthouse CI(T16) | done |
 | 8 | 배포와 동적 기능: Cloudflare, 도메인, HTTPS, 방문 분석, 연락 폼, 회사별 비공개 페이지 | todo |
 | 9 | 운영: 콘텐츠 추가 절차 문서화, 카드 클릭률 확인 후 효과 조정 | todo |
 
@@ -111,7 +111,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T13 | SEO (canonical·hreflang·OG·sitemap·robots·favicon·404) | 6 | T12 | claude | done | `docs/tasks/T13-seo.md` — 지시서 [PR #39](https://github.com/songyu0608/portfolio/pull/39), 구현 [PR #40](https://github.com/songyu0608/portfolio/pull/40) |
 | T14 | 접근성 점검·수정 (WCAG 2.2 AA 자동·수동 점검, 강제 색상 모드, 터미널 출력 스크롤) | 6 | T13 | claude | done | `docs/tasks/T14-accessibility.md` — 지시서 [PR #42](https://github.com/songyu0608/portfolio/pull/42), 구현 [PR #43](https://github.com/songyu0608/portfolio/pull/43) |
 | T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | done | `docs/tasks/T15-e2e-tests.md` — 지시서 [PR #45](https://github.com/songyu0608/portfolio/pull/45), 구현 [PR #46](https://github.com/songyu0608/portfolio/pull/46) |
-| T16 | Lighthouse CI (Lighthouse 13, 성능·접근성·Best Practices·SEO 점수 기준, CI) | 7 | T15 | claude | review | `docs/tasks/T16-lighthouse-ci.md` — 지시서 [PR #48](https://github.com/songyu0608/portfolio/pull/48) |
+| T16 | Lighthouse CI (Lighthouse 13, 성능·접근성·Best Practices·SEO 점수 기준, CI) | 7 | T15 | claude | done | `docs/tasks/T16-lighthouse-ci.md` — 지시서 [PR #48](https://github.com/songyu0608/portfolio/pull/48), 구현 [PR #49](https://github.com/songyu0608/portfolio/pull/49) |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 8. SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -269,3 +269,5 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-11-01 | 단계 7 Lighthouse 도구: `lighthouse` 13.6.0을 직접 쓰고 측정·판정 코드를 저장소에 둔다. `@lhci/cli` 0.15.1은 Lighthouse 12.6.1에 고정되어 있고 `pnpm audit` 경고가 7건(high 5) 늘어 고르지 않았다(`lighthouse` 13.6.0은 moderate 1건) | 사용자 결정 |
 | 2026-11-01 | T16 지시서 작성: 새 devDependency `lighthouse` 13.6.0(위 결정으로 승인). Playwright Test(`playwright.lighthouse.config.ts`, `tests/lighthouse/`)가 미리보기 서버를 띄우고 회차마다 Lighthouse CLI를 실행(Chromium은 Playwright 버전으로 고정). sitemap에서 언어·종류마다 1페이지(10페이지) × 모바일·데스크톱 × 3회. 기준: Performance 모바일 90·데스크톱 95 이상과 CLS 0.1 이하(3회 중앙값), 접근성·Best Practices·SEO 100(3회 모두), Agentic Browsing은 기록만. CI에 폼팩터별 `lighthouse` 작업 2개를 `check`와 동시에, 점수 요약은 작업 요약에 | T16 지시서 |
 | 2026-11-01 | T16 지시서 PR #48 merge(Codex 교차 리뷰 수정 필요 없음), T16 구현 담당 claude. 구현: Codex 개선 제안대로 측정 대상의 언어 × 페이지 종류 조합이 하나라도 빠지면 테스트를 모을 때 실패(`pageKinds`를 `tests/e2e/support/site.ts`에 둠). 대표 회차는 성능 점수 중앙값 회차, 요약 표는 Playwright reporter가 콘솔·CI 작업 요약에 쓴다. 미리보기 포트 4330 | 사용자 결정(담당), T16 구현 (`docs/ARCHITECTURE.md` A14) |
+| 2026-11-01 | T16 PR #49 merge 완료 반영. 단계 7 완료. CI 세 작업 통과(`check` 8분 1초·E2E 397개, `lighthouse` 모바일 6분 23초·데스크톱 6분 29초, 동시에 돌아 run 전체 약 8분). 20개 모두 Performance 중앙값 100, 접근성·BP·SEO 3회 모두 100. 모바일 `/ja/`에서 3회 중 1회 85(원인과 처리는 다음 행). Codex 교차 리뷰 수정 필요 없음. 이후 PR은 CI에서 Lighthouse 기준도 통과해야 merge한다 | 지시서 없음 (문서만 변경) |
+| 2026-11-01 | Home 한 줄 소개 디코딩: 최종 문구를 투명하게 하지 않고 겹침 요소가 페이지 배경으로 덮는다. 디코딩 스크립트가 첫 페인트보다 먼저 실행되는 회차만 LCP가 재생 끝(모바일 Lighthouse 약 4.4s, Performance 85)으로 잡혀, 이 PR의 CI에서 `/ja/` 모바일이 기준(중앙값 90)을 넘지 못했다. 바꾼 뒤 로컬 10회 모두 100이고 화면 캡처는 픽셀 단위로 같다(`docs/DESIGN.md` §5 LCP). 고르지 않은 안: 디코딩을 첫 페인트 뒤에 시작(최종 문구가 한두 프레임 먼저 보일 수 있음), 기준·회차 조정 | 사용자 결정 |

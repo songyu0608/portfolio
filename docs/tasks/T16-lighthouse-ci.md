@@ -5,7 +5,7 @@
 | 단계 | 7 |
 | 선행 작업 | T15 (PR #46) |
 | 담당 | claude |
-| 상태 | review |
+| 상태 | done |
 | 브랜치 | `claude/project-thread-t0t9l8` (실행 환경이 지정한 이름. 원칙상 이름은 `claude/T16-lighthouse-ci`) |
 
 ## 목표
@@ -243,20 +243,23 @@ main의 `pnpm audit`은 1건이다(moderate, `minimatch`, ESLint 계열). 각 �
 
 ## 완료 조건
 
-- [ ] `pnpm lighthouse`가 로컬과 CI(ubuntu-latest, `mobile`·`desktop` 두 작업)에서 통과한다.
+- [x] `pnpm lighthouse`가 로컬과 CI(ubuntu-latest, `mobile`·`desktop` 두 작업)에서 통과한다.
   - 로컬 결과와 환경(Chrome 버전, 걸린 시간)을 PR에 적는다.
+  - 구현 결과(PR #49): 로컬(Chrome 153) 20개 통과 11.7분. CI(Chrome 156) 두 작업 모두 10개씩 통과.
 - [x] 범위 2의 기준이 모두 들어 있다. 10페이지 × 2폼팩터의 대표 회차 점수 표를 PR에 싣는다.
-- [ ] CI 작업 요약(`$GITHUB_STEP_SUMMARY`)에 요약 표가 나온다. artifact에 Playwright HTML 보고서와 Lighthouse HTML 보고서가 들어 있다.
+- [x] CI 작업 요약(`$GITHUB_STEP_SUMMARY`)에 요약 표가 나온다. artifact에 Playwright HTML 보고서와 Lighthouse HTML 보고서가 들어 있다.
+  - 구현 결과(PR #49): 요약 표가 두 작업 로그에 출력되고 같은 reporter가 작업 요약에 쓴다. artifact `lighthouse-report-<폼팩터>`가 올라갔다(각 파일 11개). 작업 요약 화면과 artifact 내용은 작업 환경의 네트워크 제한으로 Claude가 직접 열어 보지 못했다(화면 확인 필요).
 - [x] 범위 4의 결함 주입 5건이 모두 해당 기준을 실패시킨다(PR 표, 결함은 커밋하지 않음).
   - 구현 결과: Codex 개선 제안(지시서 PR #48)대로 sitemap에서 언어·종류 조합이 빠지면 테스트를 모을 때 실패하는 것도 확인했다(`dist/sitemap.xml`에서 `/en/contact/`를 지움).
 - [x] 페이지 경로를 하드코딩하지 않았다. 측정 대상은 sitemap에서 고른다.
 - [x] `skip`·`fixme`·`only`가 없고 `retries`는 0이다.
 - [x] 새 의존성은 `lighthouse` 13.6.0 하나다. `pnpm-lock.yaml` 변경은 이것과 하위 의존성, 그리고 해석 키 변경(배경 "의존성 점검")뿐이다. `pnpm audit` 결과(main 대비 늘어난 경고)를 PR에 적는다.
 - [x] 사이트 빌드 결과(`dist/`)가 main과 같다.
-- [ ] CI `lighthouse` 작업마다 걸린 시간을 PR에 적는다(목표 10분 이하). `check` 작업은 그대로 통과한다.
+- [x] CI `lighthouse` 작업마다 걸린 시간을 PR에 적는다(목표 10분 이하). `check` 작업은 그대로 통과한다.
+  - 구현 결과(PR #49): 모바일 6분 23초, 데스크톱 6분 29초(측정 단계 각 약 5.6분). `check`는 8분 1초(E2E 397개)로 통과했다.
 - [x] 문서가 갱신되어 있다: `docs/ARCHITECTURE.md`(§2 "테스트", §3 ADR), `AGENTS.md` §5·§6, `README.md`, `docs/DESIGN.md`(§2, §11), `docs/PLAN.md`(진행 상태·표·단계 7·결정 기록·§8 주석)
   - 구현 결과: 단계 7과 T16의 `done`은 T15와 같이 merge 뒤 완료 반영 PR에서 바꾼다(`AGENTS.md` §3-7).
-- [ ] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm test`, `pnpm lighthouse`와 GitHub CI가 통과한다.
+- [x] `pnpm format:check`, `pnpm lint`, `pnpm check`, `pnpm build`, `pnpm test`, `pnpm lighthouse`와 GitHub CI가 통과한다.
 - [x] 비밀 값 미포함. 측정 결과물은 커밋하지 않는다.
 
 ## 확인 방법
@@ -285,7 +288,11 @@ pnpm exec playwright show-report lighthouse-report
   - Chromium을 Playwright 버전으로 고정한 것
   - 스크립트 이름 `lighthouse`, 보고서 폴더 `lighthouse-report/`
 - **흔들림**
-  - 사전 측정에서 한 회차가 73까지 떨어졌다(배경). GitHub runner에서의 흔들림은 아직 모른다(확인 필요).
+  - 사전 측정에서 한 회차가 73까지 떨어졌다(배경).
+  - GitHub runner(PR #49 CI 1회): 20개 중 모바일 `/ja/`만 3회 중 1회가 85였다(중앙값 100으로 통과). Codex 리뷰의 로컬 재실행(Chrome 156)에서도 같은 페이지 1회가 85였다.
+  - 완료 반영 PR #50의 CI에서는 같은 페이지가 85·100·85로 실패했다(문서만 바꾼 PR).
+  - 원인: Home 디코딩 스크립트가 첫 페인트보다 먼저 실행되는 회차는 최종 문구가 처음부터 투명이라 LCP가 재생 끝(LCP 약 4.4s)으로 잡혔다. 로컬 main 코드 10회 중 2회 재현했다.
+  - 처리(사용자 결정): 최종 문구를 투명하게 하지 않고 겹침 요소가 배경으로 덮는다(`docs/DESIGN.md` §5 LCP, PR #50). 로컬 10회 모두 100이다.
   - CI에서 흔들림으로 보이는 실패가 나오면 재실행이나 재시도로 넘기지 않는다. 회차별 값을 PR에 남기고, 회차 수·기준 조정은 사용자 결정으로 한다.
 - **기준 미달이 나오면**
   - 사이트 결함이면 고친다. 화면이 달라지는 수정은 사용자 확인 뒤에 한다. 이때 `src/**` 수정 이유를 PR에 적는다.

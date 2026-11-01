@@ -18,10 +18,11 @@
 }
 
 /* 디코딩 중(src/scripts/hero-decode.ts가 전역 클래스 is-decoding과 decode-overlay 요소를 넣는다):
-   최종 문구는 투명하게 두고 겹침 요소가 임의 글자를 그린다. */
+   겹침 요소가 페이지 배경으로 최종 문구를 덮고 그 위에 임의 글자를 그린다. 최종 문구를 투명하게 하지 않는
+   이유: 디코딩이 첫 페인트 전에 시작되면 최종 문구가 처음 그려지는 때가 재생이 끝난 뒤가 되어, LCP가
+   회차마다 첫 페인트와 재생 끝으로 갈렸다(docs/DESIGN.md §5 LCP). */
 .tagline:global(.is-decoding) {
   position: relative;
-  color: transparent;
 }
 
 .tagline :global(.decode-overlay) {
@@ -29,6 +30,7 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
+  background: var(--color-background);
   color: var(--color-text);
   pointer-events: none;
   user-select: none;
