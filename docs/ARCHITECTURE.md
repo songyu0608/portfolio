@@ -181,7 +181,7 @@ Workers 함수는 T18부터 추가한다. T17까지는 정적 자산만 배포�
 
   | 키 | 값 | 이유 |
   | --- | --- | --- |
-  | `name` | `portfolio` | 주소가 `portfolio.<계정 하위 도메인>.workers.dev`가 된다 |
+  | `name` | `portfolio` | 주소가 `portfolio.<계정 하위 도메인>.workers.dev`가 된다(T17 첫 배포: `https://portfolio.songyu0608.workers.dev`) |
   | `compatibility_date` | `2026-10-23` | 설치한 `workerd`(1.20261023.1)가 지원하는 가장 늦은 날짜. `wrangler`를 올릴 때 함께 검토한다 |
   | `assets.directory` | `./dist` | |
   | `assets.not_found_handling` | `404-page` | 맞는 파일이 없으면 `dist/404.html`을 404 상태로(§2 SEO "404") |
