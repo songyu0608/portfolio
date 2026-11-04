@@ -206,7 +206,8 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 ### T17 구현 시 추가한 항목 (공개 배포 때)
 
 - [ ] 계정 단위 Cloudflare Access("Protect all Workers")를 끈다. 계정에 잠가 둘 다른 Worker가 있으면 이 Worker만 공개로 바꾼다("Make a Worker public").
-- [ ] `public/_headers`의 `X-Robots-Tag: noindex`를 지운다.
+- [ ] `public/_headers`의 `X-Robots-Tag: noindex`를 지운다. 기본(이직용) 사이트만 해당한다. 어사인용(Worker `profile`)은 공개 뒤에도 `noindex`를 유지하며, `pnpm build:assign`이 빌드 결과에 따로 넣으므로 이 줄을 지워도 남는다(T17-followup).
+- [ ] 어사인용 버전을 열 때: 계정 단위 Access를 끄면 `profile`도 함께 열린다. 회사 메일 도메인만 허용할지는 §7 결정에 따른다.
 - [ ] `site` 교체(위 T13 항목), 배포 URL에서 Lighthouse·E2E
 - [ ] `Content-Security-Policy`를 정한다(인라인 스크립트: 테마 첫 적용, Home·Projects·Contact 페이지 스크립트, 동적 import 청크). `Strict-Transport-Security`는 커스텀 도메인과 함께 정한다.
 - [ ] 로컬 `wrangler dev`와 배포 환경의 차이(압축 방식, HTTP/2·3, 캐시)와 응답 상태 코드·헤더(`/` 301, 404, 보안 헤더)를 배포 URL에서 확인한다. T17에서는 클라우드 작업 환경의 네트워크 정책이 `*.workers.dev` 연결을 막아 브라우저 화면만 확인했다.

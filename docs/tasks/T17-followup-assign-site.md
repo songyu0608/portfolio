@@ -50,7 +50,11 @@
 
 ### 검색 노출
 
-- 어사인용 버전은 **공개 뒤에도 `noindex`를 유지**한다(기본안, 사용자 확인 전). 이름으로 검색했을 때 두 사이트가 함께 나오지 않게 한다. 지금은 `public/_headers`의 `X-Robots-Tag: noindex`가 두 변형에 같이 들어가므로 이 작업에서 바꿀 것은 없고, `docs/PLAN.md` §8 "공개 배포 때" 항목에 "어사인용은 `X-Robots-Tag`를 지우지 않는다"를 적는다.
+- 어사인용 버전은 **공개 뒤에도 `noindex`를 유지**한다(기본안, 사용자 확인 전). 이름으로 검색했을 때 두 사이트가 함께 나오지 않게 한다.
+- 두 변형은 같은 `public/_headers`를 복사하므로, 공개 배포 때 기본 사이트용으로 `X-Robots-Tag: noindex` 줄을 지우면(`docs/PLAN.md` §8) 어사인용에서도 사라진다. 그래서 **이 작업에서** 어사인용의 `noindex`를 `public/_headers`와 떼어 놓는다.
+  - `pnpm build:assign`이 빌드 뒤 `dist/_headers`의 `/*` 블록에 `X-Robots-Tag: noindex`가 없으면 넣는다(이미 있으면 그대로). 기본 빌드의 `dist/_headers`는 건드리지 않는다.
+  - 누출 검사가 어사인용 `dist/_headers`에 이 줄이 있는지도 확인한다.
+  - 완료 조건에서 `public/_headers`의 그 줄을 지운 상태로도 `pnpm build:assign` 결과에 `noindex`가 남는 것을 확인한다.
 
 ### 누출 검사
 
@@ -62,7 +66,7 @@
 
 ### 배포
 
-- `wrangler.jsonc`에 환경 `assign`을 추가하고 Worker 이름을 `profile`로 한다(`wrangler deploy --env assign`). 나머지 설정(정적 자산, 404, 끝 슬래시)은 같다. 환경별 설정 상속 규칙은 공식 문서로 확인한다(확인 필요).
+- `wrangler.jsonc`에 환경 `assign`을 추가하고 `env.assign.name`을 **`profile`로 명시**한다. 이름을 적지 않으면 Wrangler는 `<기본 이름>-<환경 이름>`(`portfolio-assign`)으로 배포한다([Wrangler 환경 문서](https://developers.cloudflare.com/workers/wrangler/environments/), 교차 리뷰 지적). 나머지 설정(정적 자산, 404, 끝 슬래시)은 같아야 하며, 환경으로 상속되는 키와 아닌 키는 같은 문서로 확인한다(확인 필요).
 - CI `deploy` 작업: 지금처럼 기본 빌드 → `wrangler deploy` 뒤, `pnpm build:assign` → `wrangler deploy --env assign`. 두 배포가 같은 `dist/`를 순서대로 쓴다.
 - CI `check` 작업: E2E·Cloudflare 동작 테스트 뒤에 `pnpm build:assign`(누출 검사 포함)을 한 번 돈다. E2E·Lighthouse는 기본 변형만 한다(화면 구조가 같으므로).
 - 첫 배포 전에 Access 잠금이 새 Worker에도 걸리는지 사용자가 확인한다(아래 사용자 준비).
@@ -74,7 +78,7 @@
 - `SITE_VARIANT` 변형 빌드, 연락처 덮어쓰기, 변형별 `site`
 - 링크 0개일 때 화면 처리(Contact·푸터·터미널)
 - Contact description 문구 변경(공통)
-- 누출 검사 스크립트와 `pnpm build:assign`, CI `check`·`deploy` 단계 추가
+- 누출 검사 스크립트와 `pnpm build:assign`(어사인용 `dist/_headers`의 `noindex` 보장 포함), CI `check`·`deploy` 단계 추가
 - `wrangler.jsonc` 환경 `assign`
 - 문서: `docs/ARCHITECTURE.md` §2 "배포"(변형 빌드·두 Worker), 결정 기록(새 A 번호), `AGENTS.md` §6 명령 목록에 `pnpm build:assign`, `docs/PLAN.md` 진행 상태
 
@@ -106,6 +110,8 @@
 - [ ] 누출 검사가 실제로 잡는지 확인: 어사인용 덮어쓰기를 잠시 지운 빌드에서 실패하는 것을 PR에 적는다
 - [ ] `SITE_VARIANT`에 모르는 값을 주면 빌드가 실패한다
 - [ ] 링크 0개일 때 Contact 페이지·푸터·터미널 `contact` 출력에 빈 목록·빈 제목이 없다(어사인용 빌드 스크린샷 ja/en, 1280·375)
+- [ ] `public/_headers`의 `X-Robots-Tag` 줄을 잠시 지운 상태에서도 `pnpm build:assign` 결과 `dist/_headers`에 `X-Robots-Tag: noindex`가 있다(PR에 적는다)
+- [ ] `pnpm exec wrangler deploy --env assign --dry-run`(어사인용 빌드 뒤) 출력에서 Worker 이름이 `profile`이고 정적 자산 디렉터리·`not_found_handling`·`html_handling`이 기본과 같다(PR에 출력 일부를 적는다)
 - [ ] `pnpm lint`, `pnpm check`, `pnpm format:check`, `pnpm test`, `pnpm test:workers` 통과
 - [ ] CI 통과(`check`에 `build:assign` 단계 포함)
 - [ ] `docs/ARCHITECTURE.md`·`AGENTS.md`·`docs/PLAN.md` 갱신
@@ -113,7 +119,7 @@
 ## 사용자 준비 (choi)
 
 1. 구현 PR merge 전: Cloudflare Zero Trust에서 계정 단위 Access 규칙("Protect all Workers", All traffic)이 그대로 켜져 있는지 확인한다. 새 Worker `profile`도 이 규칙으로 잠긴다(`docs/ARCHITECTURE.md` §2 "공개 전 잠금").
-2. merge 뒤 첫 배포: 시크릿 창에서 `https://profile.songyu0608.workers.dev/ja/`가 Access 로그인 화면으로 막히는지, 로그인 뒤 Contact에 회사 메일만 보이는지 확인한다(클라우드 작업 환경은 `*.workers.dev`에 접속하지 못한다, T17 기록).
+2. merge 뒤 첫 배포: Cloudflare 대시보드의 Worker 목록에 `profile`이 생겼는지(`portfolio-assign`이 아닌지), 시크릿 창에서 `https://profile.songyu0608.workers.dev/ja/`가 Access 로그인 화면으로 막히는지, 로그인 뒤 Contact에 회사 메일만 보이는지 확인한다(클라우드 작업 환경은 `*.workers.dev`에 접속하지 못한다, T17 기록).
 3. 배포 API 토큰 권한이 계정의 Workers 전체 편집인지 확인한다. Worker 하나로 한정했다면 `profile` 배포가 실패한다(확인 필요).
 
 ## 메모
