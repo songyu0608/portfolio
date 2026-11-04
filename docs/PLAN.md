@@ -2,20 +2,20 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-11-01 (T17 완료)
+마지막 갱신: 2026-11-04 (T17-followup 어사인용 버전 지시서)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
 | 현재 단계 | 단계 8 배포와 동적 기능 — T17 배포 기반 완료, T18 지시서 작성 전 |
-| 진행 중인 작업 | 없음. T17 완료: main merge 뒤 `https://portfolio.songyu0608.workers.dev`에 자동 배포되고, 계정 단위 Cloudflare Access로 choi만 볼 수 있다(`docs/tasks/T17-deploy-base.md` "결과") |
-| 다음 작업 | T18 연락 폼 지시서(커스텀 도메인과 메일 발송 방식을 이때 정한다, §7·§8) → T19 회사별 비공개 페이지 → T20 방문 분석(안, T17 지시서 배경). 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
+| 진행 중인 작업 | T17-followup 프로젝트 어사인용 버전 지시서 작성(`docs/tasks/T17-followup-assign-site.md`, 구현 담당 미배정). T17 완료: main merge 뒤 `https://portfolio.songyu0608.workers.dev`에 자동 배포되고, 계정 단위 Cloudflare Access로 choi만 볼 수 있다(`docs/tasks/T17-deploy-base.md` "결과") |
+| 다음 작업 | T17-followup 구현(어사인용 버전, 2026-11-04 사용자 요청) → T18 연락 폼 지시서(커스텀 도메인과 메일 발송 방식을 이때 정한다, §7·§8) → T19 회사별 비공개 페이지 → T20 방문 분석(안, T17 지시서 배경). 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 공개 배포 전에 실제 원고로 교체해야 한다. 그 전의 배포는 Cloudflare Access로 choi만 본다(2026-11-01 사용자 결정) |
 
 ## 1. 개요
 
-IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이트를 정적 사이트 기반으로 만든다. 백엔드 경력과 함께 AI 활용 개발 경험을 어필한다(2026-10-30 사용자 결정, §2).
+IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이트를 정적 사이트 기반으로 만든다. 같은 원고로 연락처만 바꾼 프로젝트 어사인(社内·客先 프로젝트 배정)용 버전을 다른 URL에 함께 배포한다(2026-11-04 사용자 결정, §2). 백엔드 경력과 함께 AI 활용 개발 경험을 어필한다(2026-10-30 사용자 결정, §2).
 
 - 주 독자: 채용 담당자, 현업 엔지니어
 - 목적: 경력, 프로젝트, 기술 스택을 짧은 시간에 파악하고 바로 연락할 수 있게 한다.
@@ -27,7 +27,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 
 | 항목 | 결정 | 이유 |
 | --- | --- | --- |
-| 목적 | 이직·채용용 포트폴리오 | 사용자 결정 |
+| 목적 | 이직·채용용 포트폴리오. 프로젝트 어사인용 버전을 따로 둔다: 같은 원고, URL `profile.songyu0608.workers.dev`, 연락처는 회사 메일만(GitHub·LinkedIn 링크 없음) | 사용자 결정(어사인용은 2026-11-04 추가). GitHub 링크는 Public 저장소를 거쳐 이직용 문구·주소가 보이므로 뺀다. 세부는 `docs/tasks/T17-followup-assign-site.md` |
 | 전문 분야 | 백엔드 + AI 활용 개발. AI 엔지니어로도 어필한다 | 사용자 결정(2026-10-30 변경, 이전: 백엔드). 일본 채용 시장에서 AI 개발 경험을 높이 평가하기 때문. 프로젝트 카드는 설계·규모·성능·안정성 지표를 강조. 기술 스택 첫 분류를 「AI活用開発」로 둔다. 직함(후보 「AIエンジニア / バックエンドエンジニア」)·한 줄 소개는 원고 반영 때 확정 |
 | 블로그 | 제외 | 사용자 결정 |
 | 언어 | 일본어 기본, 영어 전환 (`/ja`, `/en`) | 사용자 결정 |
@@ -113,11 +113,13 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | done | `docs/tasks/T15-e2e-tests.md` — 지시서 [PR #45](https://github.com/songyu0608/portfolio/pull/45), 구현 [PR #46](https://github.com/songyu0608/portfolio/pull/46) |
 | T16 | Lighthouse CI (Lighthouse 13, 성능·접근성·Best Practices·SEO 점수 기준, CI) | 7 | T15 | claude | done | `docs/tasks/T16-lighthouse-ci.md` — 지시서 [PR #48](https://github.com/songyu0608/portfolio/pull/48), 구현 [PR #49](https://github.com/songyu0608/portfolio/pull/49) |
 | T17 | 배포 기반 (Cloudflare Workers 정적 자산, `/` 301·404·응답 헤더, GitHub Actions 배포, 공개 전 Access 잠금) | 8 | T16 | claude | done | `docs/tasks/T17-deploy-base.md` — 지시서 [PR #51](https://github.com/songyu0608/portfolio/pull/51), 구현 [PR #52](https://github.com/songyu0608/portfolio/pull/52) |
+| T17-followup | 프로젝트 어사인용 버전 (`SITE_VARIANT=assign`, 연락처·`site`만 교체, Worker `profile`, 누출 검사) | 8 | T17 | - | todo | `docs/tasks/T17-followup-assign-site.md` |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 8의 T18 연락 폼 → T19 회사별 비공개 페이지 → T20 방문 분석(안, `docs/tasks/T17-deploy-base.md` "단계 8 나누기"). SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
 ## 7. 미결 사항
 
+- [ ] 프로젝트 어사인용 버전(`profile.songyu0608.workers.dev`)을 회사 사람에게 여는 방법: 전체 공개 또는 회사 메일 도메인만 허용하는 Access 정책 (원고 반영 뒤. 그 전에는 계정 단위 Access로 choi만 본다. T17-followup)
 - [ ] 커스텀 도메인 구입 여부와 도메인 이름 (T18 연락 폼 전, 메일 발송 설정에 필요할 가능성 높음. T17은 `*.workers.dev`)
 - [ ] 콘텐츠 원고 (`docs/CONTENT.md` 체크리스트). 단계 4는 임시 문구로 진행하고, 공개 배포 전에 교체한다. 그 전의 배포는 Access로 잠근다(2026-11-01 사용자 결정)
 - [x] 패키지 매니저 확정: pnpm 11.25.0 (T01)
@@ -288,3 +290,4 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-11-01 | T17 지시서 PR #51 merge(Codex 교차 리뷰 반영: 첫 배포 전에 계정 단위 Access로 잠근다), T17 구현 담당 claude | 사용자 결정(담당) |
 | 2026-11-01 | T17 구현: `wrangler` 4.156.0(새 패키지 55개, 기존 패키지 버전 변경 없음, `pnpm audit` 2건 그대로), `wrangler.jsonc`(`compatibility_date` 2026-10-23 = 설치한 `workerd`가 지원하는 가장 늦은 날짜), `public/_redirects`·`_headers`, Cloudflare 동작 테스트 45개(`pnpm test:workers`, 결함 주입 3건 모두 실패 확인), CI `check`에 `pnpm test:workers`, `deploy` 작업(`environment: production`, checkout은 `persist-credentials: false`). 빌드 결과는 main과 `_redirects`·`_headers` 두 파일만 다르다 | T17 구현 (`docs/ARCHITECTURE.md` A15) |
 | 2026-11-01 | T17 구현 PR #52 merge, 첫 배포 성공(main CI `deploy`, 자산 179개). 사용자 준비: 하위 도메인 `songyu0608.workers.dev`, Zero Trust Free(결제 수단 등록 필요), 계정 단위 Access(All traffic, Cloudflare account), API 토큰 1년 만료, GitHub 환경 `production`(main만). 시크릿 창에서 Access 로그인 화면만 보이고, 로그인 뒤 `/ja/`·404 페이지 확인 | 사용자 준비(choi), T17 완료 |
+| 2026-11-04 | 프로젝트 어사인용 버전 추가: 이직용 사이트는 유지하고, 같은 원고로 URL만 다른 버전(`profile.songyu0608.workers.dev`)을 배포한다. 어사인용은 LinkedIn·GitHub 링크를 빼고(GitHub는 프로필 → Public 저장소로 이직용 문구·주소가 보이므로. 저장소 Private 전환안은 택하지 않음) 메일을 회사 메일로 바꾼다(Public 저장소에 올리는 것 승인). 열람 범위는 원고 반영 뒤 정한다(§7). 지시서 T17-followup | 사용자 결정 |
