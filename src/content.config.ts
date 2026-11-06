@@ -189,29 +189,43 @@ export const CONTACT_LINKS = ['github', 'linkedin'] as const;
 
 // 언어 공통 1건: src/content/contact.yaml. Contact 페이지와 모든 페이지의 푸터가 쓴다.
 // 형식·호스트 규칙은 src/lib/content.ts가 검사한다(docs/tasks/T07-contact.md).
+const contactFields = {
+  /** intro가 임시 문구인지 */
+  placeholder,
+  /** Contact 소개 문단 */
+  intro: z.strictObject({ ja: z.string().min(1), en: z.string().min(1) }),
+  /** 공개용 메일 주소 */
+  email: z.strictObject({
+    placeholder,
+    address: z.string().min(1),
+  }),
+  /** 배열 순서가 화면 순서다. 없는 서비스는 항목을 쓰지 않는다. */
+  links: z
+    .array(
+      z.strictObject({
+        id: z.enum(CONTACT_LINKS),
+        placeholder,
+        url: z.string().min(1),
+      }),
+    )
+    .max(CONTACT_LINKS.length)
+    .default([]),
+};
 const contact = defineCollection({
   loader: glob({ pattern: 'contact.yaml', base: './src/content' }),
   schema: z.strictObject({
-    /** intro가 임시 문구인지 */
-    placeholder,
-    /** Contact 소개 문단 */
-    intro: z.strictObject({ ja: z.string().min(1), en: z.string().min(1) }),
-    /** 공개용 메일 주소 */
-    email: z.strictObject({
-      placeholder,
-      address: z.string().min(1),
-    }),
-    /** 배열 순서가 화면 순서다. 없는 서비스는 항목을 쓰지 않는다. */
-    links: z
-      .array(
-        z.strictObject({
-          id: z.enum(CONTACT_LINKS),
-          placeholder,
-          url: z.string().min(1),
-        }),
-      )
-      .max(CONTACT_LINKS.length)
-      .default([]),
+    ...contactFields,
+    variants: z
+      .strictObject({
+        assign: z
+          .strictObject({
+            intro: contactFields.intro.optional(),
+            email: contactFields.email.optional(),
+            links: contactFields.links.unwrap().optional(),
+          })
+          .optional(),
+      })
+      .optional(),
   }),
 });
 

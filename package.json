@@ -18,7 +18,8 @@
     "format:check": "prettier --check .",
     "test": "playwright test",
     "lighthouse": "playwright test -c playwright.lighthouse.config.ts",
-    "test:workers": "playwright test -c playwright.workers.config.ts"
+    "test:workers": "playwright test -c playwright.workers.config.ts",
+    "build:assign": "node scripts/build-assign.mjs"
   },
   "dependencies": {
     "@astrojs/react": "7.1.2",

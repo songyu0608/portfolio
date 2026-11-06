@@ -39,6 +39,14 @@ jobs:
       # Cloudflare에서만 정해지는 동작(T17): wrangler dev로 `/` 301·404·응답 헤더를 확인한다.
       - name: Cloudflare behavior tests
         run: pnpm test:workers
+      - name: Update and verify accessibility snapshots
+        run: |
+          pnpm test --project=chromium tests/e2e/aria.chromium.spec.ts --update-snapshots
+          git diff --exit-code -- tests/e2e/__snapshots__
+      - name: Assign variant build and leak check
+        run: pnpm build:assign
+      - name: Assign screenshots and empty links
+        run: pnpm test --project=chromium tests/e2e/assign.chromium.spec.ts
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -103,6 +111,12 @@ jobs:
       # cloudflare/wrangler-action 대신 lockfile에 고정한 wrangler를 그대로 쓴다(T17 지시서 메모).
       - name: Deploy to Cloudflare Workers
         run: pnpm exec wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - run: pnpm build:assign
+      - name: Deploy assign variant
+        run: pnpm exec wrangler deploy --env assign
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

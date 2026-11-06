@@ -16,3 +16,13 @@ links:
   - id: linkedin
     placeholder: false
     url: https://www.linkedin.com/in/songyu0608
+
+variants:
+  assign:
+    intro:
+      ja: プロジェクトのご相談は、メールでご連絡ください。〇 営業日以内に返信します。（仮）
+      en: For project inquiries, please contact me by email. I usually reply within X business days. (placeholder)
+    email:
+      placeholder: false
+      address: choi.s@ubicomo-hd.com
+    links: []

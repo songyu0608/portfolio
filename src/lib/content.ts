@@ -419,7 +419,16 @@ async function loadContent() {
   }
 
   // 연락처: 언어 공통 1건. 메일 형식, 링크 URL(https, 서비스별 호스트), 서비스 중복
-  const contact = contactEntries[0]?.data;
+  const rawContact = contactEntries[0]?.data;
+  const variant = process.env.SITE_VARIANT ?? 'default';
+  if (variant !== 'default' && variant !== 'assign')
+    throw new Error(`[content] Unknown SITE_VARIANT: ${variant}`);
+  const contact = rawContact
+    ? {
+        ...rawContact,
+        ...(variant === 'assign' ? rawContact.variants?.assign : {}),
+      }
+    : undefined;
   if (contactEntries.length !== 1 || !contact) {
     errors.push(
       `연락처: contact.yaml이 1건이어야 한다: ${contactEntries.length}건`,

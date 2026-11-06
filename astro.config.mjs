@@ -4,7 +4,14 @@ import fontSubset from './scripts/font-subset.mjs';
 
 // 사이트의 절대 주소. canonical·hreflang·OG·sitemap·robots의 절대 URL은 모두 이 값에서 만든다(T13).
 // 도메인을 정하기 전(단계 8)까지는 예약 도메인 .example의 임시 값이며, 빌드할 때 경고가 나온다.
-const site = 'https://portfolio.example';
+export const sites = {
+  default: 'https://portfolio.example',
+  assign: 'https://profile.songyu0608.workers.dev',
+};
+const variant = process.env.SITE_VARIANT ?? 'default';
+if (!Object.hasOwn(sites, variant))
+  throw new Error(`Unknown SITE_VARIANT: ${variant}`);
+const site = sites[variant];
 
 /** site가 임시 값이면 빌드 로그에 경고한다. 배포 전 확인 항목이다(docs/PLAN.md §8). */
 function sitePlaceholderWarning() {

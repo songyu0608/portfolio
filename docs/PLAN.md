@@ -9,7 +9,7 @@
 | 항목 | 값 |
 | --- | --- |
 | 현재 단계 | 단계 8 배포와 동적 기능 — T17 배포 기반 완료, T18 지시서 작성 전 |
-| 진행 중인 작업 | 없음. T17 완료: main merge 뒤 `https://portfolio.songyu0608.workers.dev`에 자동 배포되고, 계정 단위 Cloudflare Access로 choi만 볼 수 있다(`docs/tasks/T17-deploy-base.md` "결과") |
+| 진행 중인 작업 | T17-followup 어사인용 변형 구현(codex, review): 구현·빌드·실패 주입 검사 완료, PR에서 CI·스크린샷 확인 대기 |
 | 다음 작업 | T18 연락 폼 지시서(커스텀 도메인과 메일 발송 방식을 이때 정한다, §7·§8) → T19 회사별 비공개 페이지 → T20 방문 분석(안, T17 지시서 배경). 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 공개 배포 전에 실제 원고로 교체해야 한다. 그 전의 배포는 Cloudflare Access로 choi만 본다(2026-11-01 사용자 결정) |
 
@@ -288,3 +288,9 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-11-01 | T17 지시서 PR #51 merge(Codex 교차 리뷰 반영: 첫 배포 전에 계정 단위 Access로 잠근다), T17 구현 담당 claude | 사용자 결정(담당) |
 | 2026-11-01 | T17 구현: `wrangler` 4.156.0(새 패키지 55개, 기존 패키지 버전 변경 없음, `pnpm audit` 2건 그대로), `wrangler.jsonc`(`compatibility_date` 2026-10-23 = 설치한 `workerd`가 지원하는 가장 늦은 날짜), `public/_redirects`·`_headers`, Cloudflare 동작 테스트 45개(`pnpm test:workers`, 결함 주입 3건 모두 실패 확인), CI `check`에 `pnpm test:workers`, `deploy` 작업(`environment: production`, checkout은 `persist-credentials: false`). 빌드 결과는 main과 `_redirects`·`_headers` 두 파일만 다르다 | T17 구현 (`docs/ARCHITECTURE.md` A15) |
 | 2026-11-01 | T17 구현 PR #52 merge, 첫 배포 성공(main CI `deploy`, 자산 179개). 사용자 준비: 하위 도메인 `songyu0608.workers.dev`, Zero Trust Free(결제 수단 등록 필요), 계정 단위 Access(All traffic, Cloudflare account), API 토큰 1년 만료, GitHub 환경 `production`(main만). 시크릿 창에서 Access 로그인 화면만 보이고, 로그인 뒤 `/ja/`·404 페이지 확인 | 사용자 준비(choi), T17 완료 |
+
+## T17-followup 진행
+
+| ID | 담당 | 상태 | 지시서 |
+| --- | --- | --- | --- |
+| T17-followup | codex | review | `docs/tasks/T17-followup-assign-site.md` (문서 PR #56에서 가져옴) |
