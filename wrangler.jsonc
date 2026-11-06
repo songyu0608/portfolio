@@ -13,6 +13,9 @@
     "html_handling": "auto-trailing-slash",
   },
   // 주소: portfolio.<계정 하위 도메인>.workers.dev. 공개 배포 전까지 Cloudflare Access로 잠근다.
+  "env": {
+    "assign": { "name": "profile" },
+  },
   "workers_dev": true,
   // 미리보기 배포는 쓰지 않는다(docs/tasks/T17-deploy-base.md 제외 항목).
   "preview_urls": false,

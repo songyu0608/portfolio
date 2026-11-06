@@ -34,7 +34,7 @@ const ja = {
     },
     contact: {
       name: '連絡先',
-      description: 'メール、GitHub などの連絡方法を掲載しています。',
+      description: '連絡方法を掲載しています。',
     },
   },
   // 404 페이지. 일본어·영어 안내를 한 페이지에 함께 보여준다(docs/DESIGN.md §10).
@@ -235,7 +235,7 @@ const en: UiText = {
     },
     contact: {
       name: 'Contact',
-      description: 'Ways to get in touch, including email and GitHub.',
+      description: 'Ways to get in touch.',
     },
   },
   notFound: {

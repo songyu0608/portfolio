@@ -69,6 +69,7 @@ pnpm format     # Prettier
 pnpm format:check # 포맷 검사
 pnpm check      # astro check (타입 체크)
 pnpm build      # 정적 빌드
+pnpm build:assign # 어사인용 빌드 + noindex 보장 + 누출 검사
 pnpm preview    # 빌드 결과 확인
 pnpm test       # E2E(Playwright, 3개 브라우저). pnpm build 뒤에 실행
 pnpm lighthouse # Lighthouse 점수 기준(모바일·데스크톱, 10페이지 × 3회). pnpm build 뒤에 실행
