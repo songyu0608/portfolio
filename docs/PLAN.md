@@ -9,7 +9,7 @@
 | 항목 | 값 |
 | --- | --- |
 | 현재 단계 | 단계 8 배포와 동적 기능 — T17 배포 기반 완료, T18 지시서 작성 전 |
-| 진행 중인 작업 | T17-followup 프로젝트 어사인용 버전 지시서 작성(`docs/tasks/T17-followup-assign-site.md`, 구현 담당 미배정). T17 완료: main merge 뒤 `https://portfolio.songyu0608.workers.dev`에 자동 배포되고, 계정 단위 Cloudflare Access로 choi만 볼 수 있다(`docs/tasks/T17-deploy-base.md` "결과") |
+| 진행 중인 작업 | T17-followup 프로젝트 어사인용 버전 지시서 작성(`docs/tasks/T17-followup-assign-site.md`, 구현 담당 codex). T17 완료: main merge 뒤 `https://portfolio.songyu0608.workers.dev`에 자동 배포되고, 계정 단위 Cloudflare Access로 choi만 볼 수 있다(`docs/tasks/T17-deploy-base.md` "결과") |
 | 다음 작업 | T17-followup 구현(어사인용 버전, 2026-11-04 사용자 요청) → T18 연락 폼 지시서(커스텀 도메인과 메일 발송 방식을 이때 정한다, §7·§8) → T19 회사별 비공개 페이지 → T20 방문 분석(안, T17 지시서 배경). 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 공개 배포 전에 실제 원고로 교체해야 한다. 그 전의 배포는 Cloudflare Access로 choi만 본다(2026-11-01 사용자 결정) |
 
@@ -113,7 +113,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | done | `docs/tasks/T15-e2e-tests.md` — 지시서 [PR #45](https://github.com/songyu0608/portfolio/pull/45), 구현 [PR #46](https://github.com/songyu0608/portfolio/pull/46) |
 | T16 | Lighthouse CI (Lighthouse 13, 성능·접근성·Best Practices·SEO 점수 기준, CI) | 7 | T15 | claude | done | `docs/tasks/T16-lighthouse-ci.md` — 지시서 [PR #48](https://github.com/songyu0608/portfolio/pull/48), 구현 [PR #49](https://github.com/songyu0608/portfolio/pull/49) |
 | T17 | 배포 기반 (Cloudflare Workers 정적 자산, `/` 301·404·응답 헤더, GitHub Actions 배포, 공개 전 Access 잠금) | 8 | T16 | claude | done | `docs/tasks/T17-deploy-base.md` — 지시서 [PR #51](https://github.com/songyu0608/portfolio/pull/51), 구현 [PR #52](https://github.com/songyu0608/portfolio/pull/52) |
-| T17-followup | 프로젝트 어사인용 버전 (`SITE_VARIANT=assign`, 연락처·`site`만 교체, Worker `profile`, 누출 검사) | 8 | T17 | - | todo | `docs/tasks/T17-followup-assign-site.md` |
+| T17-followup | 프로젝트 어사인용 버전 (`SITE_VARIANT=assign`, 연락처·`site`만 교체, Worker `profile`, 누출 검사) | 8 | T17 | codex | todo | `docs/tasks/T17-followup-assign-site.md` |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 8의 T18 연락 폼 → T19 회사별 비공개 페이지 → T20 방문 분석(안, `docs/tasks/T17-deploy-base.md` "단계 8 나누기"). SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
