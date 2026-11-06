@@ -2,14 +2,14 @@
 
 이 파일은 계획·결정·진행 상태의 **원본**이다. 결정이 바뀌면 이 파일을 먼저 고친다.
 
-마지막 갱신: 2026-11-01 (T17 완료)
+마지막 갱신: 2026-11-06 (T17-followup 구현·검증)
 
 ## 현재 진행 상태
 
 | 항목 | 값 |
 | --- | --- |
 | 현재 단계 | 단계 8 배포와 동적 기능 — T17 배포 기반 완료, T18 지시서 작성 전 |
-| 진행 중인 작업 | T17-followup 어사인용 변형 구현(codex, review): 구현·빌드·실패 주입 검사 완료, PR에서 CI·스크린샷 확인 대기 |
+| 진행 중인 작업 | T17-followup 어사인용 변형 구현(codex, review): 구현·전체 CI·실패 주입·스크린샷 검증 완료, PR #57 교차 리뷰 대기 |
 | 다음 작업 | T18 연락 폼 지시서(커스텀 도메인과 메일 발송 방식을 이때 정한다, §7·§8) → T19 회사별 비공개 페이지 → T20 방문 분석(안, T17 지시서 배경). 원고 반영은 맨 마지막(2026-10-31 사용자 결정) |
 | 블로커 | 없음. 콘텐츠 원고(`docs/CONTENT.md`)는 미수집이며, 단계 4는 임시 문구로 진행한다. 공개 배포 전에 실제 원고로 교체해야 한다. 그 전의 배포는 Cloudflare Access로 choi만 본다(2026-11-01 사용자 결정) |
 
@@ -113,6 +113,7 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | T15 | E2E 테스트 (Playwright Test, 3개 브라우저, 기능·키보드·axe·접근성 트리, CI) | 7 | T14 | claude | done | `docs/tasks/T15-e2e-tests.md` — 지시서 [PR #45](https://github.com/songyu0608/portfolio/pull/45), 구현 [PR #46](https://github.com/songyu0608/portfolio/pull/46) |
 | T16 | Lighthouse CI (Lighthouse 13, 성능·접근성·Best Practices·SEO 점수 기준, CI) | 7 | T15 | claude | done | `docs/tasks/T16-lighthouse-ci.md` — 지시서 [PR #48](https://github.com/songyu0608/portfolio/pull/48), 구현 [PR #49](https://github.com/songyu0608/portfolio/pull/49) |
 | T17 | 배포 기반 (Cloudflare Workers 정적 자산, `/` 301·404·응답 헤더, GitHub Actions 배포, 공개 전 Access 잠금) | 8 | T16 | claude | done | `docs/tasks/T17-deploy-base.md` — 지시서 [PR #51](https://github.com/songyu0608/portfolio/pull/51), 구현 [PR #52](https://github.com/songyu0608/portfolio/pull/52) |
+| T17-followup | 프로젝트 어사인용 빌드·연락처 누출 검사 | 8 | T17 | codex | review | `docs/tasks/T17-followup-assign-site.md` — 구현 [PR #57](https://github.com/songyu0608/portfolio/pull/57), 선행 문서 #56 포함 |
 
 이후 지시서는 앞 작업이 끝날 때 작성한다. 예정: 단계 8의 T18 연락 폼 → T19 회사별 비공개 페이지 → T20 방문 분석(안, `docs/tasks/T17-deploy-base.md` "단계 8 나누기"). SEO·접근성은 화면 마크업을 점검하므로 React 전환 뒤에 한다(2026-10-31 사용자 결정). 원고 반영(기술 로고 포함)은 개발 작업 중 맨 마지막에 하되, 임시 항목이 남은 채 공개 배포하지 않는다(`docs/CONTENT.md` "임시 문구 규칙").
 
@@ -288,9 +289,3 @@ IT 엔지니어(백엔드)인 choi의 이직·채용용 포트폴리오 사이�
 | 2026-11-01 | T17 지시서 PR #51 merge(Codex 교차 리뷰 반영: 첫 배포 전에 계정 단위 Access로 잠근다), T17 구현 담당 claude | 사용자 결정(담당) |
 | 2026-11-01 | T17 구현: `wrangler` 4.156.0(새 패키지 55개, 기존 패키지 버전 변경 없음, `pnpm audit` 2건 그대로), `wrangler.jsonc`(`compatibility_date` 2026-10-23 = 설치한 `workerd`가 지원하는 가장 늦은 날짜), `public/_redirects`·`_headers`, Cloudflare 동작 테스트 45개(`pnpm test:workers`, 결함 주입 3건 모두 실패 확인), CI `check`에 `pnpm test:workers`, `deploy` 작업(`environment: production`, checkout은 `persist-credentials: false`). 빌드 결과는 main과 `_redirects`·`_headers` 두 파일만 다르다 | T17 구현 (`docs/ARCHITECTURE.md` A15) |
 | 2026-11-01 | T17 구현 PR #52 merge, 첫 배포 성공(main CI `deploy`, 자산 179개). 사용자 준비: 하위 도메인 `songyu0608.workers.dev`, Zero Trust Free(결제 수단 등록 필요), 계정 단위 Access(All traffic, Cloudflare account), API 토큰 1년 만료, GitHub 환경 `production`(main만). 시크릿 창에서 Access 로그인 화면만 보이고, 로그인 뒤 `/ja/`·404 페이지 확인 | 사용자 준비(choi), T17 완료 |
-
-## T17-followup 진행
-
-| ID | 담당 | 상태 | 지시서 |
-| --- | --- | --- | --- |
-| T17-followup | codex | review | `docs/tasks/T17-followup-assign-site.md` (문서 PR #56에서 가져옴) |

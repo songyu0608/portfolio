@@ -6,7 +6,7 @@
 | 선행 작업 | T17 (배포 기반, 구현 PR #52) |
 | 담당 | codex |
 | 상태 | review |
-| 브랜치 | `<agent>/T17-followup-assign-site` (실행 환경이 이름을 지정하면 그 이름) |
+| 브랜치 | `codex/T17-followup-assign-site` |
 
 번호: 열려 있는 PR #54(T18 회사별 비공개 페이지)·#55(T08-followup)와 번호가 겹치지 않게, 배포 기반(T17)의 후속으로 둔다.
 
@@ -105,16 +105,16 @@
 
 ## 완료 조건
 
-- [ ] `pnpm build`(기본) 결과가 지금과 같다: GitHub·LinkedIn 링크와 기존 메일이 그대로 나온다(Contact description 문구만 바뀜)
-- [ ] `pnpm build:assign`이 성공하고, 결과 HTML의 Contact·푸터에 회사 메일만 있고 GitHub·LinkedIn 링크가 없다. canonical·hreflang·OG·sitemap이 `https://profile.songyu0608.workers.dev`를 쓴다
-- [ ] 누출 검사가 실제로 잡는지 확인: 어사인용 덮어쓰기를 잠시 지운 빌드에서 실패하는 것을 PR에 적는다
-- [ ] `SITE_VARIANT`에 모르는 값을 주면 빌드가 실패한다
-- [ ] 링크 0개일 때 Contact 페이지·푸터·터미널 `contact` 출력에 빈 목록·빈 제목이 없다(어사인용 빌드 스크린샷 ja/en, 1280·375)
-- [ ] `public/_headers`의 `X-Robots-Tag` 줄을 잠시 지운 상태에서도 `pnpm build:assign` 결과 `dist/_headers`에 `X-Robots-Tag: noindex`가 있다(PR에 적는다)
-- [ ] `pnpm exec wrangler deploy --env assign --dry-run`(어사인용 빌드 뒤) 출력에서 Worker 이름이 `profile`이고 정적 자산 디렉터리·`not_found_handling`·`html_handling`이 기본과 같다(PR에 출력 일부를 적는다)
-- [ ] `pnpm lint`, `pnpm check`, `pnpm format:check`, `pnpm test`, `pnpm test:workers` 통과
-- [ ] CI 통과(`check`에 `build:assign` 단계 포함)
-- [ ] `docs/ARCHITECTURE.md`·`AGENTS.md`·`docs/PLAN.md` 갱신
+- [x] `pnpm build`(기본) 결과가 지금과 같다: GitHub·LinkedIn 링크와 기존 메일이 그대로 나온다(Contact description 문구만 바뀜)
+- [x] `pnpm build:assign`이 성공하고, 결과 HTML의 Contact·푸터에 회사 메일만 있고 GitHub·LinkedIn 링크가 없다. canonical·hreflang·OG·sitemap이 `https://profile.songyu0608.workers.dev`를 쓴다
+- [x] 누출 검사가 실제로 잡는지 확인: 어사인용 덮어쓰기를 잠시 지운 빌드에서 실패하는 것을 PR에 적는다
+- [x] `SITE_VARIANT`에 모르는 값을 주면 빌드가 실패한다
+- [x] 링크 0개일 때 Contact 페이지·푸터·터미널 `contact` 출력에 빈 목록·빈 제목이 없다(어사인용 빌드 스크린샷 ja/en, 1280·375)
+- [x] `public/_headers`의 `X-Robots-Tag` 줄을 잠시 지운 상태에서도 `pnpm build:assign` 결과 `dist/_headers`에 `X-Robots-Tag: noindex`가 있다(PR에 적는다)
+- [x] `pnpm exec wrangler deploy --env assign --dry-run`(어사인용 빌드 뒤) 출력에서 Worker 이름이 `profile`이고 정적 자산 디렉터리·`not_found_handling`·`html_handling`이 기본과 같다(PR에 출력 일부를 적는다)
+- [x] `pnpm lint`, `pnpm check`, `pnpm format:check`, `pnpm test`, `pnpm test:workers` 통과
+- [x] CI 통과(`check`에 `build:assign` 단계 포함)
+- [x] `docs/ARCHITECTURE.md`·`AGENTS.md`·`docs/PLAN.md` 갱신
 
 ## 사용자 준비 (choi)
 
@@ -126,13 +126,13 @@
 
 - 회사별 비공개 페이지(T18, PR #54 지시서)와는 다르다. T18은 지원 회사마다 토큰 URL로 내용을 바꾸는 이직용 기능이고, 이 작업은 연락처만 바꾼 사이트 전체의 두 번째 배포다. T18 Worker 스크립트가 들어오면 어사인용 환경에는 비공개 페이지 경로를 넣지 않는다(T18 구현 때 확인).
 
-
 ## 구현 결과 (Codex)
 
 - main `3102979`에서 시작. 지시서가 main에 없어 문서 PR #56의 `300aa5d`에서 이 지시서를 가져왔다. #56을 merge하거나 다른 열린 지시서 PR을 변경하지 않았다.
 - 데이터·site 선택, strict override, noindex 보장, 원본 기반 누출 검사, assign Worker profile과 CI 순차 빌드·배포 구현. Contact/푸터/터미널은 메일을 항상 포함하므로 links=[]에서 빈 출력이 생기지 않아 화면 파일은 바꾸지 않았다.
 - 기본·assign 빌드, lint·check·format 검사와 실패 주입 검사 완료. 기본 연락처 override 제거 시 누출 검사가 실패하고, public noindex 제거 후에도 assign 출력에 noindex가 남는다. unknown 변형은 빌드 실패.
 - dry-run 성공(실제 배포 없음). Wrangler 설정 해석에서 assign.name=profile과 기본/assign assets.directory·not_found_handling·html_handling 동일 확인.
-- 로컬 E2E는 Chromium socket() Operation not permitted, 브라우저 다운로드는 잘못된 ZIP, Workers 테스트는 uv_interface_addresses 오류로 실행 제한. --update-snapshots도 시도했으나 브라우저 시작 실패. description은 head의 meta이므로 body 접근성 트리의 예상 diff는 0이다. CI에서 갱신 명령과 diff 검사를 다시 실행한다.
-- CI에서 어사인 Contact·푸터·터미널의 ja/en, 1280/375 검증·캡처를 수행하고 Playwright 보고서에 첨부한다(`tests/e2e/assign.chromium.spec.ts`).
-- 범위 밖 파일: scripts/build-assign.mjs. Windows 호환 환경 설정·Astro 실행·출력 헤더 보장을 검사 스크립트와 분리하기 위해 필요. 새 의존성 없음.
+- 로컬 브라우저·Workers 실행 제한은 CI에서 검증했다([실행 42231274186](https://github.com/songyu0608/portfolio/actions/runs/42231274186)). 3개 브라우저 E2E 397 passed / 4 skipped(기본 빌드에서 assign 전용 테스트), Workers 45 passed, 접근성 스냅숏 갱신 19 passed, assign 전용 검사 4 passed. Lighthouse desktop/mobile도 통과했다.
+- 접근성 스냅숏은 `pnpm test --project=chromium tests/e2e/aria.chromium.spec.ts --update-snapshots`로 갱신하고 `git diff --exit-code -- tests/e2e/__snapshots__`로 확인했다. diff는 0이다. 바뀐 description은 head의 meta여서 body 접근성 트리에 포함되지 않는다.
+- CI의 어사인 Contact·푸터·터미널 ja/en, 1280/375 캡처 8장을 모두 확인했다. `docs/tasks/evidence/T17-followup/` 및 PR #57에 첨부했다. 재현 테스트는 `tests/e2e/assign.chromium.spec.ts`.
+- 범위 밖 파일: `scripts/build-assign.mjs`는 Windows 호환 환경 설정·Astro 실행·출력 헤더 보장을 검사 스크립트와 분리하기 위해 필요하다. `docs/tasks/evidence/T17-followup/*.png`는 요청된 스크린샷을 PR에서 지속적으로 볼 수 있게 보관한 검증 자료다. 새 의존성 없음.
